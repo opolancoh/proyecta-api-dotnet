@@ -47,6 +47,21 @@ public sealed class RiskService : IRiskService
     {
         await _repository.Remove(id);
     }
+    
+    public async Task AddRange(IEnumerable<RiskCreateOrUpdateDto> items)
+    {
+        var newItems = new List<Risk>();
+        
+        foreach (var item in items)
+        {
+            var newItem = GetEntity(null, item);
+            newItem.CreatedAt = DateTime.UtcNow;
+            newItem.UpdatedAt = DateTime.UtcNow;
+            newItems.Add(newItem);
+        }
+
+        await _repository.AddRange(newItems);
+    }
 
     private Risk GetEntity(Guid? id, RiskCreateOrUpdateDto item)
     {

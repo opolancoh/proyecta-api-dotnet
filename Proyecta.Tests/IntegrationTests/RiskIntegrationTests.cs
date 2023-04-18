@@ -150,6 +150,18 @@ public class RiskIntegrationTests
         Assert.All(expectedCollection, expected => Assert.Contains(expected, payloadString));
     }
 
+    [Fact]
+    public async Task Create_ShouldCreateManyItems()
+    {
+        var newItems = DbHelper.GetRisks;
+        var payload = JsonSerializer.Serialize(newItems, _serializerOptions);
+        HttpContent httpContent = new StringContent(payload, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.PostAsync($"{BasePath}/add-range", httpContent);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+    }
+    
     #endregion
 
 

@@ -76,4 +76,13 @@ public class RisksController : ControllerBase
 
         return NoContent();
     }
+    
+    [HttpPost]
+    [Route("add-range")]
+    public async Task<IActionResult> AddRange(IEnumerable<RiskCreateOrUpdateDto> items)
+    {
+        await _service.AddRange(items);
+
+        return NoContent();
+    }
 }
