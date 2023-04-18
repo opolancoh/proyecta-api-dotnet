@@ -7,6 +7,7 @@ builder.Services.ConfigurePersistenceServices();
 builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.ConfigureApiVersioning();
+builder.Services.ConfigureCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,6 +24,8 @@ if (app.Environment.IsDevelopment())
 app.UseApiVersioning();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 

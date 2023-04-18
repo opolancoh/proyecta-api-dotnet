@@ -8,7 +8,6 @@ using Proyecta.Repository.EntityFramework;
 
 namespace Proyecta.Web.Extensions;
 
-
 public static class ServiceExtensions
 {
     public static void ConfigureApiVersioning(this IServiceCollection services)
@@ -34,5 +33,20 @@ public static class ServiceExtensions
         var dbConnection = configuration.GetConnectionString("DbConnection");
 
         services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(dbConnection));
+    }
+
+    public static void ConfigureCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(
+                policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
     }
 }
