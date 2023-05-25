@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres
+    container_name: 'proyecta_postgres'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=My@Passw0rd
+      - POSTGRES_DB=proyecta_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data # This is where your data persists in the container
+    ports:
+      - "5433:5432"
+
+volumes:
+  pgdata:

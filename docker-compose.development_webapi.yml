@@ -1,0 +1,22 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+version: '3.4'
+
+services:
+  webapi:
+    image: proyecta_webapi
+    container_name: 'proyecta_webapi'
+    build:
+      context: .
+      dockerfile: Proyecta.Web/Dockerfile
+    ports:
+      - "5100:80"
+      - "5101:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development # debug runs in development mode
+      - ConnectionStrings__DbConnection=Host=db; Database=proyecta_db; Username=postgres; Password=My@Passw0rd;
+      # - ASPNETCORE_URLS=https://+:443;http://+:80
+      # - ASPNETCORE_Kestrel__Certificates__Default__Password={password} # password used when making the cert, without curly braces
+      # - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
+      - ~/.aspnet/https:/https:ro
