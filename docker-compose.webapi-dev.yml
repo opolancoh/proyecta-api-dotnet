@@ -17,6 +17,11 @@ services:
       # - ASPNETCORE_URLS=https://+:443;http://+:80
       # - ASPNETCORE_Kestrel__Certificates__Default__Password={password} # password used when making the cert, without curly braces
       # - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-    volumes:
-      - ~/.vsdbg:/remote_debugger:rw
-      - ~/.aspnet/https:/https:ro
+    #volumes:
+    #  - ~/.vsdbg:/remote_debugger:rw
+    #  - ~/.aspnet/https:/https:ro
+    networks:
+      - proyecta_network
+
+networks:
+  proyecta_network:
