@@ -38,19 +38,16 @@ public static class ServiceExtensions
     public static void ConfigureCors(this IServiceCollection services)
     {
         services.AddCors(options =>
-        {
-            /* options.AddDefaultPolicy(builder =>
             {
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-            }); */
-            options.AddDefaultPolicy(builder =>
-                builder
-                    .WithOrigins("*")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-        });
+                options.AddDefaultPolicy(policy =>
+                    {
+                        policy
+                            .AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    }
+                );
+            }
+        );
     }
 }
