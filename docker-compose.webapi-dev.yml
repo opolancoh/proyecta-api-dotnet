@@ -12,12 +12,12 @@ services:
       - "8000:443"
       - "8001:80"
     environment:
-      - ConnectionStrings__DbConnection=${PROYECTA_DB_CONNECTION}
+      - ConnectionStrings__DbConnection=${PROYECTA_WEBAPI_DB_CONNECTION}
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_HTTPS_PORT=8001
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${PROYECTA_CERT_PASSWORD}
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=${PROYECTA_CERT_PATH}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${PROYECTA_WEBAPI_CERT_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${PROYECTA_WEBAPI_CERT_PATH}
     volumes:
       - ${HOME}/.aspnet/https:/https/
     #  - ~/.vsdbg:/remote_debugger:rw
