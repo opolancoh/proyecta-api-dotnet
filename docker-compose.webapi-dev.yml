@@ -2,9 +2,9 @@
 version: '3.4'
 
 services:
-  webapi:
+  webapi_dotnet:
     image: proyecta_webapi
-    container_name: 'proyecta_webapi'
+    container_name: 'proyecta_webapi_dotnet'
     build:
       context: .
       dockerfile: Proyecta.Web/Dockerfile-dev
