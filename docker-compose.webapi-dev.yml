@@ -7,19 +7,20 @@ services:
     container_name: 'proyecta_webapi'
     build:
       context: .
-      dockerfile: Proyecta.Web/Dockerfile
+      dockerfile: Proyecta.Web/Dockerfile-dev
     ports:
-      - "5100:80"
-      - "5101:443"
+      - "8000:443"
+      - "8001:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development # debug runs in development mode
-      - ConnectionStrings__DbConnection=Host=db; Database=proyecta_db; Username=postgres; Password=My@Passw0rd;
-      # - ASPNETCORE_URLS=https://+:443;http://+:80
-      # - ASPNETCORE_Kestrel__Certificates__Default__Password={password} # password used when making the cert, without curly braces
-      # - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-    #volumes:
+      - ConnectionStrings__DbConnection=${PROYECTA_DB_CONNECTION}
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=8001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${PROYECTA_CERT_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${PROYECTA_CERT_PATH}
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
     #  - ~/.vsdbg:/remote_debugger:rw
-    #  - ~/.aspnet/https:/https:ro
     networks:
       - proyecta_network
 

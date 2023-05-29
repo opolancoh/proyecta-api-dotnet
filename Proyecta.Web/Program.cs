@@ -28,7 +28,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseApiVersioning();
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseCors();
 
