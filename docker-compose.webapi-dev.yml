@@ -3,8 +3,8 @@ version: '3.4'
 
 services:
   webapi_dotnet:
-    image: proyecta_webapi
-    container_name: 'proyecta_webapi_dotnet'
+    image: proyecta_webapi_dotnet_dev
+    container_name: 'proyecta_webapi_dotnet_dev'
     build:
       context: .
       dockerfile: Proyecta.Web/Dockerfile-dev
@@ -14,8 +14,7 @@ services:
     environment:
       - ConnectionStrings__DbConnection=${PROYECTA_WEBAPI_DB_CONNECTION}
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+;http://+
-      - ASPNETCORE_HTTPS_PORT=8001
+      - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${PROYECTA_WEBAPI_CERT_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=${PROYECTA_WEBAPI_CERT_PATH}
     volumes:
