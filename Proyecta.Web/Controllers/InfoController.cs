@@ -4,12 +4,10 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using Proyecta.Web.Helpers;
 
-namespace Proyecta.Web.Controllers.v1;
+namespace Proyecta.Web.Controllers;
 
 [ApiController]
-[ApiVersion("1.0")]
-[Route("api/[controller]")]
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("[controller]")]
 public class InfoController : ControllerBase
 {
     [HttpGet]

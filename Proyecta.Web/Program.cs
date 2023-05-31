@@ -4,6 +4,8 @@ using Proyecta.Web.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// var logger = LoggerFactory.Create(config => { config.AddConsole(); }).CreateLogger("Program");
+
 // Add services to the container.
 builder.Services.AddHealthChecks();
 builder.Services.ConfigurePersistenceServices();
@@ -16,6 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.ConfigureExceptionHandler(app.Logger);
 
 app.MapHealthChecks("/health");
 
@@ -41,4 +45,6 @@ app.MigrateDatabase<AppDbContext>();
 app.Run();
 
 // For testing purposes
-public partial class Program {}
+public partial class Program
+{
+}
