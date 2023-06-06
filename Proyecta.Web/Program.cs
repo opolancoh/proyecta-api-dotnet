@@ -1,13 +1,11 @@
-using Proyecta.Repository.EntityFramework;
 using Proyecta.Web.Extensions;
-using Proyecta.Web.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// var logger = LoggerFactory.Create(config => { config.AddConsole(); }).CreateLogger("Program");
-
 // Add services to the container.
 builder.Services.AddHealthChecks();
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
 builder.Services.ConfigurePersistenceServices();
 builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.AddControllers();
@@ -35,12 +33,12 @@ app.UseApiVersioning();
 // app.UseHttpsRedirection();
 
 app.UseCors();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.MigrateDatabase<AppDbContext>();
+// app.MigrateDatabase<AppDbContext>();
 
 app.Run();
 

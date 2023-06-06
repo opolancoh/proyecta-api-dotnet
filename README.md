@@ -23,11 +23,11 @@ docker stop my-postgres && docker rm my-postgres
 #### Create Database
 
 ```sh
-dotnet ef database update --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web
+dotnet ef database update --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AppDbContext
 ```
 
 #### Add a new migration when needed
 
 ```sh
-dotnet ef migrations add "MyMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web
+dotnet ef migrations add "MyMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AppDbContext
 ```

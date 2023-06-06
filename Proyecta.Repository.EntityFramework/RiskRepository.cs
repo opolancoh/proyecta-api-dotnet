@@ -45,7 +45,7 @@ public class RiskRepository : IRiskRepository
         {
             if (!await ItemExists(item.Id))
             {
-                throw new EntityNotFoundException(item.Id);
+                throw new EntityNotFoundException<Guid>(item.Id);
             }
             else
             {
@@ -68,7 +68,7 @@ public class RiskRepository : IRiskRepository
         {
             if (!await ItemExists(id))
             {
-                throw new EntityNotFoundException(id);
+                throw new EntityNotFoundException<Guid>(id);
             }
             else
             {
