@@ -54,7 +54,7 @@ public class RisksController : ControllerBase
         {
             await _service.Update(id, item);
         }
-        catch (EntityNotFoundException)
+        catch (EntityNotFoundException<Guid>)
         {
             return NotFound();
         }
@@ -69,7 +69,7 @@ public class RisksController : ControllerBase
         {
             await _service.Remove(id);
         }
-        catch (EntityNotFoundException)
+        catch (EntityNotFoundException<Guid>)
         {
             return NotFound();
         }

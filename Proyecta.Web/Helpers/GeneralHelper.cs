@@ -1,6 +1,6 @@
 namespace Proyecta.Web.Helpers;
 
-public class GeneralHelper
+public static class GeneralHelper
 {
     public static string MemoryInBestUnit(long size)
     {

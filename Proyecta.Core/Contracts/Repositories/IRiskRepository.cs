@@ -3,7 +3,7 @@ using Proyecta.Core.Entities.DTOs;
 
 namespace Proyecta.Core.Contracts.Repositories;
 
-public interface IRiskRepository : IRepositoryBase<Risk>
+public interface IRiskRepository : IRepositoryBase<Risk, Guid>
 {
     public Task AddRange(IEnumerable<Risk> items);
 }

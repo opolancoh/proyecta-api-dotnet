@@ -12,8 +12,8 @@ using Proyecta.Repository.EntityFramework;
 namespace Proyecta.Repository.EntityFramework.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230414030725_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230601060103_AppInitialMigration")]
+    partial class AppInitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,11 +41,11 @@ namespace Proyecta.Repository.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("DateFrom")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("DateFrom")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("DateTo")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("DateTo")
+                        .HasColumnType("date");
 
                     b.Property<string>("Manageability")
                         .IsRequired()
