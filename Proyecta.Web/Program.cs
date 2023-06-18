@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Proyecta.Web.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,9 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigurePersistenceServices();
 builder.Services.ConfigureDbContext(builder.Configuration);
-builder.Services.AddControllers();
+builder.Services.ConfigureControllers();
 builder.Services.ConfigureApiVersioning();
 builder.Services.ConfigureCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -32,7 +32,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApplicationResponse
         {
-            Succeed = true,
+            Status = 200,
             Data = users
         };
     }
@@ -42,15 +42,17 @@ public sealed class ApplicationUserService : IApplicationUserService
         var user = await _repository.GetByIdWithRoles(id);
 
         if (user == null)
+        {
             return new ApplicationResponse
             {
-                Succeed = false,
+                Status = 404,
                 Message = $"The entity with id '{id}' doesn't exist in the database."
             };
+        }
 
         return new ApplicationResponse
         {
-            Succeed = true,
+            Status = 200,
             Data = user
         };
     }
@@ -73,7 +75,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
             return new ApplicationResponse
             {
-                Succeed = false,
+                Status = 400,
                 Message = "An error has occurred while creating the User.",
                 Errors = errors
             };
@@ -91,7 +93,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApplicationResponse
         {
-            Succeed = true,
+            Status = 201,
             Message = "User created successfully.",
             Data = new { userId }
         };
@@ -105,7 +107,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             return new ApplicationResponse
             {
-                Succeed = false,
+                Status = 404,
                 Message = $"User Id '{id}' was not found.",
             };
         }
@@ -121,13 +123,13 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             var errors = result.Errors.Select(error =>
             {
-                _logger.LogInformation($@"User not updated. Code:{error.Code} Description:{error.Description}");
+                _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
                 return new ApplicationResponseError { Code = error.Code, Description = error.Description };
             }).ToList();
 
             return new ApplicationResponse
             {
-                Succeed = false,
+                Status = 500,
                 Message = "An error has occurred while updating the Application User.",
                 Errors = errors
             };
@@ -151,7 +153,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApplicationResponse
         {
-            Succeed = true,
+            Status = 200,
             Message = "User updated successfully.",
         };
     }
@@ -172,32 +174,32 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             return new ApplicationResponse
             {
-                Succeed = false,
+                Status = 404,
                 Message = $"User Id '{id}' was not found.",
             };
         }
 
         var result = await _userManager.DeleteAsync(currentUser);
-        if (!result.Succeeded)
+        if (result.Succeeded)
         {
-            var errors = result.Errors.Select(error =>
-            {
-                _logger.LogInformation($@"User not deleted. Code:{error.Code} Description:{error.Description}");
-                return new ApplicationResponseError { Code = error.Code, Description = error.Description };
-            }).ToList();
-
             return new ApplicationResponse
             {
-                Succeed = false,
-                Message = $"An error has occurred while deleting the User with Id '{id}'.",
-                Errors = errors
+                Status = 200,
+                Message = "User deleted successfully.",
             };
         }
 
+        var errors = result.Errors.Select(error =>
+        {
+            _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
+            return new ApplicationResponseError { Code = error.Code, Description = error.Description };
+        }).ToList();
+
         return new ApplicationResponse
         {
-            Succeed = true,
-            Message = "User deleted successfully.",
+            Status = 500,
+            Message = $"An error has occurred while deleting the User with Id '{id}'.",
+            Errors = errors
         };
     }
 
@@ -209,7 +211,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         foreach (var item in itemsToAdd)
         {
             var result = await Create(item);
-            if (result.Succeed)
+            if (result.Status == 201)
             {
                 data.Add(result.Data!);
             }
@@ -227,7 +229,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         var response = new ApplicationResponse
         {
-            Succeed = errors.Count == 0,
+            Status = errors.Count == 0 ? 201 : 202,
             Message = errors.Count == 0
                 ? "All users were added successfully."
                 : $"Not all users were added. Added:[{itemsToAdd.Count() - errors.Count}] Not Added:[{errors.Count}]",
@@ -236,6 +238,19 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
 
         return response;
+    }
+
+    public async Task<ApplicationResponse> Register(ApplicationUserRegisterDto item)
+    {
+        var newUser = new ApplicationUserCreateOrUpdateDto
+        {
+            FirstName = item.FirstName,
+            LastName = item.LastName,
+            UserName = item.UserName,
+            Password = item.Password
+        };
+
+        return await Create(newUser);
     }
 
     private ApplicationUser GetEntity(string? id, ApplicationUserCreateOrUpdateDto item)

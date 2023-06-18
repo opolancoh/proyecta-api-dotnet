@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proyecta.Repository.EntityF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proyecta.Tests", "Proyecta.Tests\Proyecta.Tests.csproj", "{F73EC534-DE98-4BE3-9BA8-2F670D2D538E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proyecta.Services", "Proyecta.Services\Proyecta.Services.csproj", "{EB8508F8-DE1A-47EA-82F0-501456135B18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{F73EC534-DE98-4BE3-9BA8-2F670D2D538E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F73EC534-DE98-4BE3-9BA8-2F670D2D538E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F73EC534-DE98-4BE3-9BA8-2F670D2D538E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB8508F8-DE1A-47EA-82F0-501456135B18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB8508F8-DE1A-47EA-82F0-501456135B18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB8508F8-DE1A-47EA-82F0-501456135B18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB8508F8-DE1A-47EA-82F0-501456135B18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

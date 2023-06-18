@@ -13,7 +13,7 @@ public class RiskIntegrationTests
 {
     private readonly JsonSerializerOptions _serializerOptions;
     private readonly HttpClient _httpClient;
-    private const string BasePath = "/api/v1/risks";
+    private const string BasePath = "/api/risks";
 
     public RiskIntegrationTests(CustomWebApplicationFactory<Program> factory)
     {
@@ -163,8 +163,7 @@ public class RiskIntegrationTests
     }
     
     #endregion
-
-
+    
     #region Update
 
     [Fact]
