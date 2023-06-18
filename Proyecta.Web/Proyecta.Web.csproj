@@ -20,6 +20,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Proyecta.Core\Proyecta.Core.csproj" />
       <ProjectReference Include="..\Proyecta.Repository.EntityFramework\Proyecta.Repository.EntityFramework.csproj" />
+      <ProjectReference Include="..\Proyecta.Services\Proyecta.Services.csproj" />
     </ItemGroup>
 
 </Project>

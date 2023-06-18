@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.7" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.7" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Entities\DTOs\Auth\" />
+      <ProjectReference Include="..\Proyecta.Core\Proyecta.Core.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,12 +1,17 @@
+using System.Text;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Services;
 using Proyecta.Repository.EntityFramework;
+using Proyecta.Services;
 
 namespace Proyecta.Web.Extensions;
 
@@ -30,6 +35,8 @@ public static class ServiceExtensions
 
         services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
         services.AddScoped<IApplicationUserService, ApplicationUserService>();
+
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
     }
 
     public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
@@ -78,5 +85,42 @@ public static class ServiceExtensions
             })
             .AddEntityFrameworkStores<AuthDbContext>()
             .AddDefaultTokenProviders();
+    }
+
+    public static void ConfigureControllers(this IServiceCollection services)
+    {
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+        });
+    }
+
+    public static void ConfigureJWT(this IServiceCollection services, IConfiguration
+        configuration)
+    {
+        var jwtSettings = configuration.GetSection("Jwt");
+        var issuer = jwtSettings["Issuer"];
+        var audience = jwtSettings["Audience"];
+        var secretKey = jwtSettings["SecretKey"];
+
+        services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
+                };
+            });
     }
 }

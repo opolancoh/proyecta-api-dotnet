@@ -1,14 +1,16 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Entities.DTOs;
 
-namespace Proyecta.Web.Controllers.v1.Auth;
+namespace Proyecta.Web.Controllers.v1;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/auth/[controller]")]
-[Route("api/auth/v{version:apiVersion}/[controller]")]
+[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IApplicationUserService _service;
