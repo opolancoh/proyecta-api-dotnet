@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Proyecta.Core.Contracts.Repositories;
-using Proyecta.Core.Entities.Auth;
+using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.DTOs;
 using Proyecta.Core.Exceptions;
 

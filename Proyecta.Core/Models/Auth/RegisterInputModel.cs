@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Proyecta.Core.Entities.Validators;
 
-namespace Proyecta.Core.Entities.DTOs;
+namespace Proyecta.Core.Models.Auth;
 
-public record ApplicationUserRegisterDto : IValidatableObject
+public record RegisterInputModel : IValidatableObject
 {
     public string FirstName { get; init; }
     public string LastName { get; init; }

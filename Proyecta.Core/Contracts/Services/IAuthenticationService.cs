@@ -6,6 +6,6 @@ namespace Proyecta.Core.Contracts.Services;
 
 public interface IAuthenticationService
 {
-    Task<ApplicationResponse> Register(ApplicationUserRegisterDto item);
-    Task<ApplicationResponse> Authenticate(LoginInputModel item);
+    Task<ApplicationResult> Register(RegisterInputModel item);
+    Task<ApplicationResult> Authenticate(LoginInputModel item);
 }

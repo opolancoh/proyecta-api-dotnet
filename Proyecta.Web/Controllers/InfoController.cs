@@ -2,6 +2,7 @@ using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using Proyecta.Core.Models;
 using Proyecta.Web.Helpers;
 
 namespace Proyecta.Web.Controllers;
@@ -36,7 +37,10 @@ public class InfoController : ControllerBase
             hostName,
             ipList,
         };
-
-        return Ok(info);
+        
+        return StatusCode(StatusCodes.Status200OK, new ApplicationResult{
+            Status = StatusCodes.Status200OK,
+            D = info
+        });
     }
 }

@@ -19,7 +19,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> Register(ApplicationUserRegisterDto item)
+    public async Task<IActionResult> Register(RegisterInputModel item)
     {
         var result = await _service.Register(item);
 

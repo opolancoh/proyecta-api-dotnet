@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.Entities.Auth;
+using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.DTOs;
 
 namespace Proyecta.Web.Controllers.v1;
@@ -30,7 +30,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ApplicationUser>> GetById(string id)
+    public async Task<IActionResult> GetById(string id)
     {
         var result = await _service.GetById(id);
 

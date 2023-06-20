@@ -1,8 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.DTOs;
-using Proyecta.Core.Exceptions;
 
 namespace Proyecta.Web.Controllers.v1;
 
@@ -11,6 +10,7 @@ namespace Proyecta.Web.Controllers.v1;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [Route("api/v{version:apiVersion}/[controller]")]
+[Authorize]
 public class RisksController : ControllerBase
 {
     private readonly IRiskService _service;
@@ -21,68 +21,51 @@ public class RisksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Risk>> Get()
+    public async Task<IActionResult> Get()
     {
-        return await _service.GetAll();
+        var result = await _service.GetAll();
+
+        return StatusCode(StatusCodes.Status200OK, result);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Risk>> GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid id)
     {
-        var item = await _service.GetById(id);
+        var result = await _service.GetById(id);
 
-        if (item == null)
-        {
-            return NotFound();
-        }
-
-        return item;
+        return StatusCode(StatusCodes.Status200OK, result);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(RiskCreateOrUpdateDto item)
     {
-        var newItemId = await _service.Create(item);
+        var result = await _service.Create(item);
 
-        return CreatedAtAction(nameof(GetById), new { id = newItemId }, new { });
+        return StatusCode(StatusCodes.Status200OK, result);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, RiskCreateOrUpdateDto item)
     {
-        try
-        {
-            await _service.Update(id, item);
-        }
-        catch (EntityNotFoundException<Guid>)
-        {
-            return NotFound();
-        }
+        var result = await _service.Update(id, item);
 
-        return NoContent();
+        return StatusCode(StatusCodes.Status200OK, result);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Remove(Guid id)
     {
-        try
-        {
-            await _service.Remove(id);
-        }
-        catch (EntityNotFoundException<Guid>)
-        {
-            return NotFound();
-        }
+        var result = await _service.Remove(id);
 
-        return NoContent();
+        return StatusCode(StatusCodes.Status200OK, result);
     }
     
     [HttpPost]
     [Route("add-range")]
     public async Task<IActionResult> AddRange(IEnumerable<RiskCreateOrUpdateDto> items)
     {
-        await _service.AddRange(items);
+        var result = await _service.AddRange(items);
 
-        return NoContent();
+        return StatusCode(StatusCodes.Status200OK, result);
     }
 }

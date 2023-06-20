@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.Entities.Auth;
+using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.DTOs;
 using Proyecta.Core.Models;
 
-namespace Proyecta.Core.Services;
+namespace Proyecta.Services;
 
 public sealed class ApplicationUserService : IApplicationUserService
 {
@@ -26,38 +26,38 @@ public sealed class ApplicationUserService : IApplicationUserService
         _userManager = userManager;
     }
 
-    public async Task<ApplicationResponse> GetAll()
+    public async Task<ApplicationResult> GetAll()
     {
         var users = await _repository.GetUsersWithRoles();
 
-        return new ApplicationResponse
+        return new ApplicationResult
         {
             Status = 200,
-            Data = users
+            D = users
         };
     }
 
-    public async Task<ApplicationResponse> GetById(string id)
+    public async Task<ApplicationResult> GetById(string id)
     {
         var user = await _repository.GetByIdWithRoles(id);
 
         if (user == null)
         {
-            return new ApplicationResponse
+            return new ApplicationResult
             {
                 Status = 404,
                 Message = $"The entity with id '{id}' doesn't exist in the database."
             };
         }
 
-        return new ApplicationResponse
+        return new ApplicationResult
         {
             Status = 200,
-            Data = user
+            D = user
         };
     }
 
-    public async Task<ApplicationResponse> Create(ApplicationUserCreateOrUpdateDto item)
+    public async Task<ApplicationResult> Create(ApplicationUserCreateOrUpdateDto item)
     {
         var user = GetEntity(null, item);
         user.CreatedAt = DateTime.UtcNow;
@@ -73,7 +73,7 @@ public sealed class ApplicationUserService : IApplicationUserService
                 return new ApplicationResponseError { Code = error.Code, Description = error.Description };
             }).ToList();
 
-            return new ApplicationResponse
+            return new ApplicationResult
             {
                 Status = 400,
                 Message = "An error has occurred while creating the User.",
@@ -91,21 +91,21 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         var userId = await _userManager.GetUserIdAsync(user);
 
-        return new ApplicationResponse
+        return new ApplicationResult
         {
             Status = 201,
             Message = "User created successfully.",
-            Data = new { userId }
+            D = new { userId }
         };
     }
 
-    public async Task<ApplicationResponse> Update(string id, ApplicationUserCreateOrUpdateDto item)
+    public async Task<ApplicationResult> Update(string id, ApplicationUserCreateOrUpdateDto item)
     {
         // Look for current user
         var currentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
         if (currentUser == null)
         {
-            return new ApplicationResponse
+            return new ApplicationResult
             {
                 Status = 404,
                 Message = $"User Id '{id}' was not found.",
@@ -127,7 +127,7 @@ public sealed class ApplicationUserService : IApplicationUserService
                 return new ApplicationResponseError { Code = error.Code, Description = error.Description };
             }).ToList();
 
-            return new ApplicationResponse
+            return new ApplicationResult
             {
                 Status = 500,
                 Message = "An error has occurred while updating the Application User.",
@@ -151,14 +151,14 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         _logger.LogInformation("User updated successfully.");
 
-        return new ApplicationResponse
+        return new ApplicationResult
         {
             Status = 200,
             Message = "User updated successfully.",
         };
     }
 
-    public async Task<ApplicationResponse> Remove(string id)
+    public async Task<ApplicationResult> Remove(string id)
     {
         var currentUser = await _userManager
             .Users
@@ -172,7 +172,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         if (currentUser == null)
         {
-            return new ApplicationResponse
+            return new ApplicationResult
             {
                 Status = 404,
                 Message = $"User Id '{id}' was not found.",
@@ -182,7 +182,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         var result = await _userManager.DeleteAsync(currentUser);
         if (result.Succeeded)
         {
-            return new ApplicationResponse
+            return new ApplicationResult
             {
                 Status = 200,
                 Message = "User deleted successfully.",
@@ -195,7 +195,7 @@ public sealed class ApplicationUserService : IApplicationUserService
             return new ApplicationResponseError { Code = error.Code, Description = error.Description };
         }).ToList();
 
-        return new ApplicationResponse
+        return new ApplicationResult
         {
             Status = 500,
             Message = $"An error has occurred while deleting the User with Id '{id}'.",
@@ -203,7 +203,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApplicationResponse> AddRange(IEnumerable<ApplicationUserCreateOrUpdateDto> items)
+    public async Task<ApplicationResult> AddRange(IEnumerable<ApplicationUserCreateOrUpdateDto> items)
     {
         var data = new List<object>();
         var errors = new List<ApplicationResponseError>();
@@ -213,7 +213,7 @@ public sealed class ApplicationUserService : IApplicationUserService
             var result = await Create(item);
             if (result.Status == 201)
             {
-                data.Add(result.Data!);
+                data.Add(result.D!);
             }
             else
             {
@@ -227,30 +227,17 @@ public sealed class ApplicationUserService : IApplicationUserService
             }
         }
 
-        var response = new ApplicationResponse
+        var response = new ApplicationResult
         {
             Status = errors.Count == 0 ? 201 : 202,
             Message = errors.Count == 0
                 ? "All users were added successfully."
                 : $"Not all users were added. Added:[{itemsToAdd.Count() - errors.Count}] Not Added:[{errors.Count}]",
-            Data = data,
+            D = data,
             Errors = errors
         };
 
         return response;
-    }
-
-    public async Task<ApplicationResponse> Register(ApplicationUserRegisterDto item)
-    {
-        var newUser = new ApplicationUserCreateOrUpdateDto
-        {
-            FirstName = item.FirstName,
-            LastName = item.LastName,
-            UserName = item.UserName,
-            Password = item.Password
-        };
-
-        return await Create(newUser);
     }
 
     private ApplicationUser GetEntity(string? id, ApplicationUserCreateOrUpdateDto item)

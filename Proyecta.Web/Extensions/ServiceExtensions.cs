@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.Entities.Auth;
-using Proyecta.Core.Services;
+using Proyecta.Core.Entities;
+using Proyecta.Services;
 using Proyecta.Repository.EntityFramework;
 using Proyecta.Services;
 

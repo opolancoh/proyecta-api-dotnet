@@ -6,11 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.Entities.Auth;
+using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.DTOs;
 using Proyecta.Core.Models;
 using Proyecta.Core.Models.Auth;
-using Proyecta.Core.Services;
 
 namespace Proyecta.Services;
 
@@ -39,7 +38,7 @@ public sealed class AuthenticationService : IAuthenticationService
     private string AuthenticationFailedMessage =>
         $"{nameof(Authenticate)}: Authentication failed. Wrong user name or password.";
 
-    public async Task<ApplicationResponse> Register(ApplicationUserRegisterDto item)
+    public async Task<ApplicationResult> Register(RegisterInputModel item)
     {
         var newUser = new ApplicationUserCreateOrUpdateDto
         {
@@ -52,13 +51,13 @@ public sealed class AuthenticationService : IAuthenticationService
         return await _appUserService.Create(newUser);
     }
 
-    public async Task<ApplicationResponse> Authenticate(LoginInputModel item)
+    public async Task<ApplicationResult> Authenticate(LoginInputModel item)
     {
         _user = await _userManager.FindByNameAsync(item.UserName!);
         if (_user == null)
         {
             _logger.LogWarning(AuthenticationFailedMessage);
-            return new ApplicationResponse
+            return new ApplicationResult
             {
                 Status = 400,
                 Message = AuthenticationFailedMessage
@@ -69,7 +68,7 @@ public sealed class AuthenticationService : IAuthenticationService
         if (!result)
         {
             _logger.LogWarning(AuthenticationFailedMessage);
-            return new ApplicationResponse
+            return new ApplicationResult
             {
                 Status = 400,
                 Message = AuthenticationFailedMessage
@@ -78,10 +77,10 @@ public sealed class AuthenticationService : IAuthenticationService
 
         var token = await CreateToken();
 
-        return new ApplicationResponse
+        return new ApplicationResult
         {
             Status = 200,
-            Data = new { Token = token }
+            D = new { Token = token }
         };
     }
 
@@ -98,7 +97,7 @@ public sealed class AuthenticationService : IAuthenticationService
     {
         var jwtSettings = _configuration.GetSection("Jwt");
         var secretKey = jwtSettings["SecretKey"];
-        
+
         var key = Encoding.UTF8.GetBytes(secretKey!);
         var secret = new SymmetricSecurityKey(key);
 
@@ -107,13 +106,20 @@ public sealed class AuthenticationService : IAuthenticationService
 
     private async Task<List<Claim>> GetClaims()
     {
-        var claims = new List<Claim> { new Claim(ClaimTypes.Name, _user.UserName) };
-
-        var roles = await _userManager.GetRolesAsync(_user);
-        foreach (var role in roles)
+        var claims = new List<Claim>
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
+            // Add user data
+            new("sub", _user!.Id),
+            new("fullName", $"{_user.FirstName} {_user.LastName}"),
+            new("userName", _user!.UserName!),
+        };
+
+        // Add user roles
+        var roles = await _userManager.GetRolesAsync(_user);
+        claims.AddRange(roles.Select(role => new Claim("roles", role)));
+
+        var isAdmin = roles.Contains("Administrator");
+        claims.Add(new Claim("isAdmin", isAdmin.ToString(), ClaimValueTypes.Boolean));
 
         return claims;
     }

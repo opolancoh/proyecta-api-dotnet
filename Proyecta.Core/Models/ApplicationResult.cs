@@ -2,12 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace Proyecta.Core.Models;
 
-public record ApplicationResponse
+public record ApplicationResult
 {
     public int Status { get; set; }
     
+    // Data
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public object? Data { get; set; }
+    public object? D { get; set; }
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Message { get; set; }
