@@ -2,7 +2,6 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Proyecta.Core.Entities;
-using Proyecta.Core.Entities.DTOs;
 using Proyecta.Tests.Helpers;
 using Proyecta.Tests.IntegrationTests.Fixtures;
 

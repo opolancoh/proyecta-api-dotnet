@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
+namespace Proyecta.Repository.EntityFramework.Migrations
 {
     /// <inheritdoc />
     public partial class AuthInitialMigration : Migration
@@ -33,8 +33,10 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: true),
+                    LastName = table.Column<string>(type: "text", nullable: true),
+                    RefreshToken = table.Column<string>(type: "text", nullable: true),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -168,8 +170,8 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "11e68e49-dbbc-4620-9883-f3e6d0f38788", null, "Administrator", "ADMINISTRATOR" },
-                    { "d60c616b-4072-4bb9-b3ad-32798acce8e5", null, "Manager", "MANAGER" }
+                    { "ab31b833-98b1-4390-b97a-b92c38750e7f", null, "Administrator", "ADMINISTRATOR" },
+                    { "bb9cabcc-9f3b-4767-8085-43e38ab8baa2", null, "Manager", "MANAGER" }
                 });
 
             migrationBuilder.CreateIndex(

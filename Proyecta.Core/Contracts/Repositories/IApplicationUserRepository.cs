@@ -1,5 +1,5 @@
 using Proyecta.Core.Entities;
-using Proyecta.Core.Entities.DTOs;
+using Proyecta.Core.DTOs;
 
 namespace Proyecta.Core.Contracts.Repositories;
 

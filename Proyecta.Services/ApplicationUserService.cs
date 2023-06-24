@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.Entities;
-using Proyecta.Core.Entities.DTOs;
+using Proyecta.Core.DTOs;
 using Proyecta.Core.Models;
 
 namespace Proyecta.Services;

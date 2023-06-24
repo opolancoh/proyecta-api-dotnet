@@ -96,22 +96,22 @@ public static class ServiceExtensions
         });
     }
 
-    public static void ConfigureJWT(this IServiceCollection services, IConfiguration
-        configuration)
+    public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetSection("Jwt");
+        var jwtSettings = configuration.GetSection("JwtConfig");
         var issuer = jwtSettings["Issuer"];
         var audience = jwtSettings["Audience"];
-        var secretKey = jwtSettings["SecretKey"];
+        var secretKey = jwtSettings["Secret"];
 
-        services.AddAuthentication(opt =>
+        services
+            .AddAuthentication(x =>
             {
-                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(options =>
+            .AddJwtBearer(x =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
+                x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,

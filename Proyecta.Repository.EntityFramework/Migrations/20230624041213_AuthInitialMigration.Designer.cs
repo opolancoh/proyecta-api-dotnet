@@ -9,10 +9,10 @@ using Proyecta.Repository.EntityFramework;
 
 #nullable disable
 
-namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
+namespace Proyecta.Repository.EntityFramework.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20230601060128_AuthInitialMigration")]
+    [Migration("20230624041213_AuthInitialMigration")]
     partial class AuthInitialMigration
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -53,13 +53,13 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                     b.HasData(
                         new
                         {
-                            Id = "d60c616b-4072-4bb9-b3ad-32798acce8e5",
+                            Id = "bb9cabcc-9f3b-4767-8085-43e38ab8baa2",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "11e68e49-dbbc-4620-9883-f3e6d0f38788",
+                            Id = "ab31b833-98b1-4390-b97a-b92c38750e7f",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -171,7 +171,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Proyecta.Core.Entities.Auth.ApplicationUser", b =>
+            modelBuilder.Entity("Proyecta.Core.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -194,11 +194,9 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                         .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
@@ -223,6 +221,12 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -260,7 +264,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Proyecta.Core.Entities.Auth.ApplicationUser", null)
+                    b.HasOne("Proyecta.Core.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -269,7 +273,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Proyecta.Core.Entities.Auth.ApplicationUser", null)
+                    b.HasOne("Proyecta.Core.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -284,7 +288,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Proyecta.Core.Entities.Auth.ApplicationUser", null)
+                    b.HasOne("Proyecta.Core.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -293,7 +297,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Proyecta.Core.Entities.Auth.ApplicationUser", null)
+                    b.HasOne("Proyecta.Core.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using Proyecta.Core.Entities.Validators;
 
 namespace Proyecta.Core.Models.Auth;

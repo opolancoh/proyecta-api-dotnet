@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.Entities;
-using Proyecta.Core.Entities.DTOs;
+using Proyecta.Core.DTOs;
 
 namespace Proyecta.Web.Controllers.v1;
 

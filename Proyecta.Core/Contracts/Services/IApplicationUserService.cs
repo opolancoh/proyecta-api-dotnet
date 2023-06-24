@@ -1,4 +1,4 @@
-using Proyecta.Core.Entities.DTOs;
+using Proyecta.Core.DTOs;
 using Proyecta.Core.Models;
 
 namespace Proyecta.Core.Contracts.Services;

@@ -1,3 +1,3 @@
-namespace Proyecta.Core.Entities.DTOs;
+namespace Proyecta.Core.DTOs;
 
 public record ApplicationUserListDto : ApplicationUserBaseDto;

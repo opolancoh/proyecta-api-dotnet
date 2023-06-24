@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Proyecta.Repository.EntityFramework.Migrations
+namespace Proyecta.Repository.EntityFramework.Migrations.AppDb
 {
     /// <inheritdoc />
     public partial class AppInitialMigration : Migration
