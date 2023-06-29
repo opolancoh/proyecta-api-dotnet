@@ -28,7 +28,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
     public async Task<ApplicationResult> GetAll()
     {
-        var users = await _repository.GetUsersWithRoles();
+        var users = await _repository.GetAllWithRoles();
 
         return new ApplicationResult
         {

@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
-builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.ConfigurePersistenceServices();
 builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.ConfigureControllers();

@@ -6,6 +6,4 @@ public record ApplicationUserBaseDto
     public string FirstName { get; init; }
     public string LastName { get; init; }
     public string UserName { get; init; }
-    public IEnumerable<string> Roles { get; init; }
-
 }

@@ -96,7 +96,7 @@ public static class ServiceExtensions
         });
     }
 
-    public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+    public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSettings = configuration.GetSection("JwtConfig");
         var issuer = jwtSettings["Issuer"];

@@ -89,115 +89,89 @@ public class ApplicationUserRepository : IApplicationUserRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<ApplicationUserListDto>> GetUsersWithRoles()
+    public async Task<IEnumerable<ApplicationUserListDto>> GetAllWithRoles()
     {
-        /* var users = await _context
-            .Users
-            .Join(
-                _context.UserRoles,
-                u => u.Id,
-                ur => ur.UserId,
-                (u, ur) => new
+        var result = await (from u in _context.Users
+            join ur in _context.UserRoles on u.Id equals ur.UserId into userRolesGroup
+            from ur in userRolesGroup.DefaultIfEmpty()
+            join r in _context.Roles on ur.RoleId equals r.Id into rolesGroup
+            from r in rolesGroup.DefaultIfEmpty()
+            select new
+            {
+                u.Id,
+                u.FirstName,
+                u.LastName,
+                u.UserName,
+                Role = r.Name
+            }).AsNoTracking().ToListAsync();
+
+        var resultWithListOfRoles =
+            result
+                .GroupBy(x => new
                 {
-                    u.Id,
-                    u.FirstName,
-                    u.LastName,
-                    u.UserName,
-                    u.CreatedAt,
-                    u.UpdatedAt,
-                    ur.RoleId
+                    x.Id,
+                    x.FirstName,
+                    x.LastName,
+                    x.UserName,
                 })
-            .Join(
-                _context.Roles,
-                u => u.RoleId,
-                r => r.Id,
-                (u, r) => new
+                .Select(x => new ApplicationUserListDto
                 {
-                    u.Id,
-                    u.FirstName,
-                    u.LastName,
-                    u.UserName,
-                    u.CreatedAt,
-                    u.UpdatedAt,
-                    RoleName = r.Name
-                }
-            )
-            .GroupBy(x => new
-            {
-                x.Id,
-                x.FirstName,
-                x.LastName,
-                x.UserName,
-                x.CreatedAt,
-                x.UpdatedAt,
-            })
-            .Select(x => new ApplicationUserListDto
-            {
-                Id = x.Key.Id,
-                FirstName = x.Key.FirstName,
-                LastName = x.Key.LastName,
-                UserName = x.Key.UserName!,
-                CreatedAt = x.Key.CreatedAt,
-                UpdatedAt = x.Key.UpdatedAt,
-                Roles = x.Select(y => y.RoleName!)
-            })
-            .AsNoTracking()
-            .ToListAsync(); */
+                    Id = x.Key.Id,
+                    FirstName = x.Key.FirstName,
+                    LastName = x.Key.LastName,
+                    UserName = x.Key.UserName,
+                    Roles = (x.Count() == 1 && x.FirstOrDefault()?.Role == null)
+                        ? new List<string>()
+                        : x.Select(r => r.Role).ToList()!
+                });
 
-        var users = await (
-            from user in _context.Users
-            join userRoles in _context.UserRoles on user.Id equals userRoles.UserId
-            join role in _context.Roles on userRoles.RoleId equals role.Id
-            group role.Name by new
-            {
-                user.Id,
-                user.FirstName,
-                user.LastName,
-                user.UserName,
-            }
-            into g
-            select new ApplicationUserListDto
-            {
-                Id = g.Key.Id,
-                FirstName = g.Key.FirstName,
-                LastName = g.Key.LastName,
-                UserName = g.Key.UserName,
-                Roles = g.ToList()
-            }
-        ).AsNoTracking().ToListAsync();
-
-        return users;
+        return resultWithListOfRoles;
     }
 
     public async Task<ApplicationUserDetailsDto?> GetByIdWithRoles(string id)
     {
         var result = await (
-            from user in _context.Users
-            where user.Id == id
-            join userRoles in _context.UserRoles on user.Id equals userRoles.UserId
-            join role in _context.Roles on userRoles.RoleId equals role.Id
-            group role.Name by new
+            from u in _context.Users
+            join ur in _context.UserRoles on u.Id equals ur.UserId into userRolesGroup
+            from ur in userRolesGroup.DefaultIfEmpty()
+            join r in _context.Roles on ur.RoleId equals r.Id into rolesGroup
+            from r in rolesGroup.DefaultIfEmpty()
+            where u.Id == id
+            select new
             {
-                user.Id,
-                user.FirstName,
-                user.LastName,
-                user.UserName,
-                user.CreatedAt,
-                user.UpdatedAt,
-            }
-            into g
-            select new ApplicationUserDetailsDto
-            {
-                Id = g.Key.Id,
-                FirstName = g.Key.FirstName,
-                LastName = g.Key.LastName,
-                UserName = g.Key.UserName,
-                CreatedAt = g.Key.CreatedAt,
-                UpdatedAt = g.Key.UpdatedAt,
-                Roles = g.ToList()
-            }
-        ).AsNoTracking().ToListAsync();
+                u.Id,
+                u.FirstName,
+                u.LastName,
+                u.UserName,
+                u.CreatedAt,
+                u.UpdatedAt,
+                Role = r.Name
+            }).AsNoTracking().ToListAsync();
 
-        return result.SingleOrDefault();
+        var resultWithListOfRoles =
+            result
+                .GroupBy(x => new
+                {
+                    x.Id,
+                    x.FirstName,
+                    x.LastName,
+                    x.UserName,
+                    x.CreatedAt,
+                    x.UpdatedAt
+                })
+                .Select(x => new ApplicationUserDetailsDto
+                {
+                    Id = x.Key.Id,
+                    FirstName = x.Key.FirstName,
+                    LastName = x.Key.LastName,
+                    UserName = x.Key.UserName,
+                    CreatedAt = x.Key.CreatedAt,
+                    UpdatedAt = x.Key.UpdatedAt,
+                    Roles = (x.Count() == 1 && x.FirstOrDefault()?.Role == null)
+                        ? new List<string>()
+                        : x.Select(r => r.Role).ToList()!
+                });
+
+        return resultWithListOfRoles.SingleOrDefault();
     }
 }
