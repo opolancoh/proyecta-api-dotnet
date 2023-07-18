@@ -9,7 +9,7 @@ namespace Proyecta.Web.Controllers.v1;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [Route("api/v{version:apiVersion}/[controller]")]
-[Authorize]
+[Authorize(Roles = "Administrator")]
 public class UsersController : ControllerBase
 {
     private readonly IApplicationUserService _service;
