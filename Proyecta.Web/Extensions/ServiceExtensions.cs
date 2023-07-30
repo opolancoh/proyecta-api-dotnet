@@ -30,12 +30,22 @@ public static class ServiceExtensions
 
     public static void ConfigurePersistenceServices(this IServiceCollection services)
     {
+        // RiskCategory
+        services.AddScoped<IRiskCategoryRepository, RiskCategoryRepository>();
+        services.AddScoped<IRiskCategoryService, RiskCategoryService>();
+        // RiskOwner
+        services.AddScoped<IRiskOwnerRepository, RiskOwnerRepository>();
+        services.AddScoped<IRiskOwnerService, RiskOwnerService>();
+        // RiskTreatment
+        services.AddScoped<IRiskTreatmentRepository, RiskTreatmentRepository>();
+        services.AddScoped<IRiskTreatmentService, RiskTreatmentService>();
+        // Risk
         services.AddScoped<IRiskRepository, RiskRepository>();
         services.AddScoped<IRiskService, RiskService>();
-
+        // User
         services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
         services.AddScoped<IApplicationUserService, ApplicationUserService>();
-
+        // Auth
         services.AddScoped<IAuthenticationService, AuthenticationService>();
     }
 

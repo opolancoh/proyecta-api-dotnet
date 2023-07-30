@@ -4,9 +4,9 @@ using Proyecta.Core.Helpers;
 
 namespace Proyecta.Core.Entities.Validators;
 
-public static class RiskValidator
+public static class TextValidator
 {
-    public static IEnumerable<ValidationResult> ValidateTitle(string value, string fieldName)
+    public static IEnumerable<ValidationResult> ValidateName(string value, string fieldName)
     {
         if (!Regex.IsMatch(value, TextHelper.RegExp.NameRegExp))
         {

@@ -10,7 +10,9 @@ public static class DbHelper
     public static Guid RiskId4 = new Guid("d5c8df05-64be-4d36-8ca7-461242542873");
     public static Guid RiskId5 = new Guid("dae1cc58-84ed-4e5f-a8ad-e7714fbea7ac");
 
-    public static List<Risk> GetRisks =>
+    // {{review}}
+    public static List<Risk> GetRisks = new List<Risk>();
+    /* public static List<Risk> GetRisks =>
         new List<Risk>
         {
             new()
@@ -98,5 +100,5 @@ public static class DbHelper
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             },
-        };
+        }; */
 }

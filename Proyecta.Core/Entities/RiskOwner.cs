@@ -1,0 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Proyecta.Core.Entities;
+
+public class RiskOwner
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+}

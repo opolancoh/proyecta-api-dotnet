@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories;
+using Proyecta.Core.DTOs;
 using Proyecta.Core.Entities;
 using Proyecta.Core.Exceptions;
 
@@ -16,14 +17,53 @@ public class RiskRepository : IRiskRepository
         _entitySet = context.Risks;
     }
 
-    public async Task<IEnumerable<Risk>> GetAll()
+    public async Task<IEnumerable<RiskDto>> GetAll()
     {
-        return await _entitySet.AsNoTracking().ToListAsync();
+        return await _entitySet
+            .AsNoTracking()
+            .Select(
+                x => new RiskDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Code = x.Code,
+                    Category = new KeyValueDto<Guid> { Id = x.Category.Id, Name = x.Category.Name },
+                    Type = (int)x.Type,
+                    Owner = new KeyValueDto<Guid> { Id = x.Owner.Id, Name = x.Owner.Name },
+                    Phase = (int)x.Phase,
+                    Manageability = (int)x.Manageability,
+                    Treatment = new KeyValueDto<Guid> { Id = x.Treatment.Id, Name = x.Treatment.Name },
+                    DateFrom = x.DateFrom,
+                    DateTo = x.DateTo,
+                    State = x.State,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                })
+            .ToListAsync();
     }
 
-    public async Task<Risk?> GetById(Guid id)
+    public async Task<RiskDto?> GetById(Guid id)
     {
-        return await _entitySet.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+        return await _entitySet
+            .AsNoTracking()
+            .Select(x => new RiskDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Code = x.Code,
+                Category = new KeyValueDto<Guid> { Id = x.Category.Id, Name = x.Category.Name },
+                Type = (int)x.Type,
+                Owner = new KeyValueDto<Guid> { Id = x.Owner.Id, Name = x.Owner.Name },
+                Phase = (int)x.Phase,
+                Manageability = (int)x.Manageability,
+                Treatment = new KeyValueDto<Guid> { Id = x.Treatment.Id, Name = x.Treatment.Name },
+                DateFrom = x.DateFrom,
+                DateTo = x.DateTo,
+                State = x.State,
+                CreatedAt = x.CreatedAt,
+                UpdatedAt = x.UpdatedAt
+            })
+            .SingleOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task Create(Risk item)
@@ -81,7 +121,7 @@ public class RiskRepository : IRiskRepository
     {
         return await _entitySet.AnyAsync(e => e.Id == id);
     }
-    
+
     public async Task AddRange(IEnumerable<Risk> items)
     {
         await _entitySet.AddRangeAsync(items);

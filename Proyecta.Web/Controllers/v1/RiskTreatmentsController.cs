@@ -9,16 +9,16 @@ namespace Proyecta.Web.Controllers.v1;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [Route("api/v{version:apiVersion}/[controller]")]
-[Authorize(Roles = "Administrator")]
-public class UsersController : ControllerBase
+[Authorize]
+public class RiskTreatmentsController : ControllerBase
 {
-    private readonly IApplicationUserService _service;
+    private readonly IRiskTreatmentService _service;
 
-    public UsersController(IApplicationUserService service)
+    public RiskTreatmentsController(IRiskTreatmentService service)
     {
         _service = service;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -28,7 +28,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(string id)
+    public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _service.GetById(id);
 
@@ -36,7 +36,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(ApplicationUserCreateOrUpdateDto item)
+    public async Task<IActionResult> Create(RiskTreatmentCreateOrUpdateDto item)
     {
         var result = await _service.Create(item);
 
@@ -44,7 +44,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, ApplicationUserCreateOrUpdateDto item)
+    public async Task<IActionResult> Update(Guid id, RiskTreatmentCreateOrUpdateDto item)
     {
         var result = await _service.Update(id, item);
 
@@ -52,16 +52,16 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Remove(string id)
+    public async Task<IActionResult> Remove(Guid id)
     {
         var result = await _service.Remove(id);
 
         return StatusCode(StatusCodes.Status200OK, result);
     }
-
+    
     [HttpPost]
     [Route("add-range")]
-    public async Task<IActionResult> AddRange(IEnumerable<ApplicationUserCreateOrUpdateDto> items)
+    public async Task<IActionResult> AddRange(IEnumerable<RiskTreatmentCreateOrUpdateDto> items)
     {
         var result = await _service.AddRange(items);
 

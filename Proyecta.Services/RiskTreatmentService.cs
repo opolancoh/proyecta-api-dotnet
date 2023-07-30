@@ -6,11 +6,11 @@ using Proyecta.Core.Models;
 
 namespace Proyecta.Services;
 
-public sealed class RiskService : IRiskService
+public sealed class RiskTreatmentService : IRiskTreatmentService
 {
-    private readonly IRiskRepository _repository;
+    private readonly IRiskTreatmentRepository _repository;
 
-    public RiskService(IRiskRepository repository)
+    public RiskTreatmentService(IRiskTreatmentRepository repository)
     {
         _repository = repository;
     }
@@ -46,11 +46,11 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<ApplicationResult> Create(RiskCreateOrUpdateDto item)
+    public async Task<ApplicationResult> Create(RiskTreatmentCreateOrUpdateDto item)
     {
         var newItem = GetEntity(null, item);
-        newItem.CreatedAt = DateTime.UtcNow;
-        newItem.UpdatedAt = DateTime.UtcNow;
+        // newItem.CreatedAt = DateTime.UtcNow;
+        // newItem.UpdatedAt = DateTime.UtcNow;
 
         await _repository.Create(newItem);
 
@@ -62,10 +62,10 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<ApplicationResult> Update(Guid id, RiskCreateOrUpdateDto item)
+    public async Task<ApplicationResult> Update(Guid id, RiskTreatmentCreateOrUpdateDto item)
     {
         var itemToUpdate = GetEntity(id, item);
-        itemToUpdate.UpdatedAt = DateTime.UtcNow;
+        // itemToUpdate.UpdatedAt = DateTime.UtcNow;
 
         await _repository.Update(itemToUpdate);
 
@@ -87,15 +87,15 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<ApplicationResult> AddRange(IEnumerable<RiskCreateOrUpdateDto> items)
+    public async Task<ApplicationResult> AddRange(IEnumerable<RiskTreatmentCreateOrUpdateDto> items)
     {
-        var newItems = new List<Risk>();
+        var newItems = new List<RiskTreatment>();
 
         foreach (var item in items)
         {
             var newItem = GetEntity(null, item);
-            newItem.CreatedAt = DateTime.UtcNow;
-            newItem.UpdatedAt = DateTime.UtcNow;
+            // newItem.CreatedAt = DateTime.UtcNow;
+            // newItem.UpdatedAt = DateTime.UtcNow;
             newItems.Add(newItem);
         }
 
@@ -108,21 +108,11 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    private Risk GetEntity(Guid? id, RiskCreateOrUpdateDto item)
+    private RiskTreatment GetEntity(Guid? id, RiskTreatmentCreateOrUpdateDto item)
     {
-        var entity = new Risk()
+        var entity = new RiskTreatment()
         {
             Name = item.Name,
-            Code = item.Code,
-            CategoryId = item.Category,
-            Type = (RiskType)item.Type,
-            OwnerId = item.Owner,
-            Phase = (RiskPhase)item.Phase,
-            Manageability = (RiskManageability)item.Manageability,
-            TreatmentId = item.Treatment,
-            DateFrom = item.DateFrom,
-            DateTo = item.DateTo,
-            State = item.State,
         };
 
         if (id != null) entity.Id = id.Value;
