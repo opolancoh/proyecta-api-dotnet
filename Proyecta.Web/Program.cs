@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+using Proyecta.Repository.EntityFramework;
 using Proyecta.Web.Extensions;
+using Proyecta.Web.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,10 @@ if (app.Environment.IsDevelopment())
     // app.UseSwaggerUI();
 }
 
+// DB EnsureCreated and Seed
+// app.MigrateDatabase<AuthDbContext>();
+// app.MigrateDatabase<AppDbContext>();
+
 app.UseApiVersioning();
 
 // app.UseHttpsRedirection();
@@ -39,8 +45,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-// app.MigrateDatabase<AppDbContext>();
 
 app.Run();
 

@@ -1,4 +1,4 @@
-namespace Proyecta.Web.Helpers;
+namespace Proyecta.Web.Utils;
 
 public static class GeneralHelper
 {
