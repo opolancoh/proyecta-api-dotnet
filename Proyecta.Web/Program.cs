@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
-using Proyecta.Repository.EntityFramework;
 using Proyecta.Web.Extensions;
-using Proyecta.Web.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 

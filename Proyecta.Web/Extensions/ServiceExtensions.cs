@@ -11,7 +11,8 @@ using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.Entities;
 using Proyecta.Services;
 using Proyecta.Repository.EntityFramework;
-using Proyecta.Services;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace Proyecta.Web.Extensions;
 
@@ -51,17 +52,20 @@ public static class ServiceExtensions
 
     public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
     {
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        var dbPassword = Environment.GetEnvironmentVariable($"PROYECTA_{environment?.ToUpper()}_DBPASSWORD");
+        
         var appDbConnection = configuration.GetConnectionString("AppDbConnection");
         services.AddDbContext<AppDbContext>(opts =>
         {
-            opts.UseNpgsql(appDbConnection);
+            opts.UseNpgsql($"Password={dbPassword};{appDbConnection}");
             opts.EnableSensitiveDataLogging();
         });
 
         var authDbConnection = configuration.GetConnectionString("AuthDbConnection");
         services.AddDbContext<AuthDbContext>(opts =>
         {
-            opts.UseNpgsql(authDbConnection);
+            opts.UseNpgsql($"Password={dbPassword};{authDbConnection}");
             opts.EnableSensitiveDataLogging();
         });
     }
