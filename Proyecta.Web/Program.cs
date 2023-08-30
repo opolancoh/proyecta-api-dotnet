@@ -1,4 +1,6 @@
+using Proyecta.Repository.EntityFramework;
 using Proyecta.Web.Extensions;
+using Proyecta.Web.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,8 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 // DB EnsureCreated and Seed
-// app.MigrateDatabase<AuthDbContext>();
-// app.MigrateDatabase<AppDbContext>();
+app.MigrateDatabase<AuthDbContext>();
+app.MigrateDatabase<AppDbContext>();
 
 app.UseApiVersioning();
 

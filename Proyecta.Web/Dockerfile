@@ -7,6 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Proyecta.Web/Proyecta.Web.csproj", "Proyecta.Web/"]
 COPY ["Proyecta.Core/Proyecta.Core.csproj", "Proyecta.Core/"]
+COPY ["Proyecta.Services/Proyecta.Services.csproj", "Proyecta.Services/"]
 COPY ["Proyecta.Repository.EntityFramework/Proyecta.Repository.EntityFramework.csproj", "Proyecta.Repository.EntityFramework/"]
 RUN dotnet restore "Proyecta.Web/Proyecta.Web.csproj"
 COPY . .

@@ -11,23 +11,37 @@ A .NET Core web api.
 Create the database container (you need to have Docker installed on your system):
 
 ```sh
-docker run -d --name my-postgres -p 5432:5432 -e POSTGRES_PASSWORD=My@Passw0rd postgres
+docker compose -f "docker-compose-db-postgres.yml" up -d
 ```
 
 Stop and remove the container when needed:
 
 ```sh
-docker stop my-postgres && docker rm my-postgres
+docker stop proyecta-db_postgres && docker rm proyecta-db_postgres
 ```
 
 #### Create Database
 
 ```sh
+dotnet ef database update --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AuthDbContext
 dotnet ef database update --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AppDbContext
 ```
 
 #### Add a new migration when needed
 
 ```sh
-dotnet ef migrations add "MyMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AppDbContext
+dotnet ef migrations add "AuthInitialMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AuthDbContext
+dotnet ef migrations add "AppInitialMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AppDbContext
+```
+
+#### Docker Containers (execute the commands in the root folder)
+Create the image:
+```sh
+docker build -t proyecta-backend-dotnet -f Proyecta.Web/Dockerfile .
+```
+
+Run containers:
+```sh
+docker compose -f "docker-compose-backend-dev.yml" up -d
+docker compose -f "docker-compose-backend-test.yml" up -d
 ```

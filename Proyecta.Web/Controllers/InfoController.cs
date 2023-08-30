@@ -25,6 +25,7 @@ public class InfoController : ControllerBase
         var info = new
         {
             dotnetVersion = RuntimeInformation.FrameworkDescription,
+            dotnetEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
             operatingSystem = RuntimeInformation.OSDescription,
             runtimeIdentifier = RuntimeInformation.RuntimeIdentifier,
             processorArchitecture = RuntimeInformation.OSArchitecture.ToString(),
