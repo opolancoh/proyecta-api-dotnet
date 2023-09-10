@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Proyecta.Core.Models;
+namespace Proyecta.Core.Results;
 
 public record ApplicationResult
 {

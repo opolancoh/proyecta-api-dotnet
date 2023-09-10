@@ -1,5 +1,5 @@
-using Proyecta.Core.DTOs;
-using Proyecta.Core.Models;
+using Proyecta.Core.DTOs.Auth;
+using Proyecta.Core.Results;
 
 namespace Proyecta.Core.Contracts.Services;
 

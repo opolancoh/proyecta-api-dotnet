@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.Entities;
+using Proyecta.Core.Entities.Auth;
 using Proyecta.Services;
 using Proyecta.Repository.EntityFramework;
 
@@ -45,7 +45,8 @@ public static class ServiceExtensions
         services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
         services.AddScoped<IApplicationUserService, ApplicationUserService>();
         // Auth
-        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IAuthRepository, AuthRepository>();
+        services.AddScoped<IAuthService, AuthService>();
     }
 
     public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)

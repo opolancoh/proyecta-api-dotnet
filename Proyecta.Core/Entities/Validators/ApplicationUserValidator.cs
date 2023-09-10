@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using Proyecta.Core.Helpers;
+using Proyecta.Core.Utils;
 
 namespace Proyecta.Core.Entities.Validators;
 

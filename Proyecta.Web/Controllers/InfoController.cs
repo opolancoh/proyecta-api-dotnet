@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
-using Proyecta.Core.Models;
+using Proyecta.Core.Results;
 using Proyecta.Web.Utils;
 
 namespace Proyecta.Web.Controllers;

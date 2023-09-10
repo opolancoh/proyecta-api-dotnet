@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Proyecta.Core.Entities.Validators;
 
-namespace Proyecta.Core.DTOs;
+namespace Proyecta.Core.DTOs.Auth;
 
 public record ApplicationUserCreateOrUpdateDto : IValidatableObject
 {

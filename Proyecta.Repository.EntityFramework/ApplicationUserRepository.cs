@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories;
-using Proyecta.Core.Entities;
-using Proyecta.Core.DTOs;
+using Proyecta.Core.DTOs.Auth;
+using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Exceptions;
 
 namespace Proyecta.Repository.EntityFramework;

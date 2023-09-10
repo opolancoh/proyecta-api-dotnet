@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Proyecta.Core.Entities;
+namespace Proyecta.Core.Entities.Auth;
 
 public class ApplicationUser : IdentityUser
 {

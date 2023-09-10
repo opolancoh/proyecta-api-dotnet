@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Proyecta.Core.Entities.Validators;
 
-namespace Proyecta.Core.Models.Auth;
+namespace Proyecta.Core.DTOs.Auth;
 
-public record RegisterInputModel : IValidatableObject
+public record RegisterDto: IValidatableObject
 {
     public string FirstName { get; init; }
     public string LastName { get; init; }

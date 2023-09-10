@@ -7,14 +7,14 @@ A .NET Core web api.
 * Postgres (Docker Container)
 * xUnit (Integration Tests)
 
-#### Setup Database
-Create the database container (you need to have Docker installed on your system):
+## Database
+#### Create the database container (you need to have Docker installed on your system):
 
 ```sh
 docker compose -f "docker-compose-db-postgres.yml" up -d
 ```
 
-Stop and remove the container when needed:
+#### Stop and remove the container when needed:
 
 ```sh
 docker stop proyecta-db_postgres && docker rm proyecta-db_postgres
@@ -34,13 +34,13 @@ dotnet ef migrations add "AuthInitialMigration" --project Proyecta.Repository.En
 dotnet ef migrations add "AppInitialMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AppDbContext
 ```
 
-#### Docker Containers (execute the commands in the root folder)
-Create the image:
+## Docker Containers (execute the commands in the root folder)
+#### Create the image
 ```sh
 docker build -t proyecta-backend-dotnet -f Proyecta.Web/Dockerfile .
 ```
 
-Run containers:
+#### Run containers
 ```sh
 docker compose -f "docker-compose-backend-dev.yml" up -d
 docker compose -f "docker-compose-backend-test.yml" up -d

@@ -1,4 +1,4 @@
-namespace Proyecta.Core.Helpers;
+namespace Proyecta.Core.Utils;
 
 public class TextHelper
 {

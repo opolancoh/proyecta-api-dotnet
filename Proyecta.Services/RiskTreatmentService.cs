@@ -2,7 +2,7 @@ using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.Entities;
 using Proyecta.Core.DTOs;
-using Proyecta.Core.Models;
+using Proyecta.Core.Results;
 
 namespace Proyecta.Services;
 
