@@ -62,13 +62,13 @@ public class AuthService : IAuthService
             };
         }
 
-        var jwtSettings = _configuration.GetSection("JwtConfig");
-
         // AccessToken
-        var issuer = jwtSettings["Issuer"];
-        var audience = jwtSettings["Audience"];
-        var secret = jwtSettings["Secret"];
-        var expiration = DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["AccessTokenExpirationInMinutes"]));
+        var issuer = _configuration.GetSection("JwtConfig:Issuer").Value;
+        var audience = _configuration.GetSection("JwtConfig:Audience").Value;
+        var secret = _configuration.GetSection("JwtConfig:Secret").Value;
+        var expiration =
+            DateTime.UtcNow.AddMinutes(
+                Convert.ToDouble(_configuration.GetSection("JwtConfig:AccessTokenExpirationInMinutes").Value));
         // Claims generation
         var userRoles = await _userManager.GetRolesAsync(user);
         var claimsInput = new JwtAccessTokenClaimsInputDto
@@ -89,7 +89,8 @@ public class AuthService : IAuthService
             UserId = user.Id,
             Token = refreshToken,
             ExpiryDate =
-                DateTime.UtcNow.AddDays(Convert.ToDouble(jwtSettings["RefreshTokenExpirationInDays"]))
+                DateTime.UtcNow.AddDays(
+                    Convert.ToDouble(_configuration.GetSection("JwtConfig:RefreshTokenExpirationInDays").Value))
         });
         if (!addRefreshTokenResult)
         {
@@ -104,7 +105,7 @@ public class AuthService : IAuthService
         return new ApplicationResult
         {
             Status = 200,
-            D = new { accessToken, refreshToken }
+            D = new TokenDto { AccessToken = accessToken, RefreshToken = refreshToken }
         };
     }
 
