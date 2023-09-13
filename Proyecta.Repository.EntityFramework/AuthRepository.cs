@@ -9,14 +9,12 @@ namespace Proyecta.Repository.EntityFramework;
 public class AuthRepository : IAuthRepository
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly AuthDbContext _context;
 
-    public AuthRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+    public AuthRepository(UserManager<ApplicationUser> userManager,
         AuthDbContext context)
     {
         _userManager = userManager;
-        _signInManager = signInManager;
         _context = context;
     }
 
@@ -28,8 +26,8 @@ public class AuthRepository : IAuthRepository
             return null;
         }
 
-        var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password!, false);
-        return result.Succeeded ? user : null;
+        var result = await _userManager.CheckPasswordAsync(user, loginDto.Password!);
+        return result ? user : null;
     }
 
     public async Task<RefreshToken?> GetRefreshToken(string userId, string token)
