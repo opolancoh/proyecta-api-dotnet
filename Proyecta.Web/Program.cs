@@ -32,12 +32,10 @@ if (app.Environment.IsDevelopment())
 }
 
 // DB EnsureCreated and Seed
-// app.MigrateDatabase<AuthDbContext>();
-// app.MigrateDatabase<AppDbContext>();
+app.MigrateDatabase<AuthDbContext>();
+app.MigrateDatabase<AppDbContext>();
 
 app.UseApiVersioning();
-
-// app.UseHttpsRedirection();
 
 app.UseCors();
 app.UseAuthentication();

@@ -52,8 +52,8 @@ public static class ServiceExtensions
     public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        var dbUser = Environment.GetEnvironmentVariable($"PROYECTA_{environment?.ToUpper()}_DB_USER");
-        var dbPassword = Environment.GetEnvironmentVariable($"PROYECTA_{environment?.ToUpper()}_DB_PASSWORD");
+        var dbUser = Environment.GetEnvironmentVariable($"PROYECTA_WEBAPI_{environment?.ToUpper()}_DB_USER");
+        var dbPassword = Environment.GetEnvironmentVariable($"PROYECTA_WEBAPI_{environment?.ToUpper()}_DB_PASSWORD");
 
         var appDbConnection = configuration.GetConnectionString("AppDbConnection");
         var fullAppDbConnection = $"Username={dbUser};Password={dbPassword};{appDbConnection}";
