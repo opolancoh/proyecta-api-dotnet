@@ -52,24 +52,24 @@ public static class ServiceExtensions
     public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        var dbUser = Environment.GetEnvironmentVariable($"PROYECTA_WEBAPI_{environment?.ToUpper()}_DB_USER");
-        var dbPassword = Environment.GetEnvironmentVariable($"PROYECTA_WEBAPI_{environment?.ToUpper()}_DB_PASSWORD");
 
-        var appDbConnection = configuration.GetConnectionString("AppDbConnection");
-        var fullAppDbConnection = $"Username={dbUser};Password={dbPassword};{appDbConnection}";
-        Console.WriteLine($"[ConfigureDbContext] appDbConnection:{appDbConnection}");
+        var appDbConnection = Environment.GetEnvironmentVariable($"PROYECTA_API_APP_DB_CONNECTION_{environment?.ToUpper()}");
+        #if DEBUG
+            Console.WriteLine($"[ConfigureDbContext] appDbConnection:{appDbConnection}");
+        #endif
         services.AddDbContext<AppDbContext>(opts =>
         {
-            opts.UseNpgsql(fullAppDbConnection);
+            opts.UseNpgsql(appDbConnection);
             opts.EnableSensitiveDataLogging();
         });
 
-        var authDbConnection = configuration.GetConnectionString("AuthDbConnection");
-        var fullAuthDbConnection = $"Username={dbUser};Password={dbPassword};{authDbConnection}";
-        Console.WriteLine($"[ConfigureDbContext] authDbConnection:{authDbConnection}");
+        var authDbConnection = Environment.GetEnvironmentVariable($"PROYECTA_API_AUTH_DB_CONNECTION_{environment?.ToUpper()}");
+        #if DEBUG
+            Console.WriteLine($"[ConfigureDbContext] appDbConnection:{authDbConnection}");
+        #endif
         services.AddDbContext<AuthDbContext>(opts =>
         {
-            opts.UseNpgsql(fullAuthDbConnection);
+            opts.UseNpgsql(authDbConnection);
             opts.EnableSensitiveDataLogging();
         });
     }
