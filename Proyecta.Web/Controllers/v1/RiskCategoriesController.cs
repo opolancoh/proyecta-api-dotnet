@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs;
+using Proyecta.Web.Filters;
 
 namespace Proyecta.Web.Controllers.v1;
 
@@ -36,6 +37,7 @@ public class RiskCategoriesController : ControllerBase
     }
 
     [HttpPost]
+    [CustomValidation("PropertyNameToValidate")]
     public async Task<IActionResult> Create(RiskCategoryCreateOrUpdateDto item)
     {
         var result = await _service.Create(item);
@@ -44,6 +46,7 @@ public class RiskCategoriesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [InputModelValidationFilter]
     public async Task<IActionResult> Update(Guid id, RiskCategoryCreateOrUpdateDto item)
     {
         var result = await _service.Update(id, item);

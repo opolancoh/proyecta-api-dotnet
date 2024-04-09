@@ -7,7 +7,7 @@ public class Risk
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public int Code { get; set; }
+    public string Code { get; set; }
     public DateOnly DateFrom { get; set; }
     public DateOnly DateTo { get; set; }
     public Boolean State { get; set; }

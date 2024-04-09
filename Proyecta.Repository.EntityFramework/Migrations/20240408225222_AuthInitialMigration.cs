@@ -183,8 +183,11 @@ namespace Proyecta.Repository.EntityFramework.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "8ccb2020-c4c6-42d9-a559-ed64f0f19de3", null, "Administrator", "ADMINISTRATOR" },
-                    { "d366d164-f8c3-4fa2-b158-d4a036a2dbc8", null, "Manager", "MANAGER" }
+                    { "567896cd-9415-4ca1-8bc3-c8e79100b672", null, "System", "SYSTEM" },
+                    { "88ec33b3-7376-4bc4-8bf7-cec25572e051", null, "Administrator", "ADMINISTRATOR" },
+                    { "a4189633-776c-4c5a-90f2-35bd1afdd5ba", null, "Viewer", "VIEWER" },
+                    { "c5ae884e-bbc6-40c7-b5a5-aea07700adbe", null, "Manager", "MANAGER" },
+                    { "e8833564-a18b-4638-bf81-8661abb113d6", null, "Editor", "EDITOR" }
                 });
 
             migrationBuilder.InsertData(
@@ -192,8 +195,8 @@ namespace Proyecta.Repository.EntityFramework.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpiryTime", "SecurityStamp", "TwoFactorEnabled", "UpdatedAt", "UserName" },
                 values: new object[,]
                 {
-                    { "3049eb93-1e42-4f19-bbc5-30f345a46b79", 0, "45774333-bd2b-41e9-a2f0-31b9bf514f1c", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "manager@ikobit.com", false, null, null, false, null, "MANAGER@IKOBIT.COM", "MANAGER", "AQAAAAIAAYagAAAAEEbtcOePDT//XCfszEyVADW8UIHH9/yO4nkawezvisc0QiQb/4iELsF+MNpiQyF2PA==", null, false, null, null, "a20243fa-9f1a-414f-bef8-9f1dec49a81e", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "manager" },
-                    { "53b2a606-5f99-4d83-ad5d-b5d76d4e41b7", 0, "b72960f2-1318-4283-9913-c3c568b98614", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@ikobit.com", false, null, null, false, null, "ADMIN@IKOBIT.COM", "ADMIN", "AQAAAAIAAYagAAAAEOdmQfWg7h1nvQf9GC6td99Luf0jm6EAilJIDShATeyRw1KvJv3v1YP/ZzzVeQfPwA==", null, false, null, null, "f62b40b9-ca57-41ca-a99a-88c314763972", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin" }
+                    { "052181b2-d0a1-42c9-91fd-4a7a27164793", 0, "11e45a49-903e-417a-a128-25925620e517", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "system@ikobit.com", false, null, null, false, null, "SYSTEM@IKOBIT.COM", "SYSTEM", "AQAAAAIAAYagAAAAENoN/kvV81P7tChgAenaHBJ5lf3Fsn9TdBZCSU32W3hP+1upxaFBNtS2X28LwR7FBg==", null, false, null, null, "a9cb98a4-af1b-423f-85c4-38d335601121", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "system" },
+                    { "30748095-ebf3-49cf-85de-84fec336ad24", 0, "f5d1bfbc-8702-4083-beac-f3ddf8d0e68f", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@ikobit.com", false, null, null, false, null, "ADMIN@IKOBIT.COM", "ADMIN", "AQAAAAIAAYagAAAAEAysdoWk3d/ksorKhcmWqtKlBQMjdwhgIyI/CVTwjnfZCtG7yNZ3EzEYe9l2p/JHqA==", null, false, null, null, "e43fd605-d2bd-4a89-b202-039dabddca50", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin" }
                 });
 
             migrationBuilder.InsertData(
@@ -201,8 +204,8 @@ namespace Proyecta.Repository.EntityFramework.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "d366d164-f8c3-4fa2-b158-d4a036a2dbc8", "3049eb93-1e42-4f19-bbc5-30f345a46b79" },
-                    { "8ccb2020-c4c6-42d9-a559-ed64f0f19de3", "53b2a606-5f99-4d83-ad5d-b5d76d4e41b7" }
+                    { "567896cd-9415-4ca1-8bc3-c8e79100b672", "052181b2-d0a1-42c9-91fd-4a7a27164793" },
+                    { "88ec33b3-7376-4bc4-8bf7-cec25572e051", "30748095-ebf3-49cf-85de-84fec336ad24" }
                 });
 
             migrationBuilder.CreateIndex(

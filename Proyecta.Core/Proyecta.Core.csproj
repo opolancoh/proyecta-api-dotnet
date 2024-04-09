@@ -10,6 +10,7 @@
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
 
+
     </ItemGroup>
 
 

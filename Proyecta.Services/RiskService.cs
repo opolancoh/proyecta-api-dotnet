@@ -57,7 +57,7 @@ public sealed class RiskService : IRiskService
         return new ApplicationResult
         {
             Status = 201,
-            Message = "User created successfully.",
+            Message = "Risk created successfully.",
             D = new { newItem.Id }
         };
     }

@@ -4,7 +4,8 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-      <UserSecretsId>c7545509-a52f-47d0-a348-ffa17cadd46e</UserSecretsId>
+        <UserSecretsId>c7545509-a52f-47d0-a348-ffa17cadd46e</UserSecretsId>
+        <Version>0.0.0</Version>
   </PropertyGroup>
 
     <ItemGroup>
@@ -23,5 +24,7 @@
       <ProjectReference Include="..\Proyecta.Repository.EntityFramework\Proyecta.Repository.EntityFramework.csproj" />
       <ProjectReference Include="..\Proyecta.Services\Proyecta.Services.csproj" />
     </ItemGroup>
+
+
 
 </Project>

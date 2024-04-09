@@ -5,8 +5,8 @@ namespace Proyecta.Core.DTOs;
 
 public record RiskCreateOrUpdateDto : IValidatableObject
 {
-    public int Code { get; set; }
     public string Name { get; set; }
+    public string Code { get; set; }
     public Guid Category { get; set; }
     public int Type { get; set; }
     public Guid Owner { get; set; }

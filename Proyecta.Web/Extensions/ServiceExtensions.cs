@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -5,12 +7,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.Entities.Auth;
+using Proyecta.Core.Utils;
 using Proyecta.Services;
 using Proyecta.Repository.EntityFramework;
+using Proyecta.Web.Utils;
 
 namespace Proyecta.Web.Extensions;
 
@@ -51,22 +56,20 @@ public static class ServiceExtensions
 
     public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-        var appDbConnection = Environment.GetEnvironmentVariable($"PROYECTA_API_APP_DB_CONNECTION_{environment?.ToUpper()}");
-        #if DEBUG
-            Console.WriteLine($"[ConfigureDbContext] appDbConnection:{appDbConnection}");
-        #endif
+        var appDbConnection = CommonHelper.GetEnvironmentVariable("PROYECTA_DB_CONNECTION_API");
+#if DEBUG
+        Console.WriteLine($"[ConfigureDbContext] appDbConnection:{appDbConnection}");
+#endif
         services.AddDbContext<AppDbContext>(opts =>
         {
             opts.UseNpgsql(appDbConnection);
             opts.EnableSensitiveDataLogging();
         });
 
-        var authDbConnection = Environment.GetEnvironmentVariable($"PROYECTA_API_AUTH_DB_CONNECTION_{environment?.ToUpper()}");
-        #if DEBUG
-            Console.WriteLine($"[ConfigureDbContext] appDbConnection:{authDbConnection}");
-        #endif
+        var authDbConnection = CommonHelper.GetEnvironmentVariable("PROYECTA_DB_CONNECTION_AUTH");
+#if DEBUG
+        Console.WriteLine($"[ConfigureDbContext] authDbConnection:{authDbConnection}");
+#endif
         services.AddDbContext<AuthDbContext>(opts =>
         {
             opts.UseNpgsql(authDbConnection);

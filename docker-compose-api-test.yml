@@ -1,0 +1,30 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+version: '3.8'
+
+services:
+  proyecta_api_dotnet_test:
+    image: proyecta_api_dotnet
+    container_name: proyecta_api_dotnet_test
+    ports:
+      - "8002:443"
+      - "8003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Test
+      - PROYECTA_DB_CONNECTION_API=${PROYECTA_DB_CONNECTION_API}
+      - PROYECTA_DB_CONNECTION_AUTH=${PROYECTA_DB_CONNECTION_AUTH}
+      - PROYECTA_API_USER_SYSTEM_PASSWORD=${PROYECTA_API_USER_SYSTEM_PASSWORD}
+      - PROYECTA_API_USER_ADMIN_PASSWORD=${PROYECTA_API_USER_ADMIN_PASSWORD}
+      - ConnectionStrings__AppDbConnection=${PROYECTA_DB_CONNECTION_API}
+      - ConnectionStrings__AuthDbConnection=${PROYECTA_DB_CONNECTION_AUTH}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${PROYECTA_API_CERT_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${PROYECTA_API_CERT_PATH}
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    #  - ~/.vsdbg:/remote_debugger:rw
+    networks:
+      - proyecta-network
+
+networks:
+  proyecta-network:
+    external: true

@@ -13,12 +13,12 @@ public static class DbMigrationHelper
         try
         {
             context.Database.EnsureCreated();
-            logger.LogInformation($"Database was migrated: ({context.Database.GetDbConnection().Database}).");
+            logger.LogInformation($"Database '{context.Database.GetDbConnection().Database}' was migrated successfully.");
         }
         catch (Exception ex)
         {
             logger.LogError(ex,
-                $"An error occurred while migrating the database ({context.Database.GetDbConnection().Database}).  {ex.Message}");
+                $"An error occurred while migrating the '{context.Database.GetDbConnection().Database}' database.  {ex.Message}");
         }
 
         return host;

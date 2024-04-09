@@ -50,15 +50,33 @@ namespace Proyecta.Repository.EntityFramework.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8ccb2020-c4c6-42d9-a559-ed64f0f19de3",
+                            Id = "567896cd-9415-4ca1-8bc3-c8e79100b672",
+                            Name = "System",
+                            NormalizedName = "SYSTEM"
+                        },
+                        new
+                        {
+                            Id = "88ec33b3-7376-4bc4-8bf7-cec25572e051",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "d366d164-f8c3-4fa2-b158-d4a036a2dbc8",
+                            Id = "c5ae884e-bbc6-40c7-b5a5-aea07700adbe",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = "e8833564-a18b-4638-bf81-8661abb113d6",
+                            Name = "Editor",
+                            NormalizedName = "EDITOR"
+                        },
+                        new
+                        {
+                            Id = "a4189633-776c-4c5a-90f2-35bd1afdd5ba",
+                            Name = "Viewer",
+                            NormalizedName = "VIEWER"
                         });
                 });
 
@@ -151,13 +169,13 @@ namespace Proyecta.Repository.EntityFramework.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "53b2a606-5f99-4d83-ad5d-b5d76d4e41b7",
-                            RoleId = "8ccb2020-c4c6-42d9-a559-ed64f0f19de3"
+                            UserId = "052181b2-d0a1-42c9-91fd-4a7a27164793",
+                            RoleId = "567896cd-9415-4ca1-8bc3-c8e79100b672"
                         },
                         new
                         {
-                            UserId = "3049eb93-1e42-4f19-bbc5-30f345a46b79",
-                            RoleId = "d366d164-f8c3-4fa2-b158-d4a036a2dbc8"
+                            UserId = "30748095-ebf3-49cf-85de-84fec336ad24",
+                            RoleId = "88ec33b3-7376-4bc4-8bf7-cec25572e051"
                         });
                 });
 
@@ -264,39 +282,39 @@ namespace Proyecta.Repository.EntityFramework.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "53b2a606-5f99-4d83-ad5d-b5d76d4e41b7",
+                            Id = "052181b2-d0a1-42c9-91fd-4a7a27164793",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b72960f2-1318-4283-9913-c3c568b98614",
+                            ConcurrencyStamp = "11e45a49-903e-417a-a128-25925620e517",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "system@ikobit.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SYSTEM@IKOBIT.COM",
+                            NormalizedUserName = "SYSTEM",
+                            PasswordHash = "AQAAAAIAAYagAAAAENoN/kvV81P7tChgAenaHBJ5lf3Fsn9TdBZCSU32W3hP+1upxaFBNtS2X28LwR7FBg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "a9cb98a4-af1b-423f-85c4-38d335601121",
+                            TwoFactorEnabled = false,
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "system"
+                        },
+                        new
+                        {
+                            Id = "30748095-ebf3-49cf-85de-84fec336ad24",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f5d1bfbc-8702-4083-beac-f3ddf8d0e68f",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@ikobit.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@IKOBIT.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOdmQfWg7h1nvQf9GC6td99Luf0jm6EAilJIDShATeyRw1KvJv3v1YP/ZzzVeQfPwA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAysdoWk3d/ksorKhcmWqtKlBQMjdwhgIyI/CVTwjnfZCtG7yNZ3EzEYe9l2p/JHqA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f62b40b9-ca57-41ca-a99a-88c314763972",
+                            SecurityStamp = "e43fd605-d2bd-4a89-b202-039dabddca50",
                             TwoFactorEnabled = false,
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "admin"
-                        },
-                        new
-                        {
-                            Id = "3049eb93-1e42-4f19-bbc5-30f345a46b79",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "45774333-bd2b-41e9-a2f0-31b9bf514f1c",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "manager@ikobit.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "MANAGER@IKOBIT.COM",
-                            NormalizedUserName = "MANAGER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEbtcOePDT//XCfszEyVADW8UIHH9/yO4nkawezvisc0QiQb/4iELsF+MNpiQyF2PA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "a20243fa-9f1a-414f-bef8-9f1dec49a81e",
-                            TwoFactorEnabled = false,
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserName = "manager"
                         });
                 });
 

@@ -3,7 +3,7 @@ namespace Proyecta.Core.DTOs;
 public record RiskDto 
 {
     public Guid Id { get; set; }
-    public int Code { get; set; }
+    public string Code { get; set; }
     public string Name { get; set; }
     public KeyValueDto<Guid> Category { get; set; }
     public int Type { get; set; }

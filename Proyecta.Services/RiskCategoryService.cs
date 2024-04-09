@@ -35,7 +35,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
             return new ApplicationResult
             {
                 Status = 404,
-                Message = $"The entity with id '{id}' doesn't exist in the database."
+                Message = $"The item with id '{id}' was not found or you don't have permission to access it."
             };
         }
 
@@ -57,8 +57,8 @@ public sealed class RiskCategoryService : IRiskCategoryService
         return new ApplicationResult
         {
             Status = 201,
-            Message = "User created successfully.",
-            D = new { newItem.Id }
+            Message = "Risk Category created successfully.",
+            D = new GenericEntityCreationResult { Id = newItem.Id }
         };
     }
 
@@ -89,15 +89,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
 
     public async Task<ApplicationResult> AddRange(IEnumerable<RiskCategoryCreateOrUpdateDto> items)
     {
-        var newItems = new List<RiskCategory>();
-
-        foreach (var item in items)
-        {
-            var newItem = GetEntity(null, item);
-            // newItem.CreatedAt = DateTime.UtcNow;
-            // newItem.UpdatedAt = DateTime.UtcNow;
-            newItems.Add(newItem);
-        }
+        var newItems = items.Select(item => GetEntity(null, item)).ToList();
 
         await _repository.AddRange(newItems);
 

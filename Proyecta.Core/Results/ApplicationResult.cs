@@ -4,21 +4,21 @@ namespace Proyecta.Core.Results;
 
 public record ApplicationResult
 {
-    public int Status { get; set; }
+    public required int Status { get; init; }
     
     // Data
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public object? D { get; set; }
+    public object? D { get; init; }
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Message { get; set; }
+    public string? Message { get; init; }
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public IList<ApplicationResponseError>? Errors { get; set; }
+    public IList<ApplicationResponseError>? Errors { get; init; }
 }
 
 public record ApplicationResponseError
 {
-    public string Code { get; set; }
-    public string Description { get; set; }
+    public required string Code { get; set; }
+    public required string Description { get; set; }
 }

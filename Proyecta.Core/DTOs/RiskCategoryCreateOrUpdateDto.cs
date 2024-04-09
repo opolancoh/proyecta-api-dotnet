@@ -3,7 +3,7 @@ using Proyecta.Core.Entities.Validators;
 
 namespace Proyecta.Core.DTOs;
 
-public record RiskCategoryCreateOrUpdateDto : IValidatableObject
+public record RiskCategoryCreateOrUpdateDto // : IValidatableObject
 {
     public string Name { get; set; }
 

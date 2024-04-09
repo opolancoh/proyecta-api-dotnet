@@ -1,4 +1,4 @@
-using Proyecta.Repository.EntityFramework;
+/* using Proyecta.Repository.EntityFramework;
 using Proyecta.Tests.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -14,14 +14,19 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
     {
         builder.ConfigureServices(services =>
         {
-            var connectionString =
-                "Server=localhost; Database=proyecta_db_test; Username=postgres; Password=My@Passw0rd;";
             // Entity Framework DbContext
-            // Remove current
+            var connectionString = Environment.GetEnvironmentVariable("PROYECTA_DB_CONNECTION_TEST");
+            // Remove current AppDbContext
             var entityFrameworkDbContext = services.SingleOrDefault(x => x.ServiceType == typeof(DbContextOptions<AppDbContext>));
-            if (entityFrameworkDbContext != null) services.Remove(entityFrameworkDbContext);
+            services.Remove(entityFrameworkDbContext!);
             // Add a new one
             services.AddDbContext<AppDbContext>(options => options
+                .UseNpgsql(connectionString));
+            // Remove current AppDbContext
+            var entityFrameworkAuthContext = services.SingleOrDefault(x => x.ServiceType == typeof(DbContextOptions<AuthDbContext>));
+            services.Remove(entityFrameworkAuthContext!);
+            // Add a new one
+            services.AddDbContext<AuthDbContext>(options => options
                 .UseNpgsql(connectionString));
 
             //
@@ -35,11 +40,11 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             db.Database.EnsureCreated();
 
             // Don't update/remove this initial data
-            var risks = DbHelper.GetRisks;
-            db.Risks?.AddRange(risks);
-            db.SaveChanges();
+            // var risks = DbHelper.GetRisks;
+            // db.Risks?.AddRange(risks);
+            // db.SaveChanges();
 
-            logger.LogError("All data was saved successfully"); 
+            // logger.LogError("All data was saved successfully"); 
         });
     }
-}
+} */

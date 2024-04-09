@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs;
@@ -19,6 +20,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("register")]
+    [Authorize(Roles = "System,Administrator")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
         var result = await _service.Register(registerDto);
