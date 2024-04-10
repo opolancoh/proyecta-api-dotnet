@@ -1,38 +1,42 @@
-# Proyecta backend
-A .NET Core web api.
+# Proyecta API
+This repository contains a .NET Core Web API.
 
-#### Technologies in this repo:
+### Technologies Used:
 * DotNet Core 7
 * Entity Framework 7
 * Postgres (Docker Container)
 * xUnit (Integration Tests)
 
-## Docker Containers (execute the commands in the root folder)
-#### Create the network
+## Setting Up Docker Containers (Run these commands from the root directory)
+### Network Setup
+First, create a dedicated network for the containers:
 ```sh
 docker network create proyecta-network 
 ```
 
-#### Create the database:
-
+#### Database Setup
+Launch a PostgreSQL container as the database:
 ```sh
 docker run -d --name proyecta_postgres -p 5433:5432 -e POSTGRES_PASSWORD=mysecretpassword --network proyecta-network postgres
 ```
-* "5433:5432" maps port 5433 on the host to port 5432 in the container, which is the default port for PostgreSQL. This allows the PostgreSQL service to be accessible from the host machine.
+Note: The port mapping "5433:5432" allows the host machine to communicate with PostgreSQL on its default port (5432) through the host's port 5433.
 
-#### Create the image
+#### Building the Image
+Build a Docker image for the API:
 ```sh
 docker build -t proyecta_api_dotnet:latest -f Proyecta.Web/Dockerfile .
 ```
 
-#### Run containers
+#### Running Containers
+Start the application and test containers:
 ```sh
-docker compose -f docker-compose-api-dev.yml up -d
-docker compose -f docker-compose-api-test.yml up -d
+docker compose -f docker-compose-dev.yml up -d
+docker compose -f docker-compose-test.yml up -d
 ```
 
-## EF Migrations
-#### Add a new migration when needed
+## Managing EF Migrations
+#### Creating New Migrations
+To add new migrations, use the following commands:
 ```sh
 dotnet ef migrations add "AuthInitialMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AuthDbContext
 dotnet ef migrations add "AppInitialMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AppDbContext
