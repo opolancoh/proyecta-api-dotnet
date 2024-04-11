@@ -37,7 +37,7 @@ app.MigrateDatabase<AppDbContext>();
 
 app.UseApiVersioning();
 
-app.UseCors();
+app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 
