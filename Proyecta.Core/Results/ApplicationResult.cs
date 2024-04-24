@@ -4,11 +4,12 @@ namespace Proyecta.Core.Results;
 
 public record ApplicationResult
 {
-    public required int Status { get; init; }
     
-    // Data
+    public required bool Success { get; init; }
+    public required string Code { get; init; }
+    
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public object? D { get; init; }
+    public object? Data { get; init; }
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Message { get; init; }

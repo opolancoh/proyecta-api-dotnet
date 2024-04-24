@@ -21,8 +21,9 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
 
         return new ApplicationResult
         {
-            Status = 200,
-            D = items
+            Success = true,
+            Code = "200",
+            Data = items
         };
     }
 
@@ -34,15 +35,17 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
         {
             return new ApplicationResult
             {
-                Status = 404,
+                Success = false,
+                Code = "404",
                 Message = $"The entity with id '{id}' doesn't exist in the database."
             };
         }
 
         return new ApplicationResult
         {
-            Status = 200,
-            D = item
+            Success = true,
+            Code = "200",
+            Data = item
         };
     }
 
@@ -56,9 +59,10 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
 
         return new ApplicationResult
         {
-            Status = 201,
+            Success = true,
+            Code = "201",
             Message = "User created successfully.",
-            D = new { newItem.Id }
+            Data = new { newItem.Id }
         };
     }
 
@@ -71,7 +75,8 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
 
         return new ApplicationResult
         {
-            Status = 204,
+            Success = true,
+            Code = "204",
             Message = "Item updated successfully.",
         };
     }
@@ -82,7 +87,8 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
 
         return new ApplicationResult
         {
-            Status = 204,
+            Success = true,
+            Code = "204",
             Message = "Item deleted successfully.",
         };
     }
@@ -103,7 +109,8 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
 
         return new ApplicationResult
         {
-            Status = 204,
+            Success = true,
+            Code = "204",
             Message = "Items added successfully.",
         };
     }

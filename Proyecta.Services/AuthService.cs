@@ -57,7 +57,8 @@ public class AuthService : IAuthService
             _logger.LogWarning(AuthenticationFailedMessage);
             return new ApplicationResult
             {
-                Status = 401,
+                Success = false,
+                Code = "401",
                 Message = AuthenticationFailedMessage
             };
         }
@@ -89,23 +90,25 @@ public class AuthService : IAuthService
             UserId = user.Id,
             Token = refreshToken,
             ExpiryDate =
-                DateTime.UtcNow.AddDays(
-                    Convert.ToDouble(_configuration.GetSection("JwtConfig:RefreshTokenExpirationInDays").Value))
+                DateTime.UtcNow.AddMinutes(
+                    Convert.ToDouble(_configuration.GetSection("JwtConfig:RefreshTokenExpirationInMinutes").Value))
         });
         if (!addRefreshTokenResult)
         {
             _logger.LogError("Unable to store the refresh token");
             return new ApplicationResult
             {
-                Status = 401,
+                Success = false,
+                Code = "401",
                 Message = AuthenticationFailedMessage
             };
         }
 
         return new ApplicationResult
         {
-            Status = 200,
-            D = new TokenDto { AccessToken = accessToken, RefreshToken = refreshToken }
+            Success = true,
+            Code = "200",
+            Data = new TokenDto { AccessToken = accessToken, RefreshToken = refreshToken }
         };
     }
 
@@ -123,12 +126,13 @@ public class AuthService : IAuthService
         {
             return new ApplicationResult
             {
-                Status = 400,
+                Success = false,
+                Code = "400",
                 Message = "Failed to logout."
             };
         }
 
-        // Remove the refresh token
+        // Remove the refresh token from the database
         var removeRefreshTokenResult =
             await _authRepository.RemoveRefreshToken(accessToken.Subject, tokenDto.RefreshToken);
         if (!removeRefreshTokenResult)
@@ -136,14 +140,16 @@ public class AuthService : IAuthService
             _logger.LogError("Unable to remove the refresh token");
             return new ApplicationResult
             {
-                Status = 400,
+                Success = false,
+                Code = "400",
                 Message = "Failed to logout."
             };
         }
 
         return new ApplicationResult
         {
-            Status = 204,
+            Success = true,
+            Code = "204",
             Message = "Logged out successfully."
         };
     }
@@ -161,7 +167,8 @@ public class AuthService : IAuthService
         {
             return new ApplicationResult
             {
-                Status = 401,
+                Success = false,
+                Code = "401",
                 Message = "Invalid access token."
             };
         }
@@ -172,7 +179,8 @@ public class AuthService : IAuthService
         {
             return new ApplicationResult
             {
-                Status = 401,
+                Success = false,
+                Code = "401",
                 Message = "Refresh Token is not valid."
             };
         }
@@ -184,8 +192,9 @@ public class AuthService : IAuthService
 
         return new ApplicationResult
         {
-            Status = 200,
-            D = new { AccessToken = newAccessToken }
+            Success = true,
+            Code = "200",
+            Data = new { AccessToken = newAccessToken }
         };
     }
 }

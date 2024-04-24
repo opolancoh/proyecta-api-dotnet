@@ -57,12 +57,12 @@ public class AuthServiceSuccessfulLoginTests : IClassFixture<AuthServiceFixture>
         var result = await _authService.Login(loginDto);
 
         // Assert
-        Assert.Equal(200, result.Status);
-        Assert.NotNull(result.D);
+        Assert.Equal(200, int.Parse(result.Code));
+        Assert.NotNull(result.Data);
         Assert.Null(result.Message);
         Assert.Null(result.Errors);
         // Data
-        var tokenData = (TokenDto)result.D;
+        var tokenData = (TokenDto)result.Data;
 
         // RefreshToken
         Assert.False(string.IsNullOrEmpty(tokenData.RefreshToken));
@@ -138,12 +138,12 @@ public class AuthServiceSuccessfulLoginTests : IClassFixture<AuthServiceFixture>
         var result = await _authService.Login(loginDto);
 
         // Assert
-        Assert.Equal(200, result.Status);
-        Assert.NotNull(result.D);
+        Assert.Equal(200, int.Parse(result.Code));
+        Assert.NotNull(result.Data);
         Assert.Null(result.Message);
         Assert.Null(result.Errors);
         // Data
-        var tokenData = (TokenDto)result.D;
+        var tokenData = (TokenDto)result.Data;
 
         // RefreshToken
         Assert.False(string.IsNullOrEmpty(tokenData.RefreshToken));
@@ -219,12 +219,12 @@ public class AuthServiceSuccessfulLoginTests : IClassFixture<AuthServiceFixture>
         var result = await _authService.Login(loginDto);
 
         // Assert
-        Assert.Equal(200, result.Status);
-        Assert.NotNull(result.D);
+        Assert.Equal(200, int.Parse(result.Code));
+        Assert.NotNull(result.Data);
         Assert.Null(result.Message);
         Assert.Null(result.Errors);
         // Data
-        var tokenData = (TokenDto)result.D;
+        var tokenData = (TokenDto)result.Data;
 
         // RefreshToken
         Assert.False(string.IsNullOrEmpty(tokenData.RefreshToken));

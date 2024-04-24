@@ -10,15 +10,32 @@ public static class DbMigrationHelper
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<T>();
         var logger = services.GetRequiredService<ILogger<Program>>();
+        var connection = context.Database.GetDbConnection();
         try
         {
+            logger.LogInformation("[MigrateDatabase] Trying to migrate '{Database}' DB.", connection.Database);
             context.Database.EnsureCreated();
-            logger.LogInformation($"Database '{context.Database.GetDbConnection().Database}' was migrated successfully.");
+            // Get lists of migrations
+            var appliedMigrations = context.Database.GetAppliedMigrations();
+            var migrations = appliedMigrations as string[] ?? appliedMigrations.ToArray();
+            if (migrations.Any())
+            {
+                foreach (var migration in migrations)
+                {
+                    logger.LogInformation("[MigrateDatabase] Applied migration: '{Migration}'", migration);
+                }
+            }
+            else
+            {
+                logger.LogInformation("[MigrateDatabase] No migrations were applied to '{Database}' DB.",
+                    connection.Database);
+            }
         }
         catch (Exception ex)
         {
             logger.LogError(ex,
-                $"An error occurred while migrating the '{context.Database.GetDbConnection().Database}' database.  {ex.Message}");
+                "[MigrateDatabase] An error occurred while migrating the '{Database}' DB.  {Message}",
+                connection.Database, ex.Message);
         }
 
         return host;

@@ -7,8 +7,8 @@ namespace Proyecta.Web.Controllers.v1;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/[controller]")]
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/risk-treatments")]
+[Route("api/v{version:apiVersion}/risk-treatments")]
 [Authorize]
 public class RiskTreatmentsController : ControllerBase
 {
@@ -58,7 +58,7 @@ public class RiskTreatmentsController : ControllerBase
 
         return StatusCode(StatusCodes.Status200OK, result);
     }
-    
+
     [HttpPost]
     [Route("add-range")]
     public async Task<IActionResult> AddRange(IEnumerable<RiskTreatmentCreateOrUpdateDto> items)

@@ -32,8 +32,9 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApplicationResult
         {
-            Status = 200,
-            D = users
+            Success = true,
+            Code = "200",
+            Data = users
         };
     }
 
@@ -45,15 +46,17 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             return new ApplicationResult
             {
-                Status = 404,
+                Success = false,
+                Code = "404",
                 Message = $"The entity with id '{id}' doesn't exist in the database."
             };
         }
 
         return new ApplicationResult
         {
-            Status = 200,
-            D = user
+            Success = true,
+            Code = "200",
+            Data = user
         };
     }
 
@@ -75,7 +78,8 @@ public sealed class ApplicationUserService : IApplicationUserService
 
             return new ApplicationResult
             {
-                Status = 400,
+                Success = false,
+                Code = "400",
                 Message = "An error has occurred while creating the User.",
                 Errors = errors
             };
@@ -93,9 +97,10 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApplicationResult
         {
-            Status = 201,
+            Success = true,
+            Code = "201",
             Message = "User created successfully.",
-            D = new { userId }
+            Data = new { userId }
         };
     }
 
@@ -107,7 +112,8 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             return new ApplicationResult
             {
-                Status = 404,
+                Success = false,
+                Code = "404",
                 Message = $"User Id '{id}' was not found.",
             };
         }
@@ -129,7 +135,8 @@ public sealed class ApplicationUserService : IApplicationUserService
 
             return new ApplicationResult
             {
-                Status = 500,
+                Success = false,
+                Code = "500",
                 Message = "An error has occurred while updating the Application User.",
                 Errors = errors
             };
@@ -153,7 +160,8 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApplicationResult
         {
-            Status = 200,
+            Success = true,
+            Code = "200",
             Message = "User updated successfully.",
         };
     }
@@ -174,7 +182,8 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             return new ApplicationResult
             {
-                Status = 404,
+                Success = false,
+                Code = "404",
                 Message = $"User Id '{id}' was not found.",
             };
         }
@@ -184,7 +193,8 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             return new ApplicationResult
             {
-                Status = 200,
+                Success = true,
+                Code = "200",
                 Message = "User deleted successfully.",
             };
         }
@@ -197,7 +207,8 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApplicationResult
         {
-            Status = 500,
+            Success = false,
+            Code = "500",
             Message = $"An error has occurred while deleting the User with Id '{id}'.",
             Errors = errors
         };
@@ -211,9 +222,9 @@ public sealed class ApplicationUserService : IApplicationUserService
         foreach (var item in itemsToAdd)
         {
             var result = await Create(item);
-            if (result.Status == 201)
+            if (result.Success)
             {
-                data.Add(result.D!);
+                data.Add(result.Data!);
             }
             else
             {
@@ -227,13 +238,16 @@ public sealed class ApplicationUserService : IApplicationUserService
             }
         }
 
+        var isSuccess = errors.Count == 0;
+
         var response = new ApplicationResult
         {
-            Status = errors.Count == 0 ? 201 : 202,
-            Message = errors.Count == 0
+            Success = isSuccess,
+            Code = isSuccess ? "201" : "202",
+            Message = isSuccess
                 ? "All users were added successfully."
                 : $"Not all users were added. Added:[{itemsToAdd.Count() - errors.Count}] Not Added:[{errors.Count}]",
-            D = data,
+            Data = data,
             Errors = errors
         };
 

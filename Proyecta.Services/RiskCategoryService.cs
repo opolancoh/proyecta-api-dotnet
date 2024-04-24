@@ -21,8 +21,9 @@ public sealed class RiskCategoryService : IRiskCategoryService
 
         return new ApplicationResult
         {
-            Status = 200,
-            D = items
+            Success = true,
+            Code = "200",
+            Data = items
         };
     }
 
@@ -34,15 +35,17 @@ public sealed class RiskCategoryService : IRiskCategoryService
         {
             return new ApplicationResult
             {
-                Status = 404,
+                Success = false,
+                Code = "404",
                 Message = $"The item with id '{id}' was not found or you don't have permission to access it."
             };
         }
 
         return new ApplicationResult
         {
-            Status = 200,
-            D = item
+            Success = true,
+            Code = "200",
+            Data = item
         };
     }
 
@@ -56,9 +59,10 @@ public sealed class RiskCategoryService : IRiskCategoryService
 
         return new ApplicationResult
         {
-            Status = 201,
+            Success = true,
+            Code = "201",
             Message = "Risk Category created successfully.",
-            D = new GenericEntityCreationResult { Id = newItem.Id }
+            Data = new GenericEntityCreationResult { Id = newItem.Id }
         };
     }
 
@@ -71,7 +75,8 @@ public sealed class RiskCategoryService : IRiskCategoryService
 
         return new ApplicationResult
         {
-            Status = 204,
+            Success = true,
+            Code = "204",
             Message = "Item updated successfully.",
         };
     }
@@ -82,7 +87,8 @@ public sealed class RiskCategoryService : IRiskCategoryService
 
         return new ApplicationResult
         {
-            Status = 204,
+            Success = true,
+            Code = "204",
             Message = "Item deleted successfully.",
         };
     }
@@ -95,7 +101,8 @@ public sealed class RiskCategoryService : IRiskCategoryService
 
         return new ApplicationResult
         {
-            Status = 204,
+            Success = true,
+            Code = "204",
             Message = "Items added successfully.",
         };
     }

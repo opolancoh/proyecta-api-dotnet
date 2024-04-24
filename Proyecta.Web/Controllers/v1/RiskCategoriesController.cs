@@ -8,8 +8,8 @@ namespace Proyecta.Web.Controllers.v1;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/[controller]")]
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/risk-categories")]
+[Route("api/v{version:apiVersion}/risk-categories")]
 [Authorize]
 public class RiskCategoriesController : ControllerBase
 {

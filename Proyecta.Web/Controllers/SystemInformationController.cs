@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authorization;
@@ -24,14 +25,17 @@ public class SystemInformationController : ControllerBase
 
         return StatusCode(StatusCodes.Status200OK, new ApplicationResult
         {
-            Status = StatusCodes.Status200OK,
-            D = new { envVarsInfo, serverInfo }
+            Success = true,
+            Code = "200",
+            Data = new { envVarsInfo, serverInfo }
         });
     }
 
     public async Task<List<KeyValuePair<string, string>>> GetServerInfo()
     {
         var hostName = System.Net.Dns.GetHostName();
+
+        var apiVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
         // Memory
         var gcMemoryInfo = GC.GetGCMemoryInfo();
@@ -43,6 +47,7 @@ public class SystemInformationController : ControllerBase
 
         var serverInfo = new List<KeyValuePair<string, string>>()
         {
+            new("ApiVersion", apiVersion != null ? apiVersion.ToString() : "Undefined"),
             new("DotnetVersion", RuntimeInformation.FrameworkDescription),
             new("DotnetEnvironment",
                 Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "undefined"),

@@ -3,11 +3,11 @@ version: '3.8'
 
 services:
   proyecta_api_dotnet_dev:
-    image: proyecta_api_dotnet
+    image: proyecta/api-dotnet
     container_name: proyecta_api_dotnet_dev
     ports:
-      - "8000:443"
-      - "8001:80"
+      - "5100:443"
+      - "5101:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - PROYECTA_DB_CONNECTION_API=${PROYECTA_DB_CONNECTION_API}

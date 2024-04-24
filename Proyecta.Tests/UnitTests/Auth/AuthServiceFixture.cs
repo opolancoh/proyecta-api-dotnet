@@ -31,7 +31,7 @@ public class AuthServiceFixture
         MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:Issuer"))).Returns(new ConfigurationSectionMock("PROYECTA_APP"));
         MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:Audience"))).Returns(new ConfigurationSectionMock("https://localhost:7134"));
         MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:AccessTokenExpirationInMinutes"))).Returns(new ConfigurationSectionMock("30"));
-        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:RefreshTokenExpirationInDays"))).Returns(new ConfigurationSectionMock("7"));
+        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:RefreshTokenExpirationInMinutes"))).Returns(new ConfigurationSectionMock("10080"));
 
         AuthService = new AuthService(
             MockConfiguration.Object,
