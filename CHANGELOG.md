@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="0.3.0"></a>
+## [0.3.0](https://www.github.com/opolancoh/proyecta-api-dotnet/releases/tag/v0.3.0) (2024-04-23)
+
+### Features
+
+* Enhance ApplicationResult.cs with Success and Code properties ([9d725bc](https://www.github.com/opolancoh/proyecta-api-dotnet/commit/9d725bcad444aacd914caa2df1b63d494c41fc8a))
+
 <a name="0.2.0"></a>
 ## [0.2.0](https://www.github.com/opolancoh/talenica-proyecta-dotnet/releases/tag/v0.2.0) (2024-04-11)
 
