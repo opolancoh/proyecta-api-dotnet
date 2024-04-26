@@ -3,7 +3,9 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Moq;
 using Proyecta.Core.DTOs;
+using Proyecta.Core.DTOs.Risk;
 using Proyecta.Core.Entities;
+using Proyecta.Core.Entities.Risk;
 using Proyecta.Core.Results;
 using Proyecta.Tests.IntegrationTests.Fixtures;
 

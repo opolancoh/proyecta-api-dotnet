@@ -10,11 +10,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Repositories;
+using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Utils;
 using Proyecta.Services;
 using Proyecta.Repository.EntityFramework;
+using Proyecta.Repository.EntityFramework.Risk;
+using Proyecta.Services.Risk;
 using Proyecta.Web.Utils;
 
 namespace Proyecta.Web.Extensions;
@@ -60,7 +63,7 @@ public static class ServiceExtensions
 #if DEBUG
         Console.WriteLine($"[ConfigureDbContext] appDbConnection:{appDbConnection}");
 #endif
-        services.AddDbContext<AppDbContext>(opts =>
+        services.AddDbContext<ApiDbContext>(opts =>
         {
             opts.UseNpgsql(appDbConnection);
             opts.EnableSensitiveDataLogging();

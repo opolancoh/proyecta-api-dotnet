@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories;
+using Proyecta.Core.DTOs;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Exceptions;
@@ -17,14 +18,16 @@ public class ApplicationUserRepository : IApplicationUserRepository
         _entitySet = context.Users;
     }
 
-    public async Task<IEnumerable<ApplicationUser>> GetAll()
+    public async Task<IEnumerable<IdNameDto<string>>> GetAll()
     {
-        return await _entitySet.AsNoTracking().ToListAsync();
+        // return await _entitySet.AsNoTracking().ToListAsync();
+        throw new NotImplementedException();
     }
 
-    public async Task<ApplicationUser?> GetById(string id)
+    public async Task<IdNameAuditableDto<string>?> GetById(string id)
     {
-        return await _entitySet.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+        // return await _entitySet.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+        throw new NotImplementedException();
     }
 
     public async Task Create(ApplicationUser item)

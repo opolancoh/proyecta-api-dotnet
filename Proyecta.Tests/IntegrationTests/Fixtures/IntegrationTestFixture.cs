@@ -8,9 +8,12 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Repositories;
+using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Repository.EntityFramework;
+using Proyecta.Repository.EntityFramework.Risk;
 using Proyecta.Services;
+using Proyecta.Services.Risk;
 
 namespace Proyecta.Tests.IntegrationTests.Fixtures;
 
@@ -18,7 +21,7 @@ public class IntegrationTestFixture : IDisposable
 {
     private WebApplicationFactory<Program> Factory { get; }
     public HttpClient Client { get; }
-    public AppDbContext AppDbContext { get; }
+    public ApiDbContext ApiDbContext { get; }
     public JsonSerializerOptions SerializerOptions  { get; }
 
     public IntegrationTestFixture()
@@ -36,9 +39,9 @@ public class IntegrationTestFixture : IDisposable
                         throw new InvalidOperationException($"The environment variable 'PROYECTA_DB_CONNECTION_TEST' is null or empty.");
                     
                     // Override current AuthDbContext
-                    var currentAppDbContext = services.SingleOrDefault(x => x.ServiceType == typeof(DbContextOptions<AppDbContext>));
+                    var currentAppDbContext = services.SingleOrDefault(x => x.ServiceType == typeof(DbContextOptions<ApiDbContext>));
                     services.Remove(currentAppDbContext!);
-                    services.AddDbContext<AppDbContext>(options => options
+                    services.AddDbContext<ApiDbContext>(options => options
                         .UseNpgsql(testConnectionString));
                     // Override current AuthDbContext
                     var currentAuthDbContext = services.SingleOrDefault(x => x.ServiceType == typeof(DbContextOptions<AuthDbContext>));
@@ -58,7 +61,7 @@ public class IntegrationTestFixture : IDisposable
 
         // Get the instance of AppDbContext from the service provider
         var scope = Factory.Services.CreateScope();
-        AppDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        ApiDbContext = scope.ServiceProvider.GetRequiredService<ApiDbContext>();
         
         SerializerOptions = new JsonSerializerOptions()
         {
@@ -71,8 +74,8 @@ public class IntegrationTestFixture : IDisposable
     
     public void InitializeDatabase()
     {
-        AppDbContext.Database.EnsureDeleted();
-        AppDbContext.Database.EnsureCreated();
+        ApiDbContext.Database.EnsureDeleted();
+        ApiDbContext.Database.EnsureCreated();
     }
 
     private void Authenticate()
@@ -107,7 +110,7 @@ public class IntegrationTestFixture : IDisposable
 
     public void Dispose()
     {
-        AppDbContext.Database.EnsureDeleted();
+        ApiDbContext.Database.EnsureDeleted();
         Client.Dispose();
         Factory.Dispose();
     }

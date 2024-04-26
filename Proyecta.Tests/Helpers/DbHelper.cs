@@ -1,4 +1,5 @@
 using Proyecta.Core.Entities;
+using Proyecta.Core.Entities.Risk;
 
 namespace Proyecta.Tests.Helpers;
 

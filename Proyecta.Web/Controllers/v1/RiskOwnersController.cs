@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs;
+using Proyecta.Core.DTOs.Risk;
 
 namespace Proyecta.Web.Controllers.v1;
 
@@ -38,7 +40,8 @@ public class RiskOwnersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(RiskOwnerCreateOrUpdateDto item)
     {
-        var result = await _service.Create(item);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var result = await _service.Create(item, userId);
 
         return StatusCode(StatusCodes.Status200OK, result);
     }
@@ -46,7 +49,8 @@ public class RiskOwnersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, RiskOwnerCreateOrUpdateDto item)
     {
-        var result = await _service.Update(id, item);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var result = await _service.Update(id, item, userId);
 
         return StatusCode(StatusCodes.Status200OK, result);
     }
@@ -54,7 +58,8 @@ public class RiskOwnersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Remove(Guid id)
     {
-        var result = await _service.Remove(id);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var result = await _service.Remove(id, userId);
 
         return StatusCode(StatusCodes.Status200OK, result);
     }
@@ -63,7 +68,8 @@ public class RiskOwnersController : ControllerBase
     [Route("add-range")]
     public async Task<IActionResult> AddRange(IEnumerable<RiskOwnerCreateOrUpdateDto> items)
     {
-        var result = await _service.AddRange(items);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var result = await _service.AddRange(items, userId);
 
         return StatusCode(StatusCodes.Status200OK, result);
     }
