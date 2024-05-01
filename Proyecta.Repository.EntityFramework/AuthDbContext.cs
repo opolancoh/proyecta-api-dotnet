@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Entities.Auth;
-using Proyecta.Repository.EntityFramework.Seed;
+using Proyecta.Repository.EntityFramework.Extensions;
 
 namespace Proyecta.Repository.EntityFramework;
 
@@ -15,9 +15,13 @@ public class AuthDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<RefreshToken>()
-            .HasKey(x => new { x.UserId, x.Token });
-        modelBuilder.SeedAuth();
         base.OnModelCreating(modelBuilder);
+
+        // Identity
+        modelBuilder.ConfigureIdentityRoleEntity();
+        modelBuilder.ConfigureApplicationUserEntity();
+        modelBuilder.ConfigureIdentityUserRoleEntity();
+        //
+        modelBuilder.ConfigureRefreshTokenEntity();
     }
 }

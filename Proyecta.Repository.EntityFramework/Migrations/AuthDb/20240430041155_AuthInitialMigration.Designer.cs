@@ -12,7 +12,7 @@ using Proyecta.Repository.EntityFramework;
 namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240426055238_AuthInitialMigration")]
+    [Migration("20240430041155_AuthInitialMigration")]
     partial class AuthInitialMigration
     {
         /// <inheritdoc />
@@ -53,31 +53,31 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                     b.HasData(
                         new
                         {
-                            Id = "04f4fd34-bff4-45d5-b810-8567336eac8c",
+                            Id = "e11ec141-7c48-4332-a7a7-ce02b8a6cc01",
                             Name = "System",
                             NormalizedName = "SYSTEM"
                         },
                         new
                         {
-                            Id = "9be31cdb-fee7-424b-b25c-b4aabae42fa0",
+                            Id = "0204fa00-56a1-44a2-8430-54caa05c4d2a",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "2bc6de47-83af-4647-b2dc-b0553a5b9bda",
+                            Id = "0f9f7ff1-2aa5-4b89-b90d-ee0b211869f3",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "83454281-0725-4826-8fa1-24ef6493ed51",
+                            Id = "005668af-483d-4ff0-9fe8-947f3ca7f28f",
                             Name = "Editor",
                             NormalizedName = "EDITOR"
                         },
                         new
                         {
-                            Id = "36b605eb-98f6-4f38-b0d6-c81b7cab466b",
+                            Id = "3176d541-8299-4a5f-a2db-4fdc64c5d7d9",
                             Name = "Viewer",
                             NormalizedName = "VIEWER"
                         });
@@ -172,13 +172,13 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                     b.HasData(
                         new
                         {
-                            UserId = "488c700d-2fa2-4e48-a9e6-70ebb10b7893",
-                            RoleId = "04f4fd34-bff4-45d5-b810-8567336eac8c"
+                            UserId = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
+                            RoleId = "e11ec141-7c48-4332-a7a7-ce02b8a6cc01"
                         },
                         new
                         {
-                            UserId = "f6e8a1ac-242b-4420-8b8b-90f72248618d",
-                            RoleId = "9be31cdb-fee7-424b-b25c-b4aabae42fa0"
+                            UserId = "1c0bbe23-61b6-4cd0-a429-d606dac4d04c",
+                            RoleId = "0204fa00-56a1-44a2-8430-54caa05c4d2a"
                         });
                 });
 
@@ -216,6 +216,15 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -224,10 +233,14 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                         .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -252,12 +265,6 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("RefreshTokenExpiryTime")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -267,11 +274,17 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("UpdatedById")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -280,43 +293,55 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("UpdatedById");
+
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = "488c700d-2fa2-4e48-a9e6-70ebb10b7893",
+                            Id = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "496dd49f-88de-4966-bbe4-6ee55fa52b90",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ConcurrencyStamp = "59f4aef7-a8af-4fac-9294-e26c64ef6ed1",
+                            CreatedAt = new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740),
+                            CreatedById = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
+                            DisplayName = "System",
                             Email = "system@ikobit.com",
                             EmailConfirmed = false,
+                            FirstName = "System",
+                            LastName = "User",
                             LockoutEnabled = false,
                             NormalizedEmail = "SYSTEM@IKOBIT.COM",
                             NormalizedUserName = "SYSTEM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAz7zJL4frTaujRBm3lPZpMlIkQtDZXFsQJLlrAKd5UCeafbcWNNSUWfTo9N3PtldA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJIq6NV9iIw5FnUcstjjhHQhhDHsyLGXCkMyPPhpXV8Qek/i6e+Wtds7xnZ6fz+EDQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8754195a-df4b-49fb-bd07-d9bbef9a2f58",
+                            SecurityStamp = "b23363fd-ab06-47c1-bcd1-c96e7db696c7",
                             TwoFactorEnabled = false,
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedAt = new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740),
+                            UpdatedById = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
                             UserName = "system"
                         },
                         new
                         {
-                            Id = "f6e8a1ac-242b-4420-8b8b-90f72248618d",
+                            Id = "1c0bbe23-61b6-4cd0-a429-d606dac4d04c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "31f995c4-2395-4f23-ac2f-b85e8778dde2",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ConcurrencyStamp = "c5c2cfb2-4bb7-4a72-94d3-de3e44755142",
+                            CreatedAt = new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740),
+                            CreatedById = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
+                            DisplayName = "Admin",
                             Email = "admin@ikobit.com",
                             EmailConfirmed = false,
+                            FirstName = "Admin",
+                            LastName = "User",
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@IKOBIT.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBxOzjl7hFwjkVI4H8b8eWf36vn/3mVWC8P2vIMMERaLBryW9qpBnRWKyIfoB15Fdw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELhcaqu43TcGFBGMH/RdKjoOndT0zPY1cD7/CT1se7bDNvvyjlW42KqYlbmGRaRRLg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "33eb6c16-e8a8-4cfa-9bac-533e815a0bde",
+                            SecurityStamp = "f00d1777-1a18-416f-ad27-d54b20c8e770",
                             TwoFactorEnabled = false,
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedAt = new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740),
+                            UpdatedById = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
                             UserName = "admin"
                         });
                 });
@@ -386,6 +411,25 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Proyecta.Core.Entities.Auth.ApplicationUser", b =>
+                {
+                    b.HasOne("Proyecta.Core.Entities.Auth.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Proyecta.Core.Entities.Auth.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
                 });
 #pragma warning restore 612, 618
         }

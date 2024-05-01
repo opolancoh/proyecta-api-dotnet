@@ -6,6 +6,8 @@ public record ApplicationUserCreateOrUpdateDto : IValidatableObject
 {
     [Required] public string? FirstName { get; init; }
     [Required] public string? LastName { get; init; }
+    
+    [Required] public string? DisplayName { get; init; }
     [Required] public string? UserName { get; init; }
     public string? Password { get; init; }
     public ICollection<string>? Roles { get; init; }

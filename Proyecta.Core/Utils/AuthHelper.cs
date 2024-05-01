@@ -47,7 +47,7 @@ public static class AuthHelper
         var claims = new List<Claim>
         {
             new("sub", item.userId),
-            new("name", $"{item.userFirstName} {item.userLastName}"),
+            new("name", item.userDisplayName),
             new("username", item.userName)
         };
 

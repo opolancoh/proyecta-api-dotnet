@@ -67,7 +67,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
             Id = entity.Id,
             Name = entity.Name,
             CreatedAt = entity.CreatedAt,
-            CreatedBy = new IdNameDto<string>
+            CreatedBy = new IdNameDto<string?>
             {
                 Id = entity.CreatedById,
                 Name = createdBy

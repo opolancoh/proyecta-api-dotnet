@@ -73,7 +73,7 @@ public class RiskTreatmentRepository : IRiskTreatmentRepository
                 Name = createdBy
             },
             UpdatedAt = entity.UpdatedAt,
-            UpdatedBy = new IdNameDto<string>
+            UpdatedBy = new IdNameDto<string?>
             {
                 Id = entity.UpdatedById,
                 Name = updatedBy

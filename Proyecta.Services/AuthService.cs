@@ -36,17 +36,18 @@ public class AuthService : IAuthService
         _appUserService = appUserService;
     }
 
-    public async Task<ApplicationResult> Register(RegisterDto registerDto)
+    public async Task<ApplicationResult> Register(RegisterDto registerDto, string currentUserId)
     {
         var newUser = new ApplicationUserCreateOrUpdateDto
         {
             FirstName = registerDto.FirstName,
             LastName = registerDto.LastName,
+            DisplayName = registerDto.DisplayName,
             UserName = registerDto.UserName,
             Password = registerDto.Password
         };
 
-        return await _appUserService.Create(newUser);
+        return await _appUserService.Create(newUser, currentUserId);
     }
 
     public async Task<ApplicationResult> Login(LoginDto loginDto)
@@ -75,9 +76,8 @@ public class AuthService : IAuthService
         var claimsInput = new JwtAccessTokenClaimsInputDto
         {
             userId = user.Id,
-            userFirstName = user.FirstName ?? "",
-            userLastName = user.LastName ?? "",
             userName = user.UserName ?? "",
+            userDisplayName = user.DisplayName ?? "",
             userRoles = userRoles.ToList()
         };
         var claims = AuthHelper.GetClaims(claimsInput);

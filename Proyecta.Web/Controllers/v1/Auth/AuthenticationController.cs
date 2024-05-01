@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
@@ -23,7 +24,8 @@ public class AuthenticationController : ControllerBase
     [Authorize(Roles = "System,Administrator")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
-        var result = await _service.Register(registerDto);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var result = await _service.Register(registerDto, userId);
 
         return StatusCode(StatusCodes.Status200OK, result);
     }

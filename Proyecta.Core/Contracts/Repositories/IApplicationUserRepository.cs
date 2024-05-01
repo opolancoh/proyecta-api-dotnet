@@ -9,5 +9,5 @@ public interface
 {
     Task AddRange(IEnumerable<ApplicationUser> items);
     Task<IEnumerable<ApplicationUserListDto>> GetAllWithRoles();
-    Task<ApplicationUserDetailsDto?> GetByIdWithRoles(string id);
+    Task<ApplicationUserDetailDto?> GetByIdWithRoles(string id);
 }

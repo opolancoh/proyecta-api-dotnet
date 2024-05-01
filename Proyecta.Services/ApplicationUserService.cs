@@ -60,13 +60,11 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApplicationResult> Create(ApplicationUserCreateOrUpdateDto item)
+    public async Task<ApplicationResult> Create(ApplicationUserCreateOrUpdateDto item, string currentUserId)
     {
-        var user = GetEntity(null, item);
-        user.CreatedAt = DateTime.UtcNow;
-        user.UpdatedAt = DateTime.UtcNow;
+        var newItem = MapDtoToEntity(item, currentUserId);
 
-        var result = await _userManager.CreateAsync(user, item.Password!);
+        var result = await _userManager.CreateAsync(newItem, item.Password!);
 
         if (!result.Succeeded)
         {
@@ -89,11 +87,11 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         if (item.Roles != null)
         {
-            await _userManager.AddToRolesAsync(user, item.Roles);
+            await _userManager.AddToRolesAsync(newItem, item.Roles);
             _logger.LogInformation("Roles added successfully.");
         }
 
-        var userId = await _userManager.GetUserIdAsync(user);
+        var userId = await _userManager.GetUserIdAsync(newItem);
 
         return new ApplicationResult
         {
@@ -104,7 +102,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApplicationResult> Update(string id, ApplicationUserCreateOrUpdateDto item)
+    public async Task<ApplicationResult> Update(string id, ApplicationUserCreateOrUpdateDto item, string currentUserId)
     {
         // Look for current user
         var currentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
@@ -120,8 +118,10 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         // Update user data
         currentUser.UpdatedAt = DateTime.UtcNow;
+        currentUser.UpdatedById = currentUserId;
         currentUser.FirstName = item.FirstName!;
         currentUser.LastName = item.LastName!;
+        currentUser.DisplayName = item.DisplayName!;
         currentUser.UserName = item.UserName;
 
         var result = await _userManager.UpdateAsync(currentUser);
@@ -166,7 +166,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApplicationResult> Remove(string id)
+    public async Task<ApplicationResult> Remove(string id, string currentUserId)
     {
         var currentUser = await _userManager
             .Users
@@ -214,14 +214,15 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApplicationResult> AddRange(IEnumerable<ApplicationUserCreateOrUpdateDto> items)
+    public async Task<ApplicationResult> AddRange(IEnumerable<ApplicationUserCreateOrUpdateDto> items,
+        string currentUserId)
     {
         var data = new List<object>();
         var errors = new List<ApplicationResponseError>();
         var itemsToAdd = items.ToList();
         foreach (var item in itemsToAdd)
         {
-            var result = await Create(item);
+            var result = await Create(item, currentUserId);
             if (result.Success)
             {
                 data.Add(result.Data!);
@@ -254,18 +255,21 @@ public sealed class ApplicationUserService : IApplicationUserService
         return response;
     }
 
-    private ApplicationUser GetEntity(string? id, ApplicationUserCreateOrUpdateDto item)
+    private ApplicationUser MapDtoToEntity(ApplicationUserCreateOrUpdateDto item, string currentUserId)
     {
-        var entity = new ApplicationUser()
+        var now = DateTime.UtcNow;
+
+        var entity = new ApplicationUser
         {
             FirstName = item.FirstName!,
             LastName = item.LastName!,
+            DisplayName = item.DisplayName!,
             UserName = item.UserName,
+            CreatedAt = now,
+            CreatedById = currentUserId,
+            UpdatedAt = now,
+            UpdatedById = currentUserId
         };
-
-        if (id == null) return entity;
-
-        entity.Id = id;
 
         return entity;
     }

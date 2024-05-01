@@ -67,13 +67,13 @@ public class RiskCategoryRepository : IRiskCategoryRepository
             Id = entity.Id,
             Name = entity.Name,
             CreatedAt = entity.CreatedAt,
-            CreatedBy = new IdNameDto<string>
+            CreatedBy = new IdNameDto<string?>
             {
                 Id = entity.CreatedById,
                 Name = createdBy
             },
             UpdatedAt = entity.UpdatedAt,
-            UpdatedBy = new IdNameDto<string>
+            UpdatedBy = new IdNameDto<string?>
             {
                 Id = entity.UpdatedById,
                 Name = updatedBy

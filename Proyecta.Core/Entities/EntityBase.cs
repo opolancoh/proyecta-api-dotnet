@@ -8,7 +8,7 @@ public abstract class EntityBase: IAuditableEntity
     
     // IAuditableEntity implementation
     public DateTime CreatedAt { get; set; }
-    public string CreatedById { get; set; }
+    public string? CreatedById { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public string UpdatedById { get; set; }
+    public string? UpdatedById { get; set; }
 }

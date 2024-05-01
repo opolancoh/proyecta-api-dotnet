@@ -44,6 +44,7 @@ public class RiskRepository : IRiskRepository
 
     public async Task<RiskDetailDto?> GetById(Guid id)
     {
+        // Todo: Create a single query in the DB
         var item = await _entitySet
             .AsNoTracking()
             .Select(x => new RiskDetailDto
@@ -72,14 +73,14 @@ public class RiskRepository : IRiskRepository
 
         var createdByName = await _authContext.Users
             .Where(x => x.Id == item.CreatedBy.Id)
-            .Select(x => x.UserName)
+            .Select(x => x.DisplayName)
             .FirstOrDefaultAsync();
 
         var updatedByName = item.CreatedBy.Id == item.UpdatedBy.Id
             ? createdByName
             : await _authContext.Users
                 .Where(x => x.Id == item.UpdatedBy.Id)
-                .Select(x => x.UserName)
+                .Select(x => x.DisplayName)
                 .FirstOrDefaultAsync();
 
         item.CreatedBy.Name = createdByName;

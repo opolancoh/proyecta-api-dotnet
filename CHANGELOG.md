@@ -1,36 +1,34 @@
-# Change Log
+# Changelog
 
-All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
+All notable changes to this project will be documented in this file.
 
-<a name="0.3.1"></a>
-## [0.3.1](https://www.github.com/opolancoh/proyecta-api-dotnet/releases/tag/v0.3.1) (2024-04-26)
+## [0.4.0] - 2024-05-01 (Beta Release)
 
-<a name="0.3.0"></a>
-## [0.3.0](https://www.github.com/opolancoh/proyecta-api-dotnet/releases/tag/v0.3.0) (2024-04-23)
+### Added
+- DisplayName, CreatedBy and UpdatedBy to the ApplicationUser entity.
+- Added user authentication with Firebase.
 
-### Features
+### Changed
+- Removed RefreshToken and RefreshTokenExpiryTime from ApplicationUser entity.
+- Group EF Core migrations by DbContext.
 
-* Enhance ApplicationResult.cs with Success and Code properties ([9d725bc](https://www.github.com/opolancoh/proyecta-api-dotnet/commit/9d725bcad444aacd914caa2df1b63d494c41fc8a))
+### Fixed
+- Fixed a bug causing the app to crash on the profile page when no data is available.
 
-<a name="0.2.0"></a>
-## [0.2.0](https://www.github.com/opolancoh/talenica-proyecta-dotnet/releases/tag/v0.2.0) (2024-04-11)
+## [0.3.0] - 2024-04-23 (Beta Release)
 
-### Features
+### Changed
+- Enhance ApplicationResult.cs with Success and Code properties.
 
-* Add 'AllowAllOrigins' cors policy, Improve system-info endpoint, Improvements and fixes ([e7d9626](https://www.github.com/opolancoh/talenica-proyecta-dotnet/commit/e7d9626866691be5a9c4ee72a313b82996e0092f))
+## [0.2.0] - 2024-04-11 (Beta Release)
 
-<a name="0.1.1"></a>
-## [0.1.1](https://www.github.com/opolancoh/talenica-proyecta-dotnet/releases/tag/v0.1.1) (2024-04-10)
+### Added
+- Added 'AllowAllOrigins' cors policy.
 
-### Features
+### Changed
+- Improve system-info endpoint.
 
-* Improve README.md document ([306b4af](https://www.github.com/opolancoh/talenica-proyecta-dotnet/commit/306b4af6c4b51f7791df1f8b3e61e9e35ab17905))
+## [0.1.0] - 2024-04-10 (Beta Release)
 
-<a name="0.1.0"></a>
-## [0.1.0](https://www.github.com/opolancoh/talenica-proyecta-dotnet/releases/tag/v0.1.0) (2024-04-10)
-
-### Features
-
-* Initial version ([306b4af](https://www.github.com/opolancoh/talenica-proyecta-dotnet/commit/306b4af6c4b51f7791df1f8b3e61e9e35ab17905))
-
-
+### Added
+- Initial version.
