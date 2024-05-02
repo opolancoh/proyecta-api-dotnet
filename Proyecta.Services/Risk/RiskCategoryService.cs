@@ -3,7 +3,7 @@ using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs;
 using Proyecta.Core.DTOs.Risk;
 using Proyecta.Core.Entities.Risk;
-using Proyecta.Core.Results;
+using Proyecta.Core.Responses;
 
 namespace Proyecta.Services.Risk;
 
@@ -16,11 +16,11 @@ public sealed class RiskCategoryService : IRiskCategoryService
         _repository = repository;
     }
 
-    public async Task<ApplicationResult> GetAll()
+    public async Task<ApiResponse<IEnumerable<GenericEntityListDto>>> GetAll()
     {
         var items = await _repository.GetAll();
 
-        return new ApplicationResult
+        return new ApiResponse<IEnumerable<GenericEntityListDto>>
         {
             Success = true,
             Code = "200",
@@ -28,13 +28,13 @@ public sealed class RiskCategoryService : IRiskCategoryService
         };
     }
 
-    public async Task<ApplicationResult> GetById(Guid id)
+    public async Task<ApiResponse<GenericEntityDetailDto<Guid>>> GetById(Guid id)
     {
         var item = await _repository.GetById(id);
 
         if (item == null)
         {
-            return new ApplicationResult
+            return new ApiResponse<GenericEntityDetailDto<Guid>>
             {
                 Success = false,
                 Code = "404",
@@ -42,7 +42,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
             };
         }
 
-        return new ApplicationResult
+        return new ApiResponse<GenericEntityDetailDto<Guid>>
         {
             Success = true,
             Code = "200",
@@ -50,29 +50,30 @@ public sealed class RiskCategoryService : IRiskCategoryService
         };
     }
 
-    public async Task<ApplicationResult> Create(RiskCategoryCreateOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse<ApiCreateResponse<Guid>>> Create(GenericEntityCreateOrUpdateDto item,
+        string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
 
         await _repository.Create(newItem);
 
-        return new ApplicationResult
+        return new ApiResponse<ApiCreateResponse<Guid>>
         {
             Success = true,
             Code = "201",
             Message = "Risk Category created successfully.",
-            Data = new GenericEntityCreationResult { Id = newItem.Id }
+            Data = new ApiCreateResponse<Guid> { Id = newItem.Id }
         };
     }
 
-    public async Task<ApplicationResult> Update(Guid id, RiskCategoryCreateOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse> Update(Guid id, GenericEntityCreateOrUpdateDto item, string currentUserId)
     {
         var itemToUpdate = MapDtoToEntity(item, currentUserId);
         itemToUpdate.Id = id;
 
         await _repository.Update(itemToUpdate);
 
-        return new ApplicationResult
+        return new ApiResponse
         {
             Success = true,
             Code = "204",
@@ -80,11 +81,11 @@ public sealed class RiskCategoryService : IRiskCategoryService
         };
     }
 
-    public async Task<ApplicationResult> Remove(Guid id, string currentUserId)
+    public async Task<ApiResponse> Remove(Guid id, string currentUserId)
     {
         await _repository.Remove(id);
 
-        return new ApplicationResult
+        return new ApiResponse
         {
             Success = true,
             Code = "204",
@@ -92,22 +93,23 @@ public sealed class RiskCategoryService : IRiskCategoryService
         };
     }
 
-    public async Task<ApplicationResult> AddRange(IEnumerable<RiskCategoryCreateOrUpdateDto> items,
+    public async Task<ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>> AddRange(
+        IEnumerable<GenericEntityCreateOrUpdateDto> items,
         string currentUserId)
     {
         var newItems = items.Select(item => MapDtoToEntity(item, currentUserId)).ToList();
 
         await _repository.AddRange(newItems);
 
-        return new ApplicationResult
+        return new ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>
         {
             Success = true,
             Code = "204",
             Message = "Items added successfully.",
         };
     }
-    
-    private RiskCategory MapDtoToEntity(RiskCategoryCreateOrUpdateDto item, string currentUserId)
+
+    private RiskCategory MapDtoToEntity(GenericEntityCreateOrUpdateDto item, string currentUserId)
     {
         var now = DateTime.UtcNow;
 

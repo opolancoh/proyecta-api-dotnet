@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.Risk;
+using Proyecta.Core.Responses;
 
 namespace Proyecta.Web.Controllers.v1;
 
@@ -22,6 +23,7 @@ public class RisksController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<RiskListDto>>))]
     public async Task<IActionResult> Get()
     {
         var result = await _service.GetAll();
@@ -30,6 +32,7 @@ public class RisksController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<RiskDetailDto>))]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _service.GetById(id);
@@ -38,6 +41,7 @@ public class RisksController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiCreateResponse<Guid>>))]
     public async Task<IActionResult> Create(RiskCreateOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -47,6 +51,7 @@ public class RisksController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
     public async Task<IActionResult> Update(Guid id, RiskCreateOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -56,6 +61,7 @@ public class RisksController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
     public async Task<IActionResult> Remove(Guid id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -65,6 +71,7 @@ public class RisksController : ControllerBase
     }
     
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>))]
     [Route("add-range")]
     public async Task<IActionResult> AddRange(IEnumerable<RiskCreateOrUpdateDto> items)
     {

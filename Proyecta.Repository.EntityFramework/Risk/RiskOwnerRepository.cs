@@ -19,24 +19,26 @@ public class RiskOwnerRepository : IRiskOwnerRepository
         _entitySet = context.RiskOwner;
     }
 
-    public async Task<IEnumerable<IdNameDto<Guid>>> GetAll()
+     public async Task<IEnumerable<GenericEntityListDto>> GetAll()
     {
         return await _entitySet
             .AsNoTracking()
-            .Select(x => new IdNameDto<Guid>
+            .Select(x => new GenericEntityListDto
             {
                 Id = x.Id,
-                Name = x.Name
+                Name = x.Name,
+                CreatedAt = x.CreatedAt,
+                UpdatedAt = x.UpdatedAt
             })
             .ToListAsync();
     }
 
-    public async Task<IdNameAuditableDto<Guid>?> GetById(Guid id)
+    public async Task<GenericEntityDetailDto<Guid>> GetById(Guid id)
     {
         var entity = await _entitySet
             .AsNoTracking()
             .Where(x => x.Id == id)
-            .Select(x => new RiskCategory
+            .Select(x => new RiskOwner
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -48,7 +50,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
             .FirstOrDefaultAsync();
 
         if (entity == null)
-            return null;
+            return null!;
 
         var createdBy = await _authContext.Users
             .Where(x => x.Id == entity.CreatedById)
@@ -62,7 +64,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
                 .Select(x => x.UserName)
                 .FirstOrDefaultAsync();
 
-        return new IdNameAuditableDto<Guid>
+        return new GenericEntityDetailDto<Guid>
         {
             Id = entity.Id,
             Name = entity.Name,
@@ -73,7 +75,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
                 Name = createdBy
             },
             UpdatedAt = entity.UpdatedAt,
-            UpdatedBy = new IdNameDto<string>
+            UpdatedBy = new IdNameDto<string?>
             {
                 Id = entity.UpdatedById,
                 Name = updatedBy
@@ -81,13 +83,13 @@ public class RiskOwnerRepository : IRiskOwnerRepository
         };
     }
 
-    public async Task Create(RiskOwner item)
+    public async Task<int> Create(RiskOwner item)
     {
         _entitySet.Add(item);
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
     }
 
-    public async Task Update(RiskOwner item)
+    public async Task<int> Update(RiskOwner item)
     {
         _context.Entry(item).State = EntityState.Modified;
         _context.Entry(item).Property(x => x.CreatedAt).IsModified = false;
@@ -95,7 +97,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
 
         try
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -110,7 +112,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
         }
     }
 
-    public async Task Remove(Guid id)
+    public async Task<int> Remove(Guid id)
     {
         var item = new RiskOwner { Id = id };
 
@@ -118,7 +120,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
 
         try
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -137,7 +139,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
     {
         return await _entitySet.AnyAsync(e => e.Id == id);
     }
-    
+
     public async Task AddRange(IEnumerable<RiskOwner> items)
     {
         await _entitySet.AddRangeAsync(items);

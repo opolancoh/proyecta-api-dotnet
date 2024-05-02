@@ -1,5 +1,7 @@
+using Microsoft.OpenApi.Models;
 using Proyecta.Repository.EntityFramework;
 using Proyecta.Web.Extensions;
+using Proyecta.Web.Swagger;
 using Proyecta.Web.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +18,11 @@ builder.Services.ConfigureApiVersioning();
 builder.Services.ConfigureCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Proyecta API", Version = "v1" });
+    c.DocumentFilter<ExcludeVersionRoutesDocumentFilter>();
+});
 
 var app = builder.Build();
 
@@ -27,8 +33,8 @@ app.MapHealthChecks("/health");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // app.UseSwagger();
-    // app.UseSwaggerUI();
+    app.UseSwagger();
+    SwaggerConfiguration.ConfigureSwaggerUI(app);
 }
 
 // DB EnsureCreated and Seed

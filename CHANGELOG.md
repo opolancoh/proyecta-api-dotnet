@@ -1,32 +1,39 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project are documented in this file.
+
+## [0.5.0] - 2024-05-02 (Beta Release)
+
+### Added
+- Swagger documentation.
+
+### Changed
+- Renamed `ApplicationResult` to `ApiResponse`.
 
 ## [0.4.0] - 2024-05-01 (Beta Release)
 
 ### Added
-- DisplayName, CreatedBy and UpdatedBy to the ApplicationUser entity.
-- Added user authentication with Firebase.
+- `DisplayName`, `CreatedBy`, and `UpdatedBy` fields to the `ApplicationUser` entity.
 
 ### Changed
-- Removed RefreshToken and RefreshTokenExpiryTime from ApplicationUser entity.
-- Group EF Core migrations by DbContext.
+- Removed `RefreshToken` and `RefreshTokenExpiryTime` from the `ApplicationUser` entity.
+- Grouped EF Core migrations by `DbContext`.
 
 ### Fixed
-- Fixed a bug causing the app to crash on the profile page when no data is available.
+- Resolved a bug that caused the app to crash on the profile page when no data was present.
 
 ## [0.3.0] - 2024-04-23 (Beta Release)
 
 ### Changed
-- Enhance ApplicationResult.cs with Success and Code properties.
+- Enhanced `ApplicationResult.cs` with `Success` and `Code` properties.
 
 ## [0.2.0] - 2024-04-11 (Beta Release)
 
 ### Added
-- Added 'AllowAllOrigins' cors policy.
+- `AllowAllOrigins` CORS policy.
 
 ### Changed
-- Improve system-info endpoint.
+- Enhanced the system-info endpoint.
 
 ## [0.1.0] - 2024-04-10 (Beta Release)
 

@@ -5,7 +5,7 @@ using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.Entities.Auth;
-using Proyecta.Core.Results;
+using Proyecta.Core.Responses;
 using Proyecta.Core.Utils;
 
 namespace Proyecta.Services;
@@ -36,7 +36,7 @@ public class AuthService : IAuthService
         _appUserService = appUserService;
     }
 
-    public async Task<ApplicationResult> Register(RegisterDto registerDto, string currentUserId)
+    public async Task<ApiResponse<ApiCreateResponse<string>>> Register(RegisterDto registerDto, string currentUserId)
     {
         var newUser = new ApplicationUserCreateOrUpdateDto
         {
@@ -50,13 +50,13 @@ public class AuthService : IAuthService
         return await _appUserService.Create(newUser, currentUserId);
     }
 
-    public async Task<ApplicationResult> Login(LoginDto loginDto)
+    public async Task<ApiResponse<TokenDto>> Login(LoginDto loginDto)
     {
         var user = await _authRepository.GetUserForLogin(loginDto);
         if (user == null)
         {
             _logger.LogWarning(AuthenticationFailedMessage);
-            return new ApplicationResult
+            return new ApiResponse<TokenDto>
             {
                 Success = false,
                 Code = "401",
@@ -96,7 +96,7 @@ public class AuthService : IAuthService
         if (!addRefreshTokenResult)
         {
             _logger.LogError("Unable to store the refresh token");
-            return new ApplicationResult
+            return new ApiResponse<TokenDto>
             {
                 Success = false,
                 Code = "401",
@@ -104,7 +104,7 @@ public class AuthService : IAuthService
             };
         }
 
-        return new ApplicationResult
+        return new ApiResponse<TokenDto>
         {
             Success = true,
             Code = "200",
@@ -112,7 +112,7 @@ public class AuthService : IAuthService
         };
     }
 
-    public async Task<ApplicationResult> Logout(TokenDto tokenDto)
+    public async Task<ApiResponse> Logout(TokenDto tokenDto)
     {
         var jwtSettings = _configuration.GetSection("JwtConfig");
 
@@ -124,7 +124,7 @@ public class AuthService : IAuthService
         var accessToken = AuthHelper.ValidateJwtToken(tokenDto.AccessToken, issuer, audience, secret, false);
         if (accessToken == null)
         {
-            return new ApplicationResult
+            return new ApiResponse
             {
                 Success = false,
                 Code = "400",
@@ -138,7 +138,7 @@ public class AuthService : IAuthService
         if (!removeRefreshTokenResult)
         {
             _logger.LogError("Unable to remove the refresh token");
-            return new ApplicationResult
+            return new ApiResponse
             {
                 Success = false,
                 Code = "400",
@@ -146,7 +146,7 @@ public class AuthService : IAuthService
             };
         }
 
-        return new ApplicationResult
+        return new ApiResponse
         {
             Success = true,
             Code = "204",
@@ -154,7 +154,7 @@ public class AuthService : IAuthService
         };
     }
 
-    public async Task<ApplicationResult> RefreshToken(TokenDto tokenDto)
+    public async Task<ApiResponse<RefreshTokenResponse>> RefreshToken(TokenDto tokenDto)
     {
         var jwtSettings = _configuration.GetSection("JwtConfig");
 
@@ -165,7 +165,7 @@ public class AuthService : IAuthService
         var accessToken = AuthHelper.ValidateJwtToken(tokenDto.AccessToken, issuer, audience, secret, false);
         if (accessToken == null)
         {
-            return new ApplicationResult
+            return new ApiResponse<RefreshTokenResponse>
             {
                 Success = false,
                 Code = "401",
@@ -177,7 +177,7 @@ public class AuthService : IAuthService
         var refreshTokenFromDb = await _authRepository.GetRefreshToken(accessToken.Subject, tokenDto.RefreshToken);
         if (refreshTokenFromDb == null || refreshTokenFromDb.ExpiryDate < DateTime.UtcNow)
         {
-            return new ApplicationResult
+            return new ApiResponse<RefreshTokenResponse>
             {
                 Success = false,
                 Code = "401",
@@ -190,11 +190,11 @@ public class AuthService : IAuthService
         var expiration = DateTime.UtcNow.AddMinutes(expirationInMinutes);
         var newAccessToken = AuthHelper.UpdateTokenExpiration(accessToken, expiration, secret);
 
-        return new ApplicationResult
+        return new ApiResponse<RefreshTokenResponse>
         {
             Success = true,
             Code = "200",
-            Data = new { AccessToken = newAccessToken }
+            Data = new RefreshTokenResponse { AccessToken = newAccessToken }
         };
     }
 }

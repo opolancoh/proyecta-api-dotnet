@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.Auth;
+using Proyecta.Core.Responses;
 
 namespace Proyecta.Web.Controllers.v1;
 
@@ -21,6 +22,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApplicationUserListDto>>))]
     public async Task<IActionResult> Get()
     {
         var result = await _service.GetAll();
@@ -29,6 +31,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApplicationUserDetailDto>))]
     public async Task<IActionResult> GetById(string id)
     {
         var result = await _service.GetById(id);
@@ -37,6 +40,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiCreateResponse<string>>))]
     public async Task<IActionResult> Create(ApplicationUserCreateOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -46,6 +50,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
     public async Task<IActionResult> Update(string id, ApplicationUserCreateOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -55,6 +60,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
     public async Task<IActionResult> Remove(string id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -65,6 +71,7 @@ public class UsersController : ControllerBase
 
     [HttpPost]
     [Route("add-range")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApiCreateResponse<string>>>))]
     public async Task<IActionResult> AddRange(IEnumerable<ApplicationUserCreateOrUpdateDto> items)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;

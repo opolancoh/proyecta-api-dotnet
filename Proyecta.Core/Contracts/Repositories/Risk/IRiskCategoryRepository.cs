@@ -3,9 +3,7 @@ using Proyecta.Core.Entities.Risk;
 
 namespace Proyecta.Core.Contracts.Repositories.Risk;
 
-public interface
-    IRiskCategoryRepository : IRepositoryBase<RiskCategory, Guid, IEnumerable<IdNameDto<Guid>>,
-    IdNameAuditableDto<Guid>>
+public interface IRiskCategoryRepository : IIdNameRepository<Guid, RiskCategory, IEnumerable<GenericEntityListDto>,
+    GenericEntityDetailDto<Guid>>
 {
-    Task AddRange(IEnumerable<RiskCategory> items);
 }

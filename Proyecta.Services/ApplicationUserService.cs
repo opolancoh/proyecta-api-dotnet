@@ -5,7 +5,7 @@ using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.DTOs.Auth;
-using Proyecta.Core.Results;
+using Proyecta.Core.Responses;
 
 namespace Proyecta.Services;
 
@@ -26,11 +26,11 @@ public sealed class ApplicationUserService : IApplicationUserService
         _userManager = userManager;
     }
 
-    public async Task<ApplicationResult> GetAll()
+    public async Task<ApiResponse<IEnumerable<ApplicationUserListDto>>> GetAll()
     {
         var users = await _repository.GetAllWithRoles();
 
-        return new ApplicationResult
+        return new ApiResponse<IEnumerable<ApplicationUserListDto>>
         {
             Success = true,
             Code = "200",
@@ -38,13 +38,13 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApplicationResult> GetById(string id)
+    public async Task<ApiResponse<ApplicationUserDetailDto>> GetById(string id)
     {
         var user = await _repository.GetByIdWithRoles(id);
 
         if (user == null)
         {
-            return new ApplicationResult
+            return new ApiResponse<ApplicationUserDetailDto>
             {
                 Success = false,
                 Code = "404",
@@ -52,7 +52,7 @@ public sealed class ApplicationUserService : IApplicationUserService
             };
         }
 
-        return new ApplicationResult
+        return new ApiResponse<ApplicationUserDetailDto>
         {
             Success = true,
             Code = "200",
@@ -60,7 +60,8 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApplicationResult> Create(ApplicationUserCreateOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse<ApiCreateResponse<string>>> Create(ApplicationUserCreateOrUpdateDto item,
+        string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
 
@@ -71,10 +72,10 @@ public sealed class ApplicationUserService : IApplicationUserService
             var errors = result.Errors.Select(error =>
             {
                 _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
-                return new ApplicationResponseError { Code = error.Code, Description = error.Description };
+                return new ApiErrorResponse { Code = error.Code, Description = error.Description };
             }).ToList();
 
-            return new ApplicationResult
+            return new ApiResponse<ApiCreateResponse<string>>
             {
                 Success = false,
                 Code = "400",
@@ -93,22 +94,22 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         var userId = await _userManager.GetUserIdAsync(newItem);
 
-        return new ApplicationResult
+        return new ApiResponse<ApiCreateResponse<string>>
         {
             Success = true,
             Code = "201",
             Message = "User created successfully.",
-            Data = new { userId }
+            Data = new ApiCreateResponse<string> { Id = userId }
         };
     }
 
-    public async Task<ApplicationResult> Update(string id, ApplicationUserCreateOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse> Update(string id, ApplicationUserCreateOrUpdateDto item, string currentUserId)
     {
         // Look for current user
         var currentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
         if (currentUser == null)
         {
-            return new ApplicationResult
+            return new ApiResponse
             {
                 Success = false,
                 Code = "404",
@@ -130,10 +131,10 @@ public sealed class ApplicationUserService : IApplicationUserService
             var errors = result.Errors.Select(error =>
             {
                 _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
-                return new ApplicationResponseError { Code = error.Code, Description = error.Description };
+                return new ApiErrorResponse { Code = error.Code, Description = error.Description };
             }).ToList();
 
-            return new ApplicationResult
+            return new ApiResponse
             {
                 Success = false,
                 Code = "500",
@@ -158,7 +159,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         _logger.LogInformation("User updated successfully.");
 
-        return new ApplicationResult
+        return new ApiResponse
         {
             Success = true,
             Code = "200",
@@ -166,7 +167,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApplicationResult> Remove(string id, string currentUserId)
+    public async Task<ApiResponse> Remove(string id, string currentUserId)
     {
         var currentUser = await _userManager
             .Users
@@ -180,7 +181,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         if (currentUser == null)
         {
-            return new ApplicationResult
+            return new ApiResponse
             {
                 Success = false,
                 Code = "404",
@@ -191,7 +192,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         var result = await _userManager.DeleteAsync(currentUser);
         if (result.Succeeded)
         {
-            return new ApplicationResult
+            return new ApiResponse
             {
                 Success = true,
                 Code = "200",
@@ -202,10 +203,10 @@ public sealed class ApplicationUserService : IApplicationUserService
         var errors = result.Errors.Select(error =>
         {
             _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
-            return new ApplicationResponseError { Code = error.Code, Description = error.Description };
+            return new ApiErrorResponse { Code = error.Code, Description = error.Description };
         }).ToList();
 
-        return new ApplicationResult
+        return new ApiResponse
         {
             Success = false,
             Code = "500",
@@ -214,25 +215,26 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApplicationResult> AddRange(IEnumerable<ApplicationUserCreateOrUpdateDto> items,
+    public async Task<ApiResponse<IEnumerable<ApiCreateResponse<string>>>> AddRange(
+        IEnumerable<ApplicationUserCreateOrUpdateDto> items,
         string currentUserId)
     {
-        var data = new List<object>();
-        var errors = new List<ApplicationResponseError>();
+        var data = new List<ApiCreateResponse<string>>();
+        var errors = new List<ApiErrorResponse>();
         var itemsToAdd = items.ToList();
         foreach (var item in itemsToAdd)
         {
             var result = await Create(item, currentUserId);
             if (result.Success)
             {
-                data.Add(result.Data!);
+                data.Add(result.Data);
             }
             else
             {
                 var resultErrors = result.Errors?.Select(error =>
                 {
                     _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
-                    return new ApplicationResponseError { Code = error.Code, Description = error.Description };
+                    return new ApiErrorResponse { Code = error.Code, Description = error.Description };
                 }).ToList();
                 if (resultErrors != null)
                     errors.AddRange(resultErrors);
@@ -241,7 +243,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         var isSuccess = errors.Count == 0;
 
-        var response = new ApplicationResult
+        var response = new ApiResponse<IEnumerable<ApiCreateResponse<string>>>
         {
             Success = isSuccess,
             Code = isSuccess ? "201" : "202",

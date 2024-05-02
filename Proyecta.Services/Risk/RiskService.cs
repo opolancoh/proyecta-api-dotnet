@@ -2,7 +2,7 @@ using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.Risk;
 using Proyecta.Core.Entities.Risk;
-using Proyecta.Core.Results;
+using Proyecta.Core.Responses;
 
 namespace Proyecta.Services.Risk;
 
@@ -15,11 +15,11 @@ public sealed class RiskService : IRiskService
         _repository = repository;
     }
 
-    public async Task<ApplicationResult> GetAll()
+    public async Task<ApiResponse<IEnumerable<RiskListDto>>> GetAll()
     {
         var items = await _repository.GetAll();
 
-        return new ApplicationResult
+        return new ApiResponse<IEnumerable<RiskListDto>>
         {
             Success = true,
             Code = "200",
@@ -27,13 +27,13 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<ApplicationResult> GetById(Guid id)
+    public async Task<ApiResponse<RiskListDto>> GetById(Guid id)
     {
         var item = await _repository.GetById(id);
 
         if (item == null)
         {
-            return new ApplicationResult
+            return new ApiResponse<RiskListDto>
             {
                 Success = false,
                 Code = "404",
@@ -41,7 +41,7 @@ public sealed class RiskService : IRiskService
             };
         }
 
-        return new ApplicationResult
+        return new ApiResponse<RiskListDto>
         {
             Success = true,
             Code = "200",
@@ -49,29 +49,29 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<ApplicationResult> Create(RiskCreateOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse<ApiCreateResponse<Guid>>> Create(RiskCreateOrUpdateDto item, string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
 
         await _repository.Create(newItem);
 
-        return new ApplicationResult
+        return new ApiResponse<ApiCreateResponse<Guid>>
         {
             Success = true,
             Code = "201",
             Message = "Risk created successfully.",
-            Data = new { newItem.Id }
+            Data = new ApiCreateResponse<Guid> { Id = newItem.Id }
         };
     }
 
-    public async Task<ApplicationResult> Update(Guid id, RiskCreateOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse> Update(Guid id, RiskCreateOrUpdateDto item, string currentUserId)
     {
         var itemToUpdate = MapDtoToEntity(item, currentUserId);
         itemToUpdate.Id = id;
 
         await _repository.Update(itemToUpdate);
 
-        return new ApplicationResult
+        return new ApiResponse
         {
             Success = true,
             Code = "204",
@@ -79,11 +79,11 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<ApplicationResult> Remove(Guid id, string currentUserId)
+    public async Task<ApiResponse> Remove(Guid id, string currentUserId)
     {
         await _repository.Remove(id);
 
-        return new ApplicationResult
+        return new ApiResponse
         {
             Success = true,
             Code = "204",
@@ -91,13 +91,13 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<ApplicationResult> AddRange(IEnumerable<RiskCreateOrUpdateDto> items, string currentUserId)
+    public async Task<ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>> AddRange(IEnumerable<RiskCreateOrUpdateDto> items, string currentUserId)
     {
         var newItems = items.Select(item => MapDtoToEntity(item, currentUserId)).ToList();
 
         await _repository.AddRange(newItems);
 
-        return new ApplicationResult
+        return new ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>
         {
             Success = true,
             Code = "204",

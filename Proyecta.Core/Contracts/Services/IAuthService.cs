@@ -1,13 +1,12 @@
-using Proyecta.Core.DTOs;
 using Proyecta.Core.DTOs.Auth;
-using Proyecta.Core.Results;
+using Proyecta.Core.Responses;
 
 namespace Proyecta.Core.Contracts.Services;
 
 public interface IAuthService
 {
-    Task<ApplicationResult> Register(RegisterDto registerDto, string currentUserId);
-    Task<ApplicationResult> Login(LoginDto loginDto);
-    Task<ApplicationResult> Logout(TokenDto tokenDto);
-    Task<ApplicationResult> RefreshToken(TokenDto tokenDto);
+    Task<ApiResponse<ApiCreateResponse<string>>> Register(RegisterDto registerDto, string currentUserId);
+    Task<ApiResponse<TokenDto>> Login(LoginDto loginDto);
+    Task<ApiResponse> Logout(TokenDto tokenDto);
+    Task<ApiResponse<RefreshTokenResponse>> RefreshToken(TokenDto tokenDto);
 }

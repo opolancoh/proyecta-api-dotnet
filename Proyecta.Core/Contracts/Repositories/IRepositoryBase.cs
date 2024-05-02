@@ -1,11 +1,11 @@
 namespace Proyecta.Core.Contracts.Repositories;
 
-public interface IRepositoryBase<in TEntity, in TEntityKey, TEntityListDto, TEntityDetailDto>
+public interface IRepositoryBase<in TEntity, in TKey, TEntityListDto, TEntityDetailDto>
 {
     Task<TEntityListDto> GetAll();
-    Task<TEntityDetailDto?> GetById(TEntityKey id);
+    Task<TEntityDetailDto> GetById(TKey id);
     Task Create(TEntity item);
     Task Update(TEntity item);
-    Task Remove(TEntityKey id);
-    Task<bool> ItemExists(TEntityKey id);
+    Task Remove(TKey id);
+    Task<bool> ItemExists(TKey id);
 }

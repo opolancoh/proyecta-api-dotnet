@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Proyecta.Core.Entities.Validators;
 
-namespace Proyecta.Core.DTOs.Risk;
+namespace Proyecta.Core.DTOs;
 
-public record RiskTreatmentCreateOrUpdateDto : IValidatableObject
+public record GenericEntityCreateOrUpdateDto : IValidatableObject
 {
     public string Name { get; set; }
 

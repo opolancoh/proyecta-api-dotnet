@@ -3,7 +3,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authorization;
-using Proyecta.Core.Results;
+using Proyecta.Core.Responses;
 using Proyecta.Web.Utils;
 
 namespace Proyecta.Web.Controllers;
@@ -11,6 +11,7 @@ namespace Proyecta.Web.Controllers;
 [ApiController]
 [Route("system-info")]
 [Authorize(Roles = "System")]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class SystemInformationController : ControllerBase
 {
     [HttpGet]
@@ -23,7 +24,7 @@ public class SystemInformationController : ControllerBase
 
         var serverInfo = await GetServerInfo();
 
-        return StatusCode(StatusCodes.Status200OK, new ApplicationResult
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<object>
         {
             Success = true,
             Code = "200",

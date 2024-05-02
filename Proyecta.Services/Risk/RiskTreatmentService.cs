@@ -1,9 +1,8 @@
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs;
-using Proyecta.Core.DTOs.Risk;
 using Proyecta.Core.Entities.Risk;
-using Proyecta.Core.Results;
+using Proyecta.Core.Responses;
 
 namespace Proyecta.Services.Risk;
 
@@ -16,11 +15,11 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
         _repository = repository;
     }
 
-    public async Task<ApplicationResult> GetAll()
+    public async Task<ApiResponse<IEnumerable<GenericEntityListDto>>> GetAll()
     {
         var items = await _repository.GetAll();
 
-        return new ApplicationResult
+        return new ApiResponse<IEnumerable<GenericEntityListDto>>
         {
             Success = true,
             Code = "200",
@@ -28,21 +27,21 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
         };
     }
 
-    public async Task<ApplicationResult> GetById(Guid id)
+    public async Task<ApiResponse<GenericEntityDetailDto<Guid>>> GetById(Guid id)
     {
         var item = await _repository.GetById(id);
 
         if (item == null)
         {
-            return new ApplicationResult
+            return new ApiResponse<GenericEntityDetailDto<Guid>>
             {
                 Success = false,
                 Code = "404",
-                Message = $"The entity with id '{id}' doesn't exist in the database."
+                Message = $"The item with id '{id}' was not found or you don't have permission to access it."
             };
         }
 
-        return new ApplicationResult
+        return new ApiResponse<GenericEntityDetailDto<Guid>>
         {
             Success = true,
             Code = "200",
@@ -50,28 +49,30 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
         };
     }
 
-    public async Task<ApplicationResult> Create(RiskTreatmentCreateOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse<ApiCreateResponse<Guid>>> Create(GenericEntityCreateOrUpdateDto item,
+        string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
 
         await _repository.Create(newItem);
 
-        return new ApplicationResult
+        return new ApiResponse<ApiCreateResponse<Guid>>
         {
             Success = true,
             Code = "201",
-            Message = "User created successfully.",
-            Data = new { newItem.Id }
+            Message = "Risk Category created successfully.",
+            Data = new ApiCreateResponse<Guid> { Id = newItem.Id }
         };
     }
 
-    public async Task<ApplicationResult> Update(Guid id, RiskTreatmentCreateOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse> Update(Guid id, GenericEntityCreateOrUpdateDto item, string currentUserId)
     {
         var itemToUpdate = MapDtoToEntity(item, currentUserId);
+        itemToUpdate.Id = id;
 
         await _repository.Update(itemToUpdate);
 
-        return new ApplicationResult
+        return new ApiResponse
         {
             Success = true,
             Code = "204",
@@ -79,11 +80,11 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
         };
     }
 
-    public async Task<ApplicationResult> Remove(Guid id, string currentUserId)
+    public async Task<ApiResponse> Remove(Guid id, string currentUserId)
     {
         await _repository.Remove(id);
 
-        return new ApplicationResult
+        return new ApiResponse
         {
             Success = true,
             Code = "204",
@@ -91,21 +92,23 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
         };
     }
 
-    public async Task<ApplicationResult> AddRange(IEnumerable<RiskTreatmentCreateOrUpdateDto> items, string currentUserId)
+    public async Task<ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>> AddRange(
+        IEnumerable<GenericEntityCreateOrUpdateDto> items,
+        string currentUserId)
     {
         var newItems = items.Select(item => MapDtoToEntity(item, currentUserId)).ToList();
 
         await _repository.AddRange(newItems);
 
-        return new ApplicationResult
+        return new ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>
         {
             Success = true,
             Code = "204",
             Message = "Items added successfully.",
         };
     }
-    
-    private RiskTreatment MapDtoToEntity(RiskTreatmentCreateOrUpdateDto item, string currentUserId)
+
+    private RiskTreatment MapDtoToEntity(GenericEntityCreateOrUpdateDto item, string currentUserId)
     {
         var now = DateTime.UtcNow;
 

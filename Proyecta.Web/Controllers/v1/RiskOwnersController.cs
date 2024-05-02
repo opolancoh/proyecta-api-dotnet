@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs;
-using Proyecta.Core.DTOs.Risk;
+using Proyecta.Core.Responses;
+using Proyecta.Web.Filters;
 
 namespace Proyecta.Web.Controllers.v1;
 
@@ -21,7 +22,8 @@ public class RiskOwnersController : ControllerBase
         _service = service;
     }
 
-    [HttpGet]
+   [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<GenericEntityListDto>>))]
     public async Task<IActionResult> Get()
     {
         var result = await _service.GetAll();
@@ -30,6 +32,7 @@ public class RiskOwnersController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<GenericEntityDetailDto<Guid>>))]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _service.GetById(id);
@@ -38,7 +41,9 @@ public class RiskOwnersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(RiskOwnerCreateOrUpdateDto item)
+    [CustomValidation("PropertyNameToValidate")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiCreateResponse<Guid>>))]
+    public async Task<IActionResult> Create(GenericEntityCreateOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Create(item, userId);
@@ -47,7 +52,9 @@ public class RiskOwnersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, RiskOwnerCreateOrUpdateDto item)
+    [InputModelValidationFilter]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+    public async Task<IActionResult> Update(Guid id, GenericEntityCreateOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Update(id, item, userId);
@@ -56,6 +63,7 @@ public class RiskOwnersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
     public async Task<IActionResult> Remove(Guid id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -63,10 +71,11 @@ public class RiskOwnersController : ControllerBase
 
         return StatusCode(StatusCodes.Status200OK, result);
     }
-    
+
     [HttpPost]
     [Route("add-range")]
-    public async Task<IActionResult> AddRange(IEnumerable<RiskOwnerCreateOrUpdateDto> items)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>))]
+    public async Task<IActionResult> AddRange(IEnumerable<GenericEntityCreateOrUpdateDto> items)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.AddRange(items, userId);

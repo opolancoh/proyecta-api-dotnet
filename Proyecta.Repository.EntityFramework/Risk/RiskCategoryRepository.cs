@@ -19,19 +19,21 @@ public class RiskCategoryRepository : IRiskCategoryRepository
         _entitySet = context.RiskCategory;
     }
 
-    public async Task<IEnumerable<IdNameDto<Guid>>> GetAll()
+    public async Task<IEnumerable<GenericEntityListDto>> GetAll()
     {
         return await _entitySet
             .AsNoTracking()
-            .Select(x => new IdNameDto<Guid>
+            .Select(x => new GenericEntityListDto
             {
                 Id = x.Id,
-                Name = x.Name
+                Name = x.Name,
+                CreatedAt = x.CreatedAt,
+                UpdatedAt = x.UpdatedAt
             })
             .ToListAsync();
     }
 
-    public async Task<IdNameAuditableDto<Guid>?> GetById(Guid id)
+    public async Task<GenericEntityDetailDto<Guid>?> GetById(Guid id)
     {
         var entity = await _entitySet
             .AsNoTracking()
@@ -62,7 +64,7 @@ public class RiskCategoryRepository : IRiskCategoryRepository
                 .Select(x => x.UserName)
                 .FirstOrDefaultAsync();
 
-        return new IdNameAuditableDto<Guid>
+        return new GenericEntityDetailDto<Guid>
         {
             Id = entity.Id,
             Name = entity.Name,
@@ -81,13 +83,13 @@ public class RiskCategoryRepository : IRiskCategoryRepository
         };
     }
 
-    public async Task Create(RiskCategory item)
+    public async Task<int> Create(RiskCategory item)
     {
         _entitySet.Add(item);
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
     }
 
-    public async Task Update(RiskCategory item)
+    public async Task<int> Update(RiskCategory item)
     {
         _context.Entry(item).State = EntityState.Modified;
         _context.Entry(item).Property(x => x.CreatedAt).IsModified = false;
@@ -95,7 +97,7 @@ public class RiskCategoryRepository : IRiskCategoryRepository
 
         try
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -110,7 +112,7 @@ public class RiskCategoryRepository : IRiskCategoryRepository
         }
     }
 
-    public async Task Remove(Guid id)
+    public async Task<int> Remove(Guid id)
     {
         var item = new RiskCategory { Id = id };
 
@@ -118,7 +120,7 @@ public class RiskCategoryRepository : IRiskCategoryRepository
 
         try
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
