@@ -8,7 +8,7 @@ public record RegisterDto : IValidatableObject
     public string FirstName { get; init; }
     public string LastName { get; init; }
     public string DisplayName { get; init; }
-    public string? UserName { get; init; }
+    public string? Username { get; init; }
     public string? Password { get; init; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -17,7 +17,7 @@ public record RegisterDto : IValidatableObject
         validationResult.AddRange(ApplicationUserValidator.ValidateName(FirstName, nameof(FirstName)));
         validationResult.AddRange(ApplicationUserValidator.ValidateName(LastName, nameof(LastName)));
         validationResult.AddRange(ApplicationUserValidator.ValidateName(DisplayName, nameof(DisplayName)));
-        validationResult.AddRange(ApplicationUserValidator.ValidateUserName(UserName, nameof(UserName)));
+        validationResult.AddRange(ApplicationUserValidator.ValidateUserName(Username, nameof(Username)));
 
         return validationResult;
     }

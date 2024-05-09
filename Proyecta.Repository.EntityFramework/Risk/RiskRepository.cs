@@ -62,9 +62,9 @@ public class RiskRepository : IRiskRepository
                 DateTo = x.DateTo,
                 State = x.State,
                 CreatedAt = x.CreatedAt,
-                CreatedBy = new IdNameDto<string> { Id = x.CreatedById, Name = "" },
+                CreatedBy = new IdNameDto<string> { Id = x.CreatedById ?? "", Name = "" },
                 UpdatedAt = x.UpdatedAt,
-                UpdatedBy = new IdNameDto<string> { Id = x.UpdatedById, Name = "" },
+                UpdatedBy = new IdNameDto<string> { Id = x.UpdatedById ?? "", Name = "" },
             })
             .SingleOrDefaultAsync(x => x.Id == id);
 
@@ -85,7 +85,7 @@ public class RiskRepository : IRiskRepository
 
         item.CreatedBy.Name = createdByName;
         item.UpdatedBy.Name = updatedByName;
-        
+
         return item;
     }
 

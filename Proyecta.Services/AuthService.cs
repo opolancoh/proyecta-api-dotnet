@@ -6,7 +6,7 @@ using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Responses;
-using Proyecta.Core.Utils;
+using Proyecta.Core.Utilities;
 
 namespace Proyecta.Services;
 
@@ -43,7 +43,7 @@ public class AuthService : IAuthService
             FirstName = registerDto.FirstName,
             LastName = registerDto.LastName,
             DisplayName = registerDto.DisplayName,
-            UserName = registerDto.UserName,
+            UserName = registerDto.Username,
             Password = registerDto.Password
         };
 
@@ -65,12 +65,12 @@ public class AuthService : IAuthService
         }
 
         // AccessToken
-        var issuer = _configuration.GetSection("JwtConfig:Issuer").Value;
-        var audience = _configuration.GetSection("JwtConfig:Audience").Value;
-        var secret = _configuration.GetSection("JwtConfig:Secret").Value;
+        var issuer = _configuration.GetSection("JwtSettings:Issuer").Value;
+        var audience = _configuration.GetSection("JwtSettings:Audience").Value;
+        var secret = _configuration.GetSection("JwtSettings:Secret").Value;
         var expiration =
             DateTime.UtcNow.AddMinutes(
-                Convert.ToDouble(_configuration.GetSection("JwtConfig:AccessTokenExpirationInMinutes").Value));
+                Convert.ToDouble(_configuration.GetSection("JwtSettings:AccessTokenExpirationInMinutes").Value));
         // Claims generation
         var userRoles = await _userManager.GetRolesAsync(user);
         var claimsInput = new JwtAccessTokenClaimsInputDto
@@ -91,7 +91,7 @@ public class AuthService : IAuthService
             Token = refreshToken,
             ExpiryDate =
                 DateTime.UtcNow.AddMinutes(
-                    Convert.ToDouble(_configuration.GetSection("JwtConfig:RefreshTokenExpirationInMinutes").Value))
+                    Convert.ToDouble(_configuration.GetSection("JwtSettings:RefreshTokenExpirationInMinutes").Value))
         });
         if (!addRefreshTokenResult)
         {
@@ -114,7 +114,7 @@ public class AuthService : IAuthService
 
     public async Task<ApiResponse> Logout(TokenDto tokenDto)
     {
-        var jwtSettings = _configuration.GetSection("JwtConfig");
+        var jwtSettings = _configuration.GetSection("JwtSettings");
 
         // AccessToken
         var issuer = jwtSettings["Issuer"];
@@ -156,7 +156,7 @@ public class AuthService : IAuthService
 
     public async Task<ApiResponse<RefreshTokenResponse>> RefreshToken(TokenDto tokenDto)
     {
-        var jwtSettings = _configuration.GetSection("JwtConfig");
+        var jwtSettings = _configuration.GetSection("JwtSettings");
 
         // Access token validation
         var issuer = jwtSettings["Issuer"];

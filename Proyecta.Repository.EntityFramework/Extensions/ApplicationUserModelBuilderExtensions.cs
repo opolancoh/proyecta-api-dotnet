@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Entities.Auth;
-using Proyecta.Core.Utils;
+using Proyecta.Core.Utilities;
 
 namespace Proyecta.Repository.EntityFramework.Extensions;
 

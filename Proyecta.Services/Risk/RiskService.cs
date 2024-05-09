@@ -27,13 +27,13 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<ApiResponse<RiskListDto>> GetById(Guid id)
+    public async Task<ApiResponse<RiskDetailDto>> GetById(Guid id)
     {
         var item = await _repository.GetById(id);
 
         if (item == null)
         {
-            return new ApiResponse<RiskListDto>
+            return new ApiResponse<RiskDetailDto>
             {
                 Success = false,
                 Code = "404",
@@ -41,7 +41,7 @@ public sealed class RiskService : IRiskService
             };
         }
 
-        return new ApiResponse<RiskListDto>
+        return new ApiResponse<RiskDetailDto>
         {
             Success = true,
             Code = "200",

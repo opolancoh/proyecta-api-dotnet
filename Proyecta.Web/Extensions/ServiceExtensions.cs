@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,18 +5,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.Entities.Auth;
-using Proyecta.Core.Utils;
+using Proyecta.Core.Utilities;
 using Proyecta.Services;
 using Proyecta.Repository.EntityFramework;
 using Proyecta.Repository.EntityFramework.Risk;
 using Proyecta.Services.Risk;
-using Proyecta.Web.Utils;
 
 namespace Proyecta.Web.Extensions;
 
@@ -106,7 +102,7 @@ public static class ServiceExtensions
                 o.Password.RequireUppercase = true;
                 o.Password.RequireNonAlphanumeric = true;
                 o.Password.RequiredLength = 6;
-                o.User.RequireUniqueEmail = false;
+                o.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<AuthDbContext>()
             .AddDefaultTokenProviders();
@@ -123,7 +119,7 @@ public static class ServiceExtensions
 
     public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetSection("JwtConfig");
+        var jwtSettings = configuration.GetSection("JwtSettings");
         var issuer = jwtSettings["Issuer"];
         var audience = jwtSettings["Audience"];
         var secretKey = jwtSettings["Secret"];

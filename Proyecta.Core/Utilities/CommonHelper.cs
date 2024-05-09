@@ -1,4 +1,4 @@
-namespace Proyecta.Core.Utils;
+namespace Proyecta.Core.Utilities;
 
 public static class CommonHelper
 {

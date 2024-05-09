@@ -41,7 +41,7 @@ public class AuthServiceSuccessfulLoginTests : IClassFixture<AuthServiceFixture>
         var applicationUserRoles = new List<string> { "Administrator" };
 
         _mockConfiguration
-            .Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:AccessTokenExpirationInMinutes")))
+            .Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:AccessTokenExpirationInMinutes")))
             .Returns(new ConfigurationSectionMock(accessTokenExpirationInMinutes.ToString()));
         _mockAuthRepository
             .Setup(x => x.GetUserForLogin(It.IsAny<LoginDto>()))
@@ -122,7 +122,7 @@ public class AuthServiceSuccessfulLoginTests : IClassFixture<AuthServiceFixture>
         var applicationUserRoles = new List<string> { "User" };
 
         _mockConfiguration
-            .Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:AccessTokenExpirationInMinutes")))
+            .Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:AccessTokenExpirationInMinutes")))
             .Returns(new ConfigurationSectionMock(accessTokenExpirationInMinutes.ToString()));
         _mockAuthRepository
             .Setup(x => x.GetUserForLogin(It.IsAny<LoginDto>()))
@@ -203,7 +203,7 @@ public class AuthServiceSuccessfulLoginTests : IClassFixture<AuthServiceFixture>
         var applicationUserRoles = new List<string>();
 
         _mockConfiguration
-            .Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:AccessTokenExpirationInMinutes")))
+            .Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:AccessTokenExpirationInMinutes")))
             .Returns(new ConfigurationSectionMock(accessTokenExpirationInMinutes.ToString()));
         _mockAuthRepository
             .Setup(x => x.GetUserForLogin(It.IsAny<LoginDto>()))

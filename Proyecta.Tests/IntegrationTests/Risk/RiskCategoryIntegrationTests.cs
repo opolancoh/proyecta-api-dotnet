@@ -1,210 +1,178 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
-using Moq;
 using Proyecta.Core.DTOs;
-using Proyecta.Core.DTOs.Risk;
-using Proyecta.Core.Entities;
-using Proyecta.Core.Entities.Risk;
 using Proyecta.Core.Responses;
 using Proyecta.Tests.IntegrationTests.Fixtures;
 
-
 namespace Proyecta.Tests.IntegrationTests.Risk;
 
-public class RiskCategoryIntegrationTests : IClassFixture<IntegrationTestFixture>
+public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFactory>
 {
+    private const string BasePath = "/api/risk-categories";
+
     private readonly HttpClient _client;
-    private readonly JsonSerializerOptions _serializerOptions;
-    private const string BasePath = "/api/riskcategories";
 
-
-    public RiskCategoryIntegrationTests(IntegrationTestFixture fixture)
+    public RiskCategoryIntegrationTests(CustomWebApplicationFactory factory)
     {
-        _client = fixture.Client;
-        _serializerOptions = fixture.SerializerOptions;
-        fixture.InitializeDatabase();
-    }
+        _client = factory.CreateClient();
 
-    /* [Fact]
-    public async Task CreateItem_Succeed_ReturnsGenericEntityCreationResult()
-    {
-        var item = new GenericEntityCreateOrUpdateDto { Name = "Category 1" };
-
-        var response = await _client.PostAsJsonAsync(BasePath, item);
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal((int)HttpStatusCode.Created, int.Parse(result.Code));
-        Assert.Equal("Risk Category created successfully.", result.Message);
-        // Data
-        var dataString = JsonSerializer.Serialize(result.Data, _serializerOptions);
-        var dataObject = JsonSerializer.Deserialize<GenericEntityCreationResponse>(dataString, _serializerOptions);
-        Assert.IsType<Guid>(dataObject!.Id);
+        var adminToken = factory.GenerateAccessTokenForAdministrator();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
     }
 
     [Fact]
-    public async Task AddRange_Succeed_ReturnsNoContent()
+    public async Task Add_WithValidData_ReturnsNewRecordId()
     {
-        var items = new List<GenericEntityCreateOrUpdateDto>
-        {
-            new() { Name = "Category 1" },
-            new() { Name = "Category 2" },
-            new() { Name = "Category 3" }
-        };
+        // Arrange
+        var newItem = new GenericEntityCreateOrUpdateDto { Name = "Category 1" };
 
-        var response = await _client.PostAsJsonAsync($"{BasePath}/add-range", items);
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
+        // Act
+        var response = await _client.PostAsJsonAsync($"{BasePath}", newItem);
 
+        // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal((int)HttpStatusCode.NoContent, int.Parse(result.Code));
-        Assert.Equal("Items added successfully.", result.Message);
+
+        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse<ApiCreateResponse<Guid>>>();
+
+        Assert.NotNull(responseContent);
+        Assert.True(responseContent.Success);
+        Assert.Equal("201", responseContent.Code);
         // Data
-        Assert.Null(result.Data);
+        Assert.NotEqual(Guid.Empty, responseContent.Data.Id);
     }
 
     [Fact]
-    public async Task GetAll_Succeed_ReturnsAllItems()
+    public async Task GetById_WithValidData_ReturnsExistingRecord()
     {
-        var items = new List<GenericEntityCreateOrUpdateDto>
-        {
-            new() { Name = "Category 1" },
-            new() { Name = "Category 2" },
-            new() { Name = "Category 3" }
-        };
-        await _client.PostAsJsonAsync($"{BasePath}/add-range", items);
+        // Arrange
+        var newItem = new GenericEntityCreateOrUpdateDto { Name = "Category 1" };
+        var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
+        var newItemResponseContent =
+            await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiCreateResponse<Guid>>>();
+        var newItemId = newItemResponseContent!.Data.Id;
 
-        var response = await _client.GetAsync(BasePath);
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
+        // Act
+        var response = await _client.GetAsync($"{BasePath}/{newItemId}");
 
+        // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal((int)HttpStatusCode.OK, int.Parse(result.Code));
-        Assert.Null(result.Message);
+
+        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse<GenericEntityDetailDto<Guid>>>();
+
+        Assert.NotNull(responseContent);
+        Assert.True(responseContent.Success);
+        Assert.Equal("200", responseContent.Code);
         // Data
-        var dataString = JsonSerializer.Serialize(result.Data, _serializerOptions);
-        var dataObject = JsonSerializer.Deserialize<List<RiskCategory>>(dataString, _serializerOptions);
-        Assert.Equal(items.Count, dataObject!.Count);
-        Assert.All(dataObject, item =>
+        Assert.Equal(newItemId, responseContent.Data.Id);
+        Assert.Equal(newItem.Name, responseContent.Data.Name);
+        Assert.True(responseContent.Data.CreatedAt <= DateTime.UtcNow);
+        Assert.True(responseContent.Data.UpdatedAt <= DateTime.UtcNow);
+    }
+
+    [Fact]
+    public async Task Update_WithValidData_ReturnsCode204()
+    {
+        // Arrange
+        var newItem = new GenericEntityCreateOrUpdateDto { Name = "Category 1" };
+        var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
+        var newItemResponseContent =
+            await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiCreateResponse<Guid>>>();
+        var newItemId = newItemResponseContent!.Data.Id;
+
+        var itemToBeUpdated = new GenericEntityCreateOrUpdateDto { Name = "Category 2" };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BasePath}/{newItemId}", itemToBeUpdated);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse>();
+
+        Assert.NotNull(responseContent);
+        Assert.True(responseContent.Success);
+        Assert.Equal("204", responseContent.Code);
+    }
+
+    [Fact]
+    public async Task Remove_WithValidData_ReturnsCode204()
+    {
+        // Arrange
+        var newItem = new GenericEntityCreateOrUpdateDto { Name = "Category 1" };
+        var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
+        var newItemResponseContent =
+            await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiCreateResponse<Guid>>>();
+        var newItemId = newItemResponseContent!.Data.Id;
+
+        // Act
+        var response = await _client.DeleteAsync($"{BasePath}/{newItemId}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse>();
+
+        Assert.NotNull(responseContent);
+        Assert.True(responseContent.Success);
+        Assert.Equal("204", responseContent.Code);
+    }
+
+    [Fact]
+    public async Task AddRange_WithValidData_ReturnsCode204()
+    {
+        // Arrange
+        var newItems = new List<GenericEntityCreateOrUpdateDto>
+        {
+            new() { Name = "Item 1" },
+            new() { Name = "Item 2" },
+            new() { Name = "Item 3" },
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync($"{BasePath}/add-range", newItems);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse<GenericEntityDetailDto<Guid>>>();
+
+        Assert.NotNull(responseContent);
+        Assert.True(responseContent.Success);
+        Assert.Equal("204", responseContent.Code);
+    }
+
+    [Fact]
+    public async Task GetAll_WithValidData_ReturnsCode204()
+    {
+        // Arrange
+        var newItems = new List<GenericEntityCreateOrUpdateDto>
+        {
+            new() { Name = "Item 1" },
+            new() { Name = "Item 2" },
+            new() { Name = "Item 3" },
+        };
+        await _client.PostAsJsonAsync($"{BasePath}/add-range", newItems);
+
+        // Act
+        var response = await _client.GetAsync($"{BasePath}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var responseContent =
+            await response.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<GenericEntityListDto>>>();
+
+        Assert.NotNull(responseContent);
+        Assert.True(responseContent.Success);
+        Assert.Equal("200", responseContent.Code);
+        // Data
+        foreach (var item in responseContent.Data)
         {
             Assert.NotEqual(Guid.Empty, item.Id);
-            Assert.Contains(items, x => x.Name == item.Name);
-        });
+            Assert.Contains(newItems, x => x.Name == item.Name);
+            Assert.True(item.CreatedAt <= DateTime.UtcNow);
+            Assert.True(item.UpdatedAt <= DateTime.UtcNow);
+        }
     }
-
-    [Fact]
-    public async Task GetAll_Succeed_ReturnsEmptyList()
-    {
-        var response = await _client.GetAsync(BasePath);
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal((int)HttpStatusCode.OK, int.Parse(result.Code));
-        Assert.Null(result.Message);
-        // Data
-        var dataString = JsonSerializer.Serialize(result.Data, _serializerOptions);
-        var dataObject = JsonSerializer.Deserialize<List<RiskCategory>>(dataString, _serializerOptions);
-        Assert.Empty(dataObject!);
-    }
-
-    [Fact]
-    public async Task GetById_Succeed_ReturnsOneItem()
-    {
-        const string itemName = "Category 1";
-        var item = await CreateOneItem(itemName);
-
-        var response = await _client.GetAsync($"{BasePath}/{item!.Id}");
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal((int)HttpStatusCode.OK, int.Parse(result.Code));
-        // Data
-        var dataString = JsonSerializer.Serialize(result.Data, _serializerOptions);
-        var dataObject = JsonSerializer.Deserialize<RiskCategory>(dataString, _serializerOptions);
-        Assert.Equal(item.Id, dataObject!.Id);
-        Assert.Equal(itemName, dataObject!.Name);
-    }
-
-    [Fact]
-    public async Task GetById_NotSucceed_ReturnsNotFound()
-    {
-        var id = Guid.NewGuid().ToString();
-
-        var response = await _client.GetAsync($"{BasePath}/{id}");
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal((int)HttpStatusCode.NotFound, int.Parse(result.Code));
-        Assert.Equal($"The item with id '{id}' was not found or you don't have permission to access it.",
-            result.Message);
-    }
-
-    [Fact]
-    public async Task UpdateItem_Succeed_ReturnsNoContent()
-    {
-        const string itemName = "Category 1";
-        var item = await CreateOneItem(itemName);
-
-        var itemToUpdate = new GenericEntityCreateOrUpdateDto { Name = "Category 2" };
-
-        var response = await _client.PutAsJsonAsync($"{BasePath}/{item!.Id}", itemToUpdate);
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
-
-        var updatedItemResponse = await _client.GetAsync($"{BasePath}/{item!.Id}");
-        var updatedItemResult = await updatedItemResponse.Content.ReadFromJsonAsync<ApiResponse>();
-        var updatedItemDataString = JsonSerializer.Serialize(updatedItemResult!.Data, _serializerOptions);
-        var updatedItemDataObject = JsonSerializer.Deserialize<RiskCategory>(updatedItemDataString, _serializerOptions);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal((int)HttpStatusCode.NoContent, int.Parse(result.Code));
-        Assert.Equal("Item updated successfully.", result.Message);
-        // Data
-        var dataString = JsonSerializer.Serialize(updatedItemResult.Data, _serializerOptions);
-        var dataObject = JsonSerializer.Deserialize<RiskCategory>(dataString, _serializerOptions);
-        Assert.Equal(updatedItemDataObject!.Id, dataObject!.Id);
-        Assert.Equal(updatedItemDataObject.Name, dataObject!.Name);
-    }
-
-    [Fact]
-    public async Task UpdateItem_NotSucceed_ReturnsBadRequest()
-    {
-        const string itemName = "Category 1";
-        var item = await CreateOneItem(itemName);
-
-        var itemToUpdate = new GenericEntityCreateOrUpdateDto { Name = "Category 2*" };
-
-        var response = await _client.PutAsJsonAsync($"{BasePath}/{item!.Id}", itemToUpdate);
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
-
-        var updatedItemResponse = await _client.GetAsync($"{BasePath}/{item!.Id}");
-        var updatedItemResult = await updatedItemResponse.Content.ReadFromJsonAsync<ApiResponse>();
-        var updatedItemDataString = JsonSerializer.Serialize(updatedItemResult!.Data, _serializerOptions);
-        var updatedItemDataObject = JsonSerializer.Deserialize<RiskCategory>(updatedItemDataString, _serializerOptions);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal((int)HttpStatusCode.NoContent, int.Parse(result.Code));
-        Assert.Equal("Item updated successfully.", result.Message);
-        // Data
-        var dataString = JsonSerializer.Serialize(updatedItemResult.Data, _serializerOptions);
-        var dataObject = JsonSerializer.Deserialize<RiskCategory>(dataString, _serializerOptions);
-        Assert.Equal(updatedItemDataObject!.Id, dataObject!.Id);
-        Assert.Equal(updatedItemDataObject.Name, dataObject!.Name);
-    }
-
-    private async Task<GenericEntityCreationResponse> CreateOneItem(string name)
-    {
-        var item = new GenericEntityCreateOrUpdateDto { Name = name };
-        var itemResponse = await _client.PostAsJsonAsync(BasePath, item);
-        var itemResult = await itemResponse.Content.ReadFromJsonAsync<ApiResponse>();
-        var itemDataString = JsonSerializer.Serialize(itemResult!.Data, _serializerOptions);
-        return
-            JsonSerializer.Deserialize<GenericEntityCreationResponse>(itemDataString, _serializerOptions)!;
-    } */
 }

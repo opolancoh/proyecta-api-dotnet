@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.DTOs.Auth;
 
-namespace Proyecta.Core.Utils;
+namespace Proyecta.Core.Utilities;
 
 public static class AuthHelper
 {

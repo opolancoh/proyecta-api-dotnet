@@ -26,12 +26,12 @@ public class AuthServiceFixture
         MockAuthRepository = new Mock<IAuthRepository>();
         var mockAppUserService = new Mock<IApplicationUserService>();
         
-        // Mocking configuration for JwtConfig
-        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:Secret"))).Returns(new ConfigurationSectionMock("PROYECTA_APP_KEY"));
-        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:Issuer"))).Returns(new ConfigurationSectionMock("PROYECTA_APP"));
-        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:Audience"))).Returns(new ConfigurationSectionMock("https://localhost:7134"));
-        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:AccessTokenExpirationInMinutes"))).Returns(new ConfigurationSectionMock("30"));
-        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtConfig:RefreshTokenExpirationInMinutes"))).Returns(new ConfigurationSectionMock("10080"));
+        // Mocking configuration for JwtSettings
+        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:Secret"))).Returns(new ConfigurationSectionMock("PROYECTA_APP_KEY"));
+        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:Issuer"))).Returns(new ConfigurationSectionMock("PROYECTA_APP"));
+        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:Audience"))).Returns(new ConfigurationSectionMock("https://localhost:7134"));
+        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:AccessTokenExpirationInMinutes"))).Returns(new ConfigurationSectionMock("30"));
+        MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:RefreshTokenExpirationInMinutes"))).Returns(new ConfigurationSectionMock("10080"));
 
         AuthService = new AuthService(
             MockConfiguration.Object,

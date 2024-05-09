@@ -9,7 +9,7 @@ public class AuthDbContext : IdentityDbContext<ApplicationUser>
 {
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
-    public AuthDbContext(DbContextOptions options) : base(options)
+    public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
     {
     }
 

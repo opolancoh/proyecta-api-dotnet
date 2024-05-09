@@ -32,7 +32,7 @@ public class SystemInformationController : ControllerBase
         });
     }
 
-    public async Task<List<KeyValuePair<string, string>>> GetServerInfo()
+    private async Task<List<KeyValuePair<string, string>>> GetServerInfo()
     {
         var hostName = System.Net.Dns.GetHostName();
 
