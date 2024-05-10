@@ -9,30 +9,41 @@ using Proyecta.Web.Utils;
 namespace Proyecta.Web.Controllers;
 
 [ApiController]
-[Route("system-info")]
-[Authorize(Roles = "System")]
+[Route("info")]
 [ApiExplorerSettings(IgnoreApi = true)]
-public class SystemInformationController : ControllerBase
+public class ApiInformationController : ControllerBase
 {
-    [HttpGet]
-    public async Task<IActionResult> Get()
+    [HttpGet("server")]
+    public async Task<IActionResult> GetServerInfo()
     {
-        var envVarsInfo = (from DictionaryEntry entry in Environment.GetEnvironmentVariables()
-            let key = entry.Key.ToString()
-            let value = entry.Value.ToString()
-            select new KeyValuePair<string, string>(key, value)).ToList();
-
-        var serverInfo = await GetServerInfo();
+        var result = await GetServerInfoAsync();
 
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<object>
         {
             Success = true,
             Code = "200",
-            Data = new { envVarsInfo, serverInfo }
+            Data = result
         });
     }
 
-    private async Task<List<KeyValuePair<string, string>>> GetServerInfo()
+    [HttpGet("system")]
+    [Authorize(Roles = "System")]
+    public async Task<IActionResult> GetSystemInfo()
+    {
+        var result = (from DictionaryEntry entry in Environment.GetEnvironmentVariables()
+            let key = entry.Key.ToString()
+            let value = entry.Value.ToString()
+            select new KeyValuePair<string, string>(key, value)).ToList();
+
+        return StatusCode(StatusCodes.Status200OK, new ApiResponse<object>
+        {
+            Success = true,
+            Code = "200",
+            Data = result
+        });
+    }
+
+    private async Task<List<KeyValuePair<string, string>>> GetServerInfoAsync()
     {
         var hostName = System.Net.Dns.GetHostName();
 

@@ -11,7 +11,7 @@ This repository contains a .NET Core Web API.
 ### Network Setup
 First, create a dedicated network for the containers:
 ```sh
-docker network create proyecta-network 
+docker network create proyecta-network
 ```
 
 ### Database Setup
@@ -28,8 +28,10 @@ docker build -t proyecta/api-dotnet:latest -f Proyecta.Web/Dockerfile .
 ```
 
 ### Running Containers
-Start the application and test containers:
+Start the application and test the containers. If environment variables are not specified, the default port values will be HTTP_PORT=5000 and HTTPS_PORT=5001.
 ```sh
+export HTTP_PORT=5100
+export HTTPS_PORT=5101
 docker compose -f docker-compose-dev.yml up -d
 ```
 

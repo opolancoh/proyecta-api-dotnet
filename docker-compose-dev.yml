@@ -6,9 +6,10 @@ services:
     image: proyecta/api-dotnet
     container_name: proyecta_api_dotnet_dev
     ports:
-      - "5100:443"
-      - "5101:80"
+      - "${HTTP_PORT:-5000}:80"  # Maps host's HTTP_PORT or default 5000 to port 80 in the container
+      - "${HTTPS_PORT:-5001}:443" # Maps host's HTTPS_PORT or default 5001 to port 443 in the container
     environment:
+      # By default, ASP.NET Core applications recognize three environments: Development, Staging, and Production.
       - ASPNETCORE_ENVIRONMENT=Development
       - PROYECTA_DB_CONNECTION_API=${PROYECTA_DB_CONNECTION_API}
       - PROYECTA_DB_CONNECTION_AUTH=${PROYECTA_DB_CONNECTION_AUTH}
