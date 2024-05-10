@@ -21,6 +21,10 @@ RUN dotnet publish Proyecta.Web/Proyecta.Web.csproj -c Release -o /app/out
 # Generate runtime image
 # This is the runtime stage where we use a runtime-only image to run the application
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
+
+# Update package index and install ping (iputils-ping)
+RUN apt-get update && apt-get install -y iputils-ping
+
 WORKDIR /app
 
 # Copy the build app from the build stage and set the entry point of the application
