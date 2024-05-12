@@ -23,7 +23,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
         return new ApiResponse<IEnumerable<GenericEntityListDto>>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = items
         };
     }
@@ -37,7 +37,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
             return new ApiResponse<GenericEntityDetailDto<Guid>>
             {
                 Success = false,
-                Code = "404",
+                Code = ApiResponseCode.NotFound,
                 Message = $"The item with id '{id}' was not found or you don't have permission to access it."
             };
         }
@@ -45,7 +45,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
         return new ApiResponse<GenericEntityDetailDto<Guid>>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = item
         };
     }
@@ -60,7 +60,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
         return new ApiResponse<ApiCreateResponse<Guid>>
         {
             Success = true,
-            Code = "201",
+            Code = ApiResponseCode.Created,
             Message = "Risk Category created successfully.",
             Data = new ApiCreateResponse<Guid> { Id = newItem.Id }
         };
@@ -76,7 +76,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
         return new ApiResponse
         {
             Success = true,
-            Code = "204",
+            Code = ApiResponseCode.NoContent,
             Message = "Item updated successfully.",
         };
     }
@@ -88,7 +88,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
         return new ApiResponse
         {
             Success = true,
-            Code = "204",
+            Code = ApiResponseCode.NoContent,
             Message = "Item deleted successfully.",
         };
     }
@@ -104,7 +104,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
         return new ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>
         {
             Success = true,
-            Code = "204",
+            Code = ApiResponseCode.NoContent,
             Message = "Items added successfully.",
         };
     }

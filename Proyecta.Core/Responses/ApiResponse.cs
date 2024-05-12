@@ -11,17 +11,11 @@ public class ApiResponse
     public string? Message { get; init; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public IList<ApiErrorResponse>? Errors { get; init; }
+    public Dictionary<string, List<string>>? Errors { get; set; }
 }
 
 public class ApiResponse<T> : ApiResponse
 {
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public T Data { get; set; }
-}
-
-public record ApiErrorResponse
-{
-    public required string Code { get; init; }
-    public required string Description { get; init; }
+    public T? Data { get; set; }
 }

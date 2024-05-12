@@ -21,7 +21,7 @@ public class ApiInformationController : ControllerBase
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<object>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = result
         });
     }
@@ -38,7 +38,7 @@ public class ApiInformationController : ControllerBase
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<object>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = result
         });
     }

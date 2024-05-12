@@ -33,7 +33,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return new ApiResponse<IEnumerable<ApplicationUserListDto>>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = users
         };
     }
@@ -47,7 +47,7 @@ public sealed class ApplicationUserService : IApplicationUserService
             return new ApiResponse<ApplicationUserDetailDto>
             {
                 Success = false,
-                Code = "404",
+                Code = ApiResponseCode.NotFound,
                 Message = $"The entity with id '{id}' doesn't exist in the database."
             };
         }
@@ -55,7 +55,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return new ApiResponse<ApplicationUserDetailDto>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = user
         };
     }
@@ -69,16 +69,26 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         if (!result.Succeeded)
         {
-            var errors = result.Errors.Select(error =>
+            var errors = new Dictionary<string, List<string>>();
+            foreach (var error in result.Errors)
             {
-                _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
-                return new ApiErrorResponse { Code = error.Code, Description = error.Description };
-            }).ToList();
+                _logger.LogError("User not created. Code: {Code}, Description: {Description}", error.Code,
+                    error.Description);
+
+                if (errors.ContainsKey(error.Code))
+                {
+                    errors[error.Code].Add(error.Description);
+                }
+                else
+                {
+                    errors.Add(error.Code, new List<string> { error.Description });
+                }
+            }
 
             return new ApiResponse<ApiCreateResponse<string>>
             {
                 Success = false,
-                Code = "400",
+                Code = ApiResponseCode.BadRequest,
                 Message = "An error has occurred while creating the User.",
                 Errors = errors
             };
@@ -97,7 +107,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return new ApiResponse<ApiCreateResponse<string>>
         {
             Success = true,
-            Code = "201",
+            Code = ApiResponseCode.Created,
             Message = "User created successfully.",
             Data = new ApiCreateResponse<string> { Id = userId }
         };
@@ -112,7 +122,7 @@ public sealed class ApplicationUserService : IApplicationUserService
             return new ApiResponse
             {
                 Success = false,
-                Code = "404",
+                Code = ApiResponseCode.NotFound,
                 Message = $"User Id '{id}' was not found.",
             };
         }
@@ -128,16 +138,26 @@ public sealed class ApplicationUserService : IApplicationUserService
         var result = await _userManager.UpdateAsync(currentUser);
         if (!result.Succeeded)
         {
-            var errors = result.Errors.Select(error =>
+            var errors = new Dictionary<string, List<string>>();
+            foreach (var error in result.Errors)
             {
-                _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
-                return new ApiErrorResponse { Code = error.Code, Description = error.Description };
-            }).ToList();
+                _logger.LogError("User not created. Code: {Code}, Description: {Description}", error.Code,
+                    error.Description);
+
+                if (errors.ContainsKey(error.Code))
+                {
+                    errors[error.Code].Add(error.Description);
+                }
+                else
+                {
+                    errors.Add(error.Code, new List<string> { error.Description });
+                }
+            }
 
             return new ApiResponse
             {
                 Success = false,
-                Code = "500",
+                Code = ApiResponseCode.InternalServerError,
                 Message = "An error has occurred while updating the Application User.",
                 Errors = errors
             };
@@ -162,7 +182,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return new ApiResponse
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Message = "User updated successfully.",
         };
     }
@@ -184,7 +204,7 @@ public sealed class ApplicationUserService : IApplicationUserService
             return new ApiResponse
             {
                 Success = false,
-                Code = "404",
+                Code = ApiResponseCode.NotFound,
                 Message = $"User Id '{id}' was not found.",
             };
         }
@@ -195,21 +215,31 @@ public sealed class ApplicationUserService : IApplicationUserService
             return new ApiResponse
             {
                 Success = true,
-                Code = "200",
+                Code = ApiResponseCode.OK,
                 Message = "User deleted successfully.",
             };
         }
 
-        var errors = result.Errors.Select(error =>
+        var errors = new Dictionary<string, List<string>>();
+        foreach (var error in result.Errors)
         {
-            _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
-            return new ApiErrorResponse { Code = error.Code, Description = error.Description };
-        }).ToList();
+            _logger.LogError("User not created. Code: {Code}, Description: {Description}", error.Code,
+                error.Description);
+
+            if (errors.ContainsKey(error.Code))
+            {
+                errors[error.Code].Add(error.Description);
+            }
+            else
+            {
+                errors.Add(error.Code, new List<string> { error.Description });
+            }
+        }
 
         return new ApiResponse
         {
             Success = false,
-            Code = "500",
+            Code = ApiResponseCode.InternalServerError,
             Message = $"An error has occurred while deleting the User with Id '{id}'.",
             Errors = errors
         };
@@ -220,24 +250,22 @@ public sealed class ApplicationUserService : IApplicationUserService
         string currentUserId)
     {
         var data = new List<ApiCreateResponse<string>>();
-        var errors = new List<ApiErrorResponse>();
+        var errors = new Dictionary<string, List<string>>();
+        var errorsCount = 0;
         var itemsToAdd = items.ToList();
         foreach (var item in itemsToAdd)
         {
             var result = await Create(item, currentUserId);
             if (result.Success)
             {
-                data.Add(result.Data);
+                data.Add(result.Data!);
             }
             else
             {
-                var resultErrors = result.Errors?.Select(error =>
+                foreach (var error in result.Errors!)
                 {
-                    _logger.LogInformation($@"User not created. Code:{error.Code} Description:{error.Description}");
-                    return new ApiErrorResponse { Code = error.Code, Description = error.Description };
-                }).ToList();
-                if (resultErrors != null)
-                    errors.AddRange(resultErrors);
+                    errors.Add($"{error.Key}_{++errorsCount}", error.Value);
+                }
             }
         }
 
@@ -246,13 +274,14 @@ public sealed class ApplicationUserService : IApplicationUserService
         var response = new ApiResponse<IEnumerable<ApiCreateResponse<string>>>
         {
             Success = isSuccess,
-            Code = isSuccess ? "201" : "202",
+            Code = isSuccess ? ApiResponseCode.Created : ApiResponseCode.Accepted,
             Message = isSuccess
                 ? "All users were added successfully."
                 : $"Not all users were added. Added:[{itemsToAdd.Count() - errors.Count}] Not Added:[{errors.Count}]",
-            Data = data,
-            Errors = errors
+            Data = data
         };
+
+        if (!isSuccess) response.Errors = errors;
 
         return response;
     }

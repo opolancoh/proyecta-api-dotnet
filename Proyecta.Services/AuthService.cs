@@ -19,7 +19,7 @@ public class AuthService : IAuthService
     private readonly IApplicationUserService _appUserService;
 
     private string AuthenticationFailedMessage =>
-        $"{nameof(Login)}: Authentication failed. Wrong user name or password.";
+        $"{nameof(Login)}: Authentication failed.";
 
     public AuthService(
         IConfiguration configuration,
@@ -59,8 +59,12 @@ public class AuthService : IAuthService
             return new ApiResponse<TokenDto>
             {
                 Success = false,
-                Code = "401",
-                Message = AuthenticationFailedMessage
+                Code = ApiResponseCode.Unauthorized,
+                Message = AuthenticationFailedMessage,
+                Errors = new Dictionary<string, List<string>>
+                {
+                    { "_", new List<string>() { "Wrong user name or password." } }
+                }
             };
         }
 
@@ -99,7 +103,7 @@ public class AuthService : IAuthService
             return new ApiResponse<TokenDto>
             {
                 Success = false,
-                Code = "401",
+                Code = ApiResponseCode.Unauthorized,
                 Message = AuthenticationFailedMessage
             };
         }
@@ -107,7 +111,7 @@ public class AuthService : IAuthService
         return new ApiResponse<TokenDto>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = new TokenDto { AccessToken = accessToken, RefreshToken = refreshToken }
         };
     }
@@ -127,7 +131,7 @@ public class AuthService : IAuthService
             return new ApiResponse
             {
                 Success = false,
-                Code = "400",
+                Code = ApiResponseCode.BadRequest,
                 Message = "Failed to logout."
             };
         }
@@ -141,7 +145,7 @@ public class AuthService : IAuthService
             return new ApiResponse
             {
                 Success = false,
-                Code = "400",
+                Code = ApiResponseCode.BadRequest,
                 Message = "Failed to logout."
             };
         }
@@ -149,7 +153,7 @@ public class AuthService : IAuthService
         return new ApiResponse
         {
             Success = true,
-            Code = "204",
+            Code = ApiResponseCode.NoContent,
             Message = "Logged out successfully."
         };
     }
@@ -168,7 +172,7 @@ public class AuthService : IAuthService
             return new ApiResponse<RefreshTokenResponse>
             {
                 Success = false,
-                Code = "401",
+                Code = ApiResponseCode.Unauthorized,
                 Message = "Invalid access token."
             };
         }
@@ -180,7 +184,7 @@ public class AuthService : IAuthService
             return new ApiResponse<RefreshTokenResponse>
             {
                 Success = false,
-                Code = "401",
+                Code = ApiResponseCode.Unauthorized,
                 Message = "Refresh Token is not valid."
             };
         }
@@ -193,7 +197,7 @@ public class AuthService : IAuthService
         return new ApiResponse<RefreshTokenResponse>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = new RefreshTokenResponse { AccessToken = newAccessToken }
         };
     }

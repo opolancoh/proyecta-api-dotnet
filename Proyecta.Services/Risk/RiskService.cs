@@ -22,7 +22,7 @@ public sealed class RiskService : IRiskService
         return new ApiResponse<IEnumerable<RiskListDto>>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = items
         };
     }
@@ -36,7 +36,7 @@ public sealed class RiskService : IRiskService
             return new ApiResponse<RiskDetailDto>
             {
                 Success = false,
-                Code = "404",
+                Code = ApiResponseCode.NotFound,
                 Message = $"The entity with id '{id}' doesn't exist in the database."
             };
         }
@@ -44,7 +44,7 @@ public sealed class RiskService : IRiskService
         return new ApiResponse<RiskDetailDto>
         {
             Success = true,
-            Code = "200",
+            Code = ApiResponseCode.OK,
             Data = item
         };
     }
@@ -58,7 +58,7 @@ public sealed class RiskService : IRiskService
         return new ApiResponse<ApiCreateResponse<Guid>>
         {
             Success = true,
-            Code = "201",
+            Code = ApiResponseCode.Created,
             Message = "Risk created successfully.",
             Data = new ApiCreateResponse<Guid> { Id = newItem.Id }
         };
@@ -74,7 +74,7 @@ public sealed class RiskService : IRiskService
         return new ApiResponse
         {
             Success = true,
-            Code = "204",
+            Code = ApiResponseCode.NoContent,
             Message = "Item updated successfully.",
         };
     }
@@ -86,7 +86,7 @@ public sealed class RiskService : IRiskService
         return new ApiResponse
         {
             Success = true,
-            Code = "204",
+            Code = ApiResponseCode.NoContent,
             Message = "Item deleted successfully.",
         };
     }
@@ -100,7 +100,7 @@ public sealed class RiskService : IRiskService
         return new ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>
         {
             Success = true,
-            Code = "204",
+            Code = ApiResponseCode.NoContent,
             Message = "Items added successfully.",
         };
     }
