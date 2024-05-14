@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs;
+using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.Auth;
-using Proyecta.Core.Responses;
 
 namespace Proyecta.Web.Controllers.v1.Auth;
 
@@ -23,13 +23,13 @@ public class AuthenticationController : ControllerBase
     [HttpPost]
     [Route("register")]
     [Authorize(Roles = "System,Administrator")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiCreateResponse<string>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiResponseGenericAdd<string>>))]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Register(registerDto, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPost]
@@ -39,7 +39,7 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _service.Login(loginDto);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
     
     [HttpPost("logout")]
@@ -48,7 +48,7 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _service.Logout(tokenDto);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPost("refresh-token")]
@@ -57,6 +57,6 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _service.RefreshToken(tokenDto);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 }

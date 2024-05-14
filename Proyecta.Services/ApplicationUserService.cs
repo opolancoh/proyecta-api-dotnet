@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
+using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.DTOs.Auth;
-using Proyecta.Core.Responses;
 
 namespace Proyecta.Services;
 
@@ -33,7 +33,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return new ApiResponse<IEnumerable<ApplicationUserListDto>>
         {
             Success = true,
-            Code = ApiResponseCode.OK,
+            Code = ApiResponseCode.Ok,
             Data = users
         };
     }
@@ -55,12 +55,12 @@ public sealed class ApplicationUserService : IApplicationUserService
         return new ApiResponse<ApplicationUserDetailDto>
         {
             Success = true,
-            Code = ApiResponseCode.OK,
+            Code = ApiResponseCode.Ok,
             Data = user
         };
     }
 
-    public async Task<ApiResponse<ApiCreateResponse<string>>> Create(ApplicationUserCreateOrUpdateDto item,
+    public async Task<ApiResponse<ApiResponseGenericAdd<string>>> Create(ApplicationUserAddOrUpdateDto item,
         string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
@@ -85,7 +85,7 @@ public sealed class ApplicationUserService : IApplicationUserService
                 }
             }
 
-            return new ApiResponse<ApiCreateResponse<string>>
+            return new ApiResponse<ApiResponseGenericAdd<string>>
             {
                 Success = false,
                 Code = ApiResponseCode.BadRequest,
@@ -104,16 +104,16 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         var userId = await _userManager.GetUserIdAsync(newItem);
 
-        return new ApiResponse<ApiCreateResponse<string>>
+        return new ApiResponse<ApiResponseGenericAdd<string>>
         {
             Success = true,
             Code = ApiResponseCode.Created,
             Message = "User created successfully.",
-            Data = new ApiCreateResponse<string> { Id = userId }
+            Data = new ApiResponseGenericAdd<string> { Id = userId }
         };
     }
 
-    public async Task<ApiResponse> Update(string id, ApplicationUserCreateOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse> Update(string id, ApplicationUserAddOrUpdateDto item, string currentUserId)
     {
         // Look for current user
         var currentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
@@ -182,7 +182,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return new ApiResponse
         {
             Success = true,
-            Code = ApiResponseCode.OK,
+            Code = ApiResponseCode.Ok,
             Message = "User updated successfully.",
         };
     }
@@ -215,7 +215,7 @@ public sealed class ApplicationUserService : IApplicationUserService
             return new ApiResponse
             {
                 Success = true,
-                Code = ApiResponseCode.OK,
+                Code = ApiResponseCode.Ok,
                 Message = "User deleted successfully.",
             };
         }
@@ -245,11 +245,11 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApiResponse<IEnumerable<ApiCreateResponse<string>>>> AddRange(
-        IEnumerable<ApplicationUserCreateOrUpdateDto> items,
+    public async Task<ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>> AddRange(
+        IEnumerable<ApplicationUserAddOrUpdateDto> items,
         string currentUserId)
     {
-        var data = new List<ApiCreateResponse<string>>();
+        var data = new List<ApiResponseGenericAdd<string>>();
         var errors = new Dictionary<string, List<string>>();
         var errorsCount = 0;
         var itemsToAdd = items.ToList();
@@ -271,7 +271,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         var isSuccess = errors.Count == 0;
 
-        var response = new ApiResponse<IEnumerable<ApiCreateResponse<string>>>
+        var response = new ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>
         {
             Success = isSuccess,
             Code = isSuccess ? ApiResponseCode.Created : ApiResponseCode.Accepted,
@@ -286,7 +286,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return response;
     }
 
-    private ApplicationUser MapDtoToEntity(ApplicationUserCreateOrUpdateDto item, string currentUserId)
+    private ApplicationUser MapDtoToEntity(ApplicationUserAddOrUpdateDto item, string currentUserId)
     {
         var now = DateTime.UtcNow;
 

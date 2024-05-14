@@ -2,8 +2,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
+using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.Auth;
-using Proyecta.Core.Responses;
 
 namespace Proyecta.Web.Controllers.v1;
 
@@ -27,7 +27,7 @@ public class UsersController : ControllerBase
     {
         var result = await _service.GetAll();
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpGet("{id}")]
@@ -36,27 +36,27 @@ public class UsersController : ControllerBase
     {
         var result = await _service.GetById(id);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiCreateResponse<string>>))]
-    public async Task<IActionResult> Create(ApplicationUserCreateOrUpdateDto item)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiResponseGenericAdd<string>>))]
+    public async Task<IActionResult> Create(ApplicationUserAddOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Create(item, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
-    public async Task<IActionResult> Update(string id, ApplicationUserCreateOrUpdateDto item)
+    public async Task<IActionResult> Update(string id, ApplicationUserAddOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Update(id, item, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpDelete("{id}")]
@@ -66,17 +66,17 @@ public class UsersController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Remove(id, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPost]
     [Route("add-range")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApiCreateResponse<string>>>))]
-    public async Task<IActionResult> AddRange(IEnumerable<ApplicationUserCreateOrUpdateDto> items)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>))]
+    public async Task<IActionResult> AddRange(IEnumerable<ApplicationUserAddOrUpdateDto> items)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.AddRange(items, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 }

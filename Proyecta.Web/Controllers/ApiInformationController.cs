@@ -3,7 +3,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authorization;
-using Proyecta.Core.Responses;
+using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Web.Utils;
 
 namespace Proyecta.Web.Controllers;
@@ -21,7 +21,7 @@ public class ApiInformationController : ControllerBase
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<object>
         {
             Success = true,
-            Code = ApiResponseCode.OK,
+            Code = ApiResponseCode.Ok,
             Data = result
         });
     }
@@ -38,7 +38,7 @@ public class ApiInformationController : ControllerBase
         return StatusCode(StatusCodes.Status200OK, new ApiResponse<object>
         {
             Success = true,
-            Code = ApiResponseCode.OK,
+            Code = ApiResponseCode.Ok,
             Data = result
         });
     }

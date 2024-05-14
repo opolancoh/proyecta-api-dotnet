@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.DTOs;
+using Proyecta.Core.DTOs.IdName;
 using Proyecta.Core.DTOs.Risk;
 using Proyecta.Core.Exceptions;
 

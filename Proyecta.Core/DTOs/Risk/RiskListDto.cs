@@ -1,3 +1,5 @@
+using Proyecta.Core.DTOs.IdName;
+
 namespace Proyecta.Core.DTOs.Risk;
 
 public record RiskListDto 

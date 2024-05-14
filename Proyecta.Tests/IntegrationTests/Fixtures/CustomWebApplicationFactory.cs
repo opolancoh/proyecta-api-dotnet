@@ -120,10 +120,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         var userRoles = new List<string> { role };
         var claimsInput = new JwtAccessTokenClaimsInputDto
         {
-            userId = $"userId-{role}",
-            userName = $"userName-{role}",
-            userDisplayName = $"userDisplayName-{role}",
-            userRoles = userRoles.ToList()
+            UserId = $"userId-{role}",
+            UserName = $"userName-{role}",
+            UserDisplayName = $"userDisplayName-{role}",
+            UserRoles = userRoles.ToList()
         };
         var claims = AuthHelper.GetClaims(claimsInput);
         return AuthHelper.GenerateAccessToken(issuer!, audience!, secret!, claims, expiration);

@@ -1,8 +1,8 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Proyecta.Core.DTOs;
-using Proyecta.Core.Responses;
+using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.IdName;
 using Proyecta.Tests.IntegrationTests.Fixtures;
 
 namespace Proyecta.Tests.IntegrationTests.Risk;
@@ -25,7 +25,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
     public async Task Add_WithValidData_ReturnsNewRecordId()
     {
         // Arrange
-        var newItem = new GenericEntityCreateOrUpdateDto { Name = "Category 1" };
+        var newItem = new IdNameAddOrUpdateDto { Name = "Category 1" };
 
         // Act
         var response = await _client.PostAsJsonAsync($"{BasePath}", newItem);
@@ -33,7 +33,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse<ApiCreateResponse<Guid>>>();
+        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
 
         Assert.NotNull(responseContent);
         Assert.True(responseContent.Success);
@@ -46,10 +46,10 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
     public async Task GetById_WithValidData_ReturnsExistingRecord()
     {
         // Arrange
-        var newItem = new GenericEntityCreateOrUpdateDto { Name = "Category 1" };
+        var newItem = new IdNameAddOrUpdateDto { Name = "Category 1" };
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
-            await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiCreateResponse<Guid>>>();
+            await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
         var newItemId = newItemResponseContent!.Data.Id;
 
         // Act
@@ -58,7 +58,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse<GenericEntityDetailDto<Guid>>>();
+        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse<IdNameDetailDto<Guid>>>();
 
         Assert.NotNull(responseContent);
         Assert.True(responseContent.Success);
@@ -74,13 +74,13 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
     public async Task Update_WithValidData_ReturnsCode204()
     {
         // Arrange
-        var newItem = new GenericEntityCreateOrUpdateDto { Name = "Category 1" };
+        var newItem = new IdNameAddOrUpdateDto { Name = "Category 1" };
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
-            await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiCreateResponse<Guid>>>();
+            await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
         var newItemId = newItemResponseContent!.Data.Id;
 
-        var itemToBeUpdated = new GenericEntityCreateOrUpdateDto { Name = "Category 2" };
+        var itemToBeUpdated = new IdNameAddOrUpdateDto { Name = "Category 2" };
 
         // Act
         var response = await _client.PutAsJsonAsync($"{BasePath}/{newItemId}", itemToBeUpdated);
@@ -99,10 +99,10 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
     public async Task Remove_WithValidData_ReturnsCode204()
     {
         // Arrange
-        var newItem = new GenericEntityCreateOrUpdateDto { Name = "Category 1" };
+        var newItem = new IdNameAddOrUpdateDto { Name = "Category 1" };
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
-            await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiCreateResponse<Guid>>>();
+            await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
         var newItemId = newItemResponseContent!.Data.Id;
 
         // Act
@@ -122,7 +122,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
     public async Task AddRange_WithValidData_ReturnsCode204()
     {
         // Arrange
-        var newItems = new List<GenericEntityCreateOrUpdateDto>
+        var newItems = new List<IdNameAddOrUpdateDto>
         {
             new() { Name = "Item 1" },
             new() { Name = "Item 2" },
@@ -135,7 +135,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse<GenericEntityDetailDto<Guid>>>();
+        var responseContent = await response.Content.ReadFromJsonAsync<ApiResponse<IdNameDetailDto<Guid>>>();
 
         Assert.NotNull(responseContent);
         Assert.True(responseContent.Success);
@@ -146,7 +146,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
     public async Task GetAll_WithValidData_ReturnsCode204()
     {
         // Arrange
-        var newItems = new List<GenericEntityCreateOrUpdateDto>
+        var newItems = new List<IdNameAddOrUpdateDto>
         {
             new() { Name = "Item 1" },
             new() { Name = "Item 2" },
@@ -161,7 +161,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var responseContent =
-            await response.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<GenericEntityListDto>>>();
+            await response.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<IdNameListDto<Guid>>>>();
 
         Assert.NotNull(responseContent);
         Assert.True(responseContent.Success);

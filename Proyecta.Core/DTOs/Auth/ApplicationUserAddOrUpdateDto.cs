@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Proyecta.Core.DTOs.Auth;
 
-public record ApplicationUserCreateOrUpdateDto : IValidatableObject
+public record ApplicationUserAddOrUpdateDto : IValidatableObject
 {
     [Required] public string? FirstName { get; init; }
     [Required] public string? LastName { get; init; }

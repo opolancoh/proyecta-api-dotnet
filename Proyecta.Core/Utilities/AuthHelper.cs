@@ -46,15 +46,15 @@ public static class AuthHelper
     {
         var claims = new List<Claim>
         {
-            new("sub", item.userId),
-            new("name", item.userDisplayName),
-            new("username", item.userName)
+            new("sub", item.UserId),
+            new("name", item.UserDisplayName),
+            new("username", item.UserName)
         };
 
         // Add user roles
-        claims.AddRange(item.userRoles.Select(role => new Claim("roles", role)));
+        claims.AddRange(item.UserRoles.Select(role => new Claim("roles", role)));
 
-        var isAdmin = item.userRoles.Contains("Administrator");
+        var isAdmin = item.UserRoles.Contains("Administrator");
         claims.Add(new Claim("isAdmin", isAdmin.ToString(), ClaimValueTypes.Boolean));
 
         return claims;

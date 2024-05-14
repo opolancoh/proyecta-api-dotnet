@@ -2,9 +2,9 @@ namespace Proyecta.Core.DTOs.Auth;
 
 public record JwtAccessTokenClaimsInputDto
 {
-    public string userId { get; init; }
-    public string userName { get; init; }
-    public string userDisplayName { get; init; }
+    public string UserId { get; init; }
+    public string UserName { get; init; }
+    public string UserDisplayName { get; init; }
     
-    public List<string> userRoles { get; init; }
+    public List<string> UserRoles { get; init; }
 }

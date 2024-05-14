@@ -2,9 +2,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.DTOs;
-using Proyecta.Core.Responses;
-using Proyecta.Web.Filters;
+using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.IdName;
 
 namespace Proyecta.Web.Controllers.v1;
 
@@ -23,43 +22,41 @@ public class RiskCategoriesController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<GenericEntityListDto>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<IdNameListDto<Guid>>>))]
     public async Task<IActionResult> Get()
     {
         var result = await _service.GetAll();
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<GenericEntityDetailDto<Guid>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IdNameDetailDto<Guid>>))]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _service.GetById(id);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPost]
-    [CustomValidation("PropertyNameToValidate")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiCreateResponse<Guid>>))]
-    public async Task<IActionResult> Create(GenericEntityCreateOrUpdateDto item)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiResponseGenericAdd<Guid>>))]
+    public async Task<IActionResult> Create(IdNameAddOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Create(item, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPut("{id:guid}")]
-    [InputModelValidationFilter]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
-    public async Task<IActionResult> Update(Guid id, GenericEntityCreateOrUpdateDto item)
+    public async Task<IActionResult> Update(Guid id, IdNameAddOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Update(id, item, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpDelete("{id:guid}")]
@@ -69,17 +66,18 @@ public class RiskCategoriesController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Remove(id, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPost]
     [Route("add-range")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>))]
-    public async Task<IActionResult> AddRange(IEnumerable<GenericEntityCreateOrUpdateDto> items)
+    [ProducesResponseType(StatusCodes.Status200OK,
+        Type = typeof(ApiResponse<IEnumerable<ApiResponseGenericAdd<Guid>>>))]
+    public async Task<IActionResult> AddRange(IEnumerable<IdNameAddOrUpdateDto> items)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.AddRange(items, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 }

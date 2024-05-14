@@ -5,11 +5,11 @@ namespace Proyecta.Core.DTOs.Auth;
 
 public record RegisterDto : IValidatableObject
 {
-    public string FirstName { get; init; }
-    public string LastName { get; init; }
-    public string DisplayName { get; init; }
-    public string? Username { get; init; }
-    public string? Password { get; init; }
+    public required string FirstName { get; init; }
+    public required string LastName { get; init; }
+    public required string DisplayName { get; init; }
+    public required string Username { get; init; }
+    public required string Password { get; init; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

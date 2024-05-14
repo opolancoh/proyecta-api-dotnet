@@ -42,3 +42,7 @@ To add new migrations, use the following commands:
  dotnet ef migrations add "AuthInitialMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context AuthDbContext --output-dir Migrations/AuthDb
  dotnet ef migrations add "ApiInitialMigration" --project Proyecta.Repository.EntityFramework --startup-project Proyecta.Web --context ApiDbContext --output-dir Migrations/ApiDb
 ```
+
+## API Documentation
+
+To access the Swagger UI, navigate to /api-docs

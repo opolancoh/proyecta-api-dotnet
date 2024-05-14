@@ -1,6 +1,6 @@
 namespace Proyecta.Core.Utilities;
 
-public class TextHelper
+public static class TextHelper
 {
     public static class RegExp
     {

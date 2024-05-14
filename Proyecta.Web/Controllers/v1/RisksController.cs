@@ -2,11 +2,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
+using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.Risk;
-using Proyecta.Core.Responses;
 
 namespace Proyecta.Web.Controllers.v1;
-
 
 [ApiController]
 [ApiVersion("1.0")]
@@ -28,7 +27,7 @@ public class RisksController : ControllerBase
     {
         var result = await _service.GetAll();
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpGet("{id}")]
@@ -37,27 +36,27 @@ public class RisksController : ControllerBase
     {
         var result = await _service.GetById(id);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiCreateResponse<Guid>>))]
-    public async Task<IActionResult> Create(RiskCreateOrUpdateDto item)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiResponseGenericAdd<Guid>>))]
+    public async Task<IActionResult> Create(RiskAddOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Create(item, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
-    public async Task<IActionResult> Update(Guid id, RiskCreateOrUpdateDto item)
+    public async Task<IActionResult> Update(Guid id, RiskAddOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Update(id, item, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 
     [HttpDelete("{id}")]
@@ -67,17 +66,18 @@ public class RisksController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Remove(id, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
-    
+
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApiCreateResponse<Guid>>>))]
+    [ProducesResponseType(StatusCodes.Status200OK,
+        Type = typeof(ApiResponse<IEnumerable<ApiResponseGenericAdd<Guid>>>))]
     [Route("add-range")]
-    public async Task<IActionResult> AddRange(IEnumerable<RiskCreateOrUpdateDto> items)
+    public async Task<IActionResult> AddRange(IEnumerable<RiskAddOrUpdateDto> items)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.AddRange(items, userId);
 
-        return StatusCode(StatusCodes.Status200OK, result);
+        return new OkObjectResult(result);
     }
 }

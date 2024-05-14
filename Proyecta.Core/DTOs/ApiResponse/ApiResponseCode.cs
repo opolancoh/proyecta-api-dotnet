@@ -1,8 +1,8 @@
-namespace Proyecta.Core.Responses;
+namespace Proyecta.Core.DTOs.ApiResponse;
 
 public static class ApiResponseCode
 {
-    public const string OK = "200";
+    public const string Ok = "200";
     public const string Created = "201";
     public const string Accepted = "202";
     public const string NoContent = "204";

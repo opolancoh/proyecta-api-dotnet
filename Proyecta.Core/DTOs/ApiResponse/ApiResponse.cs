@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Proyecta.Core.Responses;
+namespace Proyecta.Core.DTOs.ApiResponse;
 
 public class ApiResponse
 {

@@ -1,5 +1,7 @@
 using System.Text;
 using System.Text.Json;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +11,14 @@ using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
+using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Utilities;
 using Proyecta.Services;
 using Proyecta.Repository.EntityFramework;
 using Proyecta.Repository.EntityFramework.Risk;
 using Proyecta.Services.Risk;
+using Proyecta.Web.Validators;
 
 namespace Proyecta.Web.Extensions;
 
@@ -110,11 +114,42 @@ public static class ServiceExtensions
 
     public static void ConfigureControllers(this IServiceCollection services)
     {
-        services.AddControllers().AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-            options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-        });
+        services
+            .AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            })
+            .ConfigureApiBehaviorOptions(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var kvp in context.ModelState)
+                    {
+                        if (kvp.Value.Errors.Count > 0)
+                        {
+                            var errorMessages = new List<string>();
+                            foreach (var error in kvp.Value.Errors)
+                            {
+                                errorMessages.Add(error.ErrorMessage);
+                            }
+                            errors[kvp.Key] = errorMessages;
+                        }
+                    }
+
+                    var errorResponse = new ApiResponse
+                    {
+                        Success = false,
+                        Code = ApiResponseCode.BadRequest,
+                        Message = "One or more validation errors occurred.",
+                        Errors = errors
+                    };
+
+                    return new OkObjectResult(errorResponse);
+                };
+            });
     }
 
     public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
@@ -143,5 +178,12 @@ public static class ServiceExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
                 };
             });
+    }
+
+    public static void ConfigureFluentValidation(this IServiceCollection services)
+    {
+        services
+            .AddFluentValidationAutoValidation()
+            .AddValidatorsFromAssemblyContaining<IdNameAddOrUpdateValidator>();
     }
 }

@@ -1,4 +1,4 @@
-namespace Proyecta.Core.Responses;
+namespace Proyecta.Core.DTOs.Auth;
 
 public class RefreshTokenResponse
 {

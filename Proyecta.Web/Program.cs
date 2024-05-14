@@ -1,8 +1,6 @@
 using Microsoft.OpenApi.Models;
-using Proyecta.Repository.EntityFramework;
 using Proyecta.Web.Extensions;
 using Proyecta.Web.Swagger;
-using Proyecta.Web.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +12,7 @@ builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.ConfigurePersistenceServices();
 builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.ConfigureControllers();
+builder.Services.ConfigureFluentValidation();
 builder.Services.ConfigureApiVersioning();
 builder.Services.ConfigureCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -38,8 +37,10 @@ if (app.Environment.IsDevelopment())
 }
 
 // DB EnsureCreated and Seed
+#if !DEBUG
 app.MigrateDatabase<AuthDbContext>();
 app.MigrateDatabase<ApiDbContext>();
+#endif
 
 app.UseApiVersioning();
 

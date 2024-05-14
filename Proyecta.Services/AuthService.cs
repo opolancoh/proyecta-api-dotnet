@@ -3,9 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
+using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.Entities.Auth;
-using Proyecta.Core.Responses;
 using Proyecta.Core.Utilities;
 
 namespace Proyecta.Services;
@@ -36,9 +36,9 @@ public class AuthService : IAuthService
         _appUserService = appUserService;
     }
 
-    public async Task<ApiResponse<ApiCreateResponse<string>>> Register(RegisterDto registerDto, string currentUserId)
+    public async Task<ApiResponse<ApiResponseGenericAdd<string>>> Register(RegisterDto registerDto, string currentUserId)
     {
-        var newUser = new ApplicationUserCreateOrUpdateDto
+        var newUser = new ApplicationUserAddOrUpdateDto
         {
             FirstName = registerDto.FirstName,
             LastName = registerDto.LastName,
@@ -79,10 +79,10 @@ public class AuthService : IAuthService
         var userRoles = await _userManager.GetRolesAsync(user);
         var claimsInput = new JwtAccessTokenClaimsInputDto
         {
-            userId = user.Id,
-            userName = user.UserName ?? "",
-            userDisplayName = user.DisplayName ?? "",
-            userRoles = userRoles.ToList()
+            UserId = user.Id,
+            UserName = user.UserName ?? "",
+            UserDisplayName = user.DisplayName ?? "",
+            UserRoles = userRoles.ToList()
         };
         var claims = AuthHelper.GetClaims(claimsInput);
         var accessToken = AuthHelper.GenerateAccessToken(issuer, audience, secret, claims, expiration);
@@ -111,7 +111,7 @@ public class AuthService : IAuthService
         return new ApiResponse<TokenDto>
         {
             Success = true,
-            Code = ApiResponseCode.OK,
+            Code = ApiResponseCode.Ok,
             Data = new TokenDto { AccessToken = accessToken, RefreshToken = refreshToken }
         };
     }
@@ -197,7 +197,7 @@ public class AuthService : IAuthService
         return new ApiResponse<RefreshTokenResponse>
         {
             Success = true,
-            Code = ApiResponseCode.OK,
+            Code = ApiResponseCode.Ok,
             Data = new RefreshTokenResponse { AccessToken = newAccessToken }
         };
     }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.DTOs;
+using Proyecta.Core.DTOs.IdName;
 using Proyecta.Core.Entities.Risk;
 using Proyecta.Core.Exceptions;
 
@@ -19,11 +20,11 @@ public class RiskOwnerRepository : IRiskOwnerRepository
         _entitySet = context.RiskOwner;
     }
 
-     public async Task<IEnumerable<GenericEntityListDto>> GetAll()
+     public async Task<IEnumerable<IdNameListDto<Guid>>> GetAll()
     {
         return await _entitySet
             .AsNoTracking()
-            .Select(x => new GenericEntityListDto
+            .Select(x => new IdNameListDto<Guid>
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -33,7 +34,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
             .ToListAsync();
     }
 
-    public async Task<GenericEntityDetailDto<Guid>> GetById(Guid id)
+    public async Task<IdNameDetailDto<Guid>> GetById(Guid id)
     {
         var entity = await _entitySet
             .AsNoTracking()
@@ -64,7 +65,7 @@ public class RiskOwnerRepository : IRiskOwnerRepository
                 .Select(x => x.UserName)
                 .FirstOrDefaultAsync();
 
-        return new GenericEntityDetailDto<Guid>
+        return new IdNameDetailDto<Guid>
         {
             Id = entity.Id,
             Name = entity.Name,

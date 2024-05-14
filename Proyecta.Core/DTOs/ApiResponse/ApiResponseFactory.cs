@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace Proyecta.Core.Responses;
+namespace Proyecta.Core.DTOs.ApiResponse;
 
 public static class ApiResponseFactory
 {
