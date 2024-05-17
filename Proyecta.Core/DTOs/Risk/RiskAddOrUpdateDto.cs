@@ -1,12 +1,11 @@
-using System.ComponentModel.DataAnnotations;
-using Proyecta.Core.Entities.Validators;
+using Proyecta.Core.Entities.Risk;
 
 namespace Proyecta.Core.DTOs.Risk;
 
-public record RiskAddOrUpdateDto : IValidatableObject
+public record RiskAddOrUpdateDto
 {
-    public string Name { get; set; }
-    public string Code { get; set; }
+    public string? Name { get; set; }
+    public string? Code { get; set; }
     public Guid Category { get; set; }
     public int Type { get; set; }
     public Guid Owner { get; set; }
@@ -15,13 +14,5 @@ public record RiskAddOrUpdateDto : IValidatableObject
     public Guid Treatment { get; set; }
     public DateOnly DateFrom { get; set; }
     public DateOnly DateTo { get; set; }
-    public Boolean State { get; set; }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        var validationResult = new List<ValidationResult>();
-        validationResult.AddRange(TextValidator.ValidateName(Name, nameof(Name)));
-
-        return validationResult;
-    }
+    public bool State { get; set; }
 }

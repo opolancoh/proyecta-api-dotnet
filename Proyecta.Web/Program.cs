@@ -1,6 +1,9 @@
+using System.Diagnostics;
 using Microsoft.OpenApi.Models;
+using Proyecta.Repository.EntityFramework;
 using Proyecta.Web.Extensions;
 using Proyecta.Web.Swagger;
+using Proyecta.Web.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,11 +39,12 @@ if (app.Environment.IsDevelopment())
     SwaggerConfiguration.ConfigureSwaggerUI(app);
 }
 
-// DB EnsureCreated and Seed
-#if !DEBUG
-app.MigrateDatabase<AuthDbContext>();
-app.MigrateDatabase<ApiDbContext>();
-#endif
+if (!Debugger.IsAttached)
+{
+    // DB EnsureCreated and Seed
+    app.MigrateDatabase<AuthDbContext>();
+    app.MigrateDatabase<ApiDbContext>();
+}
 
 app.UseApiVersioning();
 

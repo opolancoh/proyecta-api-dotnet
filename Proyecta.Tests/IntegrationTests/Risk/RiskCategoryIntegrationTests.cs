@@ -39,7 +39,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         Assert.True(responseContent.Success);
         Assert.Equal("201", responseContent.Code);
         // Data
-        Assert.NotEqual(Guid.Empty, responseContent.Data.Id);
+        Assert.NotEqual(Guid.Empty, responseContent.Data!.Id);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
             await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
-        var newItemId = newItemResponseContent!.Data.Id;
+        var newItemId = newItemResponseContent!.Data!.Id;
 
         // Act
         var response = await _client.GetAsync($"{BasePath}/{newItemId}");
@@ -64,7 +64,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         Assert.True(responseContent.Success);
         Assert.Equal("200", responseContent.Code);
         // Data
-        Assert.Equal(newItemId, responseContent.Data.Id);
+        Assert.Equal(newItemId, responseContent.Data!.Id);
         Assert.Equal(newItem.Name, responseContent.Data.Name);
         Assert.True(responseContent.Data.CreatedAt <= DateTime.UtcNow);
         Assert.True(responseContent.Data.UpdatedAt <= DateTime.UtcNow);
@@ -78,7 +78,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
             await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
-        var newItemId = newItemResponseContent!.Data.Id;
+        var newItemId = newItemResponseContent!.Data!.Id;
 
         var itemToBeUpdated = new IdNameAddOrUpdateDto { Name = "Category 2" };
 
@@ -103,7 +103,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
             await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
-        var newItemId = newItemResponseContent!.Data.Id;
+        var newItemId = newItemResponseContent!.Data!.Id;
 
         // Act
         var response = await _client.DeleteAsync($"{BasePath}/{newItemId}");
@@ -167,7 +167,7 @@ public class RiskCategoryIntegrationTests : IClassFixture<CustomWebApplicationFa
         Assert.True(responseContent.Success);
         Assert.Equal("200", responseContent.Code);
         // Data
-        foreach (var item in responseContent.Data)
+        foreach (var item in responseContent.Data!)
         {
             Assert.NotEqual(Guid.Empty, item.Id);
             Assert.Contains(newItems, x => x.Name == item.Name);

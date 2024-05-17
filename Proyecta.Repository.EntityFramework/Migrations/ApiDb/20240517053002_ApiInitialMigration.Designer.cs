@@ -12,7 +12,7 @@ using Proyecta.Repository.EntityFramework;
 namespace Proyecta.Repository.EntityFramework.Migrations.ApiDb
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20240426055015_ApiInitialMigration")]
+    [Migration("20240517053002_ApiInitialMigration")]
     partial class ApiInitialMigration
     {
         /// <inheritdoc />
@@ -42,7 +42,6 @@ namespace Proyecta.Repository.EntityFramework.Migrations.ApiDb
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CreatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateOnly>("DateFrom")
@@ -77,7 +76,6 @@ namespace Proyecta.Repository.EntityFramework.Migrations.ApiDb
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UpdatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -101,7 +99,6 @@ namespace Proyecta.Repository.EntityFramework.Migrations.ApiDb
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CreatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -112,7 +109,6 @@ namespace Proyecta.Repository.EntityFramework.Migrations.ApiDb
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UpdatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -130,7 +126,6 @@ namespace Proyecta.Repository.EntityFramework.Migrations.ApiDb
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CreatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -141,7 +136,6 @@ namespace Proyecta.Repository.EntityFramework.Migrations.ApiDb
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UpdatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -159,7 +153,6 @@ namespace Proyecta.Repository.EntityFramework.Migrations.ApiDb
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CreatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -170,7 +163,6 @@ namespace Proyecta.Repository.EntityFramework.Migrations.ApiDb
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UpdatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");

@@ -11,9 +11,11 @@ public static class DbMigrationHelper
         var context = services.GetRequiredService<T>();
         var logger = services.GetRequiredService<ILogger<Program>>();
         var connection = context.Database.GetDbConnection();
+
         try
         {
-            logger.LogInformation("[MigrateDatabase] Trying to migrate '{Database}' DB.", connection.Database);
+            logger.LogInformation("[MigrateDatabase] Attempting to migrate '{Database}' database on host '{Host}'",
+                connection.Database, connection.DataSource);
             context.Database.EnsureCreated();
             // Get lists of migrations
             var appliedMigrations = context.Database.GetAppliedMigrations();
@@ -27,7 +29,7 @@ public static class DbMigrationHelper
             }
             else
             {
-                logger.LogInformation("[MigrateDatabase] No migrations were applied to '{Database}' DB.",
+                logger.LogInformation("[MigrateDatabase] No migrations were applied to '{Database}' database.",
                     connection.Database);
             }
         }

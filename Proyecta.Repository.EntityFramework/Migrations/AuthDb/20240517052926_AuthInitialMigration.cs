@@ -71,7 +71,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "RefreshTokens",
+                name: "RefreshToken",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "text", nullable: false),
@@ -80,7 +80,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshTokens", x => new { x.UserId, x.Token });
+                    table.PrimaryKey("PK_RefreshToken", x => new { x.UserId, x.Token });
                 });
 
             migrationBuilder.CreateTable(
@@ -204,7 +204,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "CreatedById", "DisplayName", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UpdatedAt", "UpdatedById", "UserName" },
-                values: new object[] { "174ebfd6-f9bf-491b-b598-7587d9bf106d", 0, "59f4aef7-a8af-4fac-9294-e26c64ef6ed1", new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740), "174ebfd6-f9bf-491b-b598-7587d9bf106d", "System", "system@ikobit.com", false, "System", "User", false, null, "SYSTEM@IKOBIT.COM", "SYSTEM", "AQAAAAIAAYagAAAAEJIq6NV9iIw5FnUcstjjhHQhhDHsyLGXCkMyPPhpXV8Qek/i6e+Wtds7xnZ6fz+EDQ==", null, false, "b23363fd-ab06-47c1-bcd1-c96e7db696c7", false, new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740), "174ebfd6-f9bf-491b-b598-7587d9bf106d", "system" });
+                values: new object[] { "174ebfd6-f9bf-491b-b598-7587d9bf106d", 0, "c2306e56-d50f-4031-a229-78010d495d4c", new DateTime(2024, 5, 17, 5, 29, 26, 384, DateTimeKind.Utc).AddTicks(6460), "174ebfd6-f9bf-491b-b598-7587d9bf106d", "System", "system@ikobit.com", false, "System", "User", false, null, "SYSTEM@IKOBIT.COM", "SYSTEM", "AQAAAAIAAYagAAAAEFU5gr2zZXxJ/Kq7/KczXGKXyrYBDog+2JyE5Wy5ZGTMCCU8jsn0TM9tEuEjSfwm6A==", null, false, "c229771e-6428-477c-af75-678c73c13761", false, new DateTime(2024, 5, 17, 5, 29, 26, 384, DateTimeKind.Utc).AddTicks(6460), "174ebfd6-f9bf-491b-b598-7587d9bf106d", "system" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -214,7 +214,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "CreatedById", "DisplayName", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UpdatedAt", "UpdatedById", "UserName" },
-                values: new object[] { "1c0bbe23-61b6-4cd0-a429-d606dac4d04c", 0, "c5c2cfb2-4bb7-4a72-94d3-de3e44755142", new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740), "174ebfd6-f9bf-491b-b598-7587d9bf106d", "Admin", "admin@ikobit.com", false, "Admin", "User", false, null, "ADMIN@IKOBIT.COM", "ADMIN", "AQAAAAIAAYagAAAAELhcaqu43TcGFBGMH/RdKjoOndT0zPY1cD7/CT1se7bDNvvyjlW42KqYlbmGRaRRLg==", null, false, "f00d1777-1a18-416f-ad27-d54b20c8e770", false, new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740), "174ebfd6-f9bf-491b-b598-7587d9bf106d", "admin" });
+                values: new object[] { "1c0bbe23-61b6-4cd0-a429-d606dac4d04c", 0, "09c6f8ab-7649-4840-8580-8f6e94c65f99", new DateTime(2024, 5, 17, 5, 29, 26, 384, DateTimeKind.Utc).AddTicks(6460), "174ebfd6-f9bf-491b-b598-7587d9bf106d", "Admin", "admin@ikobit.com", false, "Admin", "User", false, null, "ADMIN@IKOBIT.COM", "ADMIN", "AQAAAAIAAYagAAAAEOE1x1InsJAm79ev2DZ63/rDqTxZiZKn6TBtp/D0UXD35zlROyZIZ2jKOBFMLaMzfA==", null, false, "11d751a5-a5c8-495c-afe7-95638f9aedff", false, new DateTime(2024, 5, 17, 5, 29, 26, 384, DateTimeKind.Utc).AddTicks(6460), "174ebfd6-f9bf-491b-b598-7587d9bf106d", "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -288,7 +288,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "RefreshTokens");
+                name: "RefreshToken");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

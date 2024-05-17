@@ -12,7 +12,7 @@ using Proyecta.Repository.EntityFramework;
 namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240430041155_AuthInitialMigration")]
+    [Migration("20240517052926_AuthInitialMigration")]
     partial class AuthInitialMigration
     {
         /// <inheritdoc />
@@ -302,8 +302,8 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                         {
                             Id = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "59f4aef7-a8af-4fac-9294-e26c64ef6ed1",
-                            CreatedAt = new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740),
+                            ConcurrencyStamp = "c2306e56-d50f-4031-a229-78010d495d4c",
+                            CreatedAt = new DateTime(2024, 5, 17, 5, 29, 26, 384, DateTimeKind.Utc).AddTicks(6460),
                             CreatedById = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
                             DisplayName = "System",
                             Email = "system@ikobit.com",
@@ -313,11 +313,11 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                             LockoutEnabled = false,
                             NormalizedEmail = "SYSTEM@IKOBIT.COM",
                             NormalizedUserName = "SYSTEM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJIq6NV9iIw5FnUcstjjhHQhhDHsyLGXCkMyPPhpXV8Qek/i6e+Wtds7xnZ6fz+EDQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFU5gr2zZXxJ/Kq7/KczXGKXyrYBDog+2JyE5Wy5ZGTMCCU8jsn0TM9tEuEjSfwm6A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b23363fd-ab06-47c1-bcd1-c96e7db696c7",
+                            SecurityStamp = "c229771e-6428-477c-af75-678c73c13761",
                             TwoFactorEnabled = false,
-                            UpdatedAt = new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740),
+                            UpdatedAt = new DateTime(2024, 5, 17, 5, 29, 26, 384, DateTimeKind.Utc).AddTicks(6460),
                             UpdatedById = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
                             UserName = "system"
                         },
@@ -325,8 +325,8 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                         {
                             Id = "1c0bbe23-61b6-4cd0-a429-d606dac4d04c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c5c2cfb2-4bb7-4a72-94d3-de3e44755142",
-                            CreatedAt = new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740),
+                            ConcurrencyStamp = "09c6f8ab-7649-4840-8580-8f6e94c65f99",
+                            CreatedAt = new DateTime(2024, 5, 17, 5, 29, 26, 384, DateTimeKind.Utc).AddTicks(6460),
                             CreatedById = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
                             DisplayName = "Admin",
                             Email = "admin@ikobit.com",
@@ -336,11 +336,11 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@IKOBIT.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAELhcaqu43TcGFBGMH/RdKjoOndT0zPY1cD7/CT1se7bDNvvyjlW42KqYlbmGRaRRLg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOE1x1InsJAm79ev2DZ63/rDqTxZiZKn6TBtp/D0UXD35zlROyZIZ2jKOBFMLaMzfA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f00d1777-1a18-416f-ad27-d54b20c8e770",
+                            SecurityStamp = "11d751a5-a5c8-495c-afe7-95638f9aedff",
                             TwoFactorEnabled = false,
-                            UpdatedAt = new DateTime(2024, 4, 30, 4, 11, 55, 729, DateTimeKind.Utc).AddTicks(9740),
+                            UpdatedAt = new DateTime(2024, 5, 17, 5, 29, 26, 384, DateTimeKind.Utc).AddTicks(6460),
                             UpdatedById = "174ebfd6-f9bf-491b-b598-7587d9bf106d",
                             UserName = "admin"
                         });
@@ -359,7 +359,7 @@ namespace Proyecta.Repository.EntityFramework.Migrations.AuthDb
 
                     b.HasKey("UserId", "Token");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

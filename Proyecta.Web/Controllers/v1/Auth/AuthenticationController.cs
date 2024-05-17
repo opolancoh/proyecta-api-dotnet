@@ -22,12 +22,10 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-    [Authorize(Roles = "System,Administrator")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiResponseGenericAdd<string>>))]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        var result = await _service.Register(registerDto, userId);
+        var result = await _service.Register(registerDto);
 
         return new OkObjectResult(result);
     }

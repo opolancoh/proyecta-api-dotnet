@@ -32,13 +32,13 @@ public class AuthRepository : IAuthRepository
 
     public async Task<RefreshToken?> GetRefreshToken(string userId, string token)
     {
-        return await _context.RefreshTokens
+        return await _context.RefreshToken
             .SingleOrDefaultAsync(x => x.UserId == userId && x.Token == token);
     }
 
     public async Task<bool> AddRefreshToken(RefreshToken refreshToken)
     {
-        _context.RefreshTokens.Add(refreshToken);
+        _context.RefreshToken.Add(refreshToken);
         try
         {
             var result = await _context.SaveChangesAsync();
@@ -53,7 +53,7 @@ public class AuthRepository : IAuthRepository
     public async Task<bool> RemoveRefreshToken(string userId, string token)
     {
         var refreshToken = new RefreshToken { UserId = userId, Token = token };
-        _context.RefreshTokens.Remove(refreshToken);
+        _context.RefreshToken.Remove(refreshToken);
         try
         {
             var result = await _context.SaveChangesAsync();

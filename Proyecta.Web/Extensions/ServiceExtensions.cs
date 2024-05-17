@@ -106,7 +106,7 @@ public static class ServiceExtensions
                 o.Password.RequireUppercase = true;
                 o.Password.RequireNonAlphanumeric = true;
                 o.Password.RequiredLength = 6;
-                o.User.RequireUniqueEmail = true;
+                o.User.RequireUniqueEmail = false;
             })
             .AddEntityFrameworkStores<AuthDbContext>()
             .AddDefaultTokenProviders();

@@ -286,7 +286,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return response;
     }
 
-    private ApplicationUser MapDtoToEntity(ApplicationUserAddOrUpdateDto item, string currentUserId)
+    private ApplicationUser MapDtoToEntity(ApplicationUserAddOrUpdateDto item, string? currentUserId)
     {
         var now = DateTime.UtcNow;
 
@@ -297,10 +297,21 @@ public sealed class ApplicationUserService : IApplicationUserService
             DisplayName = item.DisplayName!,
             UserName = item.UserName,
             CreatedAt = now,
-            CreatedById = currentUserId,
             UpdatedAt = now,
-            UpdatedById = currentUserId
         };
+
+        if (currentUserId == null)
+        {
+            var id = Guid.NewGuid().ToString();
+            entity.Id = id;
+            entity.CreatedById = id;
+            entity.UpdatedById = id;
+        }
+        else
+        {
+            entity.CreatedById = currentUserId;
+            entity.UpdatedById = currentUserId;
+        }
 
         return entity;
     }

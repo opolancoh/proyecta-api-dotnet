@@ -7,7 +7,7 @@ namespace Proyecta.Repository.EntityFramework;
 
 public class AuthDbContext : IdentityDbContext<ApplicationUser>
 {
-    public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<RefreshToken> RefreshToken { get; set; }
 
     public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
     {

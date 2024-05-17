@@ -36,7 +36,7 @@ public class AuthService : IAuthService
         _appUserService = appUserService;
     }
 
-    public async Task<ApiResponse<ApiResponseGenericAdd<string>>> Register(RegisterDto registerDto, string currentUserId)
+    public async Task<ApiResponse<TokenDto>> Register(RegisterDto registerDto)
     {
         var newUser = new ApplicationUserAddOrUpdateDto
         {
@@ -47,7 +47,19 @@ public class AuthService : IAuthService
             Password = registerDto.Password
         };
 
-        return await _appUserService.Create(newUser, currentUserId);
+        var userCreationResult = await _appUserService.Create(newUser, null!);
+        if (userCreationResult.Success)
+        {
+            return await Login(new LoginDto { Username = newUser.UserName, Password = newUser.Password });
+        }
+
+        return new ApiResponse<TokenDto>
+        {
+            Success = false,
+            Code = userCreationResult.Code,
+            Message = "There was a problem creating the account.",
+            Errors = userCreationResult.Errors
+        };
     }
 
     public async Task<ApiResponse<TokenDto>> Login(LoginDto loginDto)
