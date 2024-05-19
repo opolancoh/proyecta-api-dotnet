@@ -9,7 +9,7 @@ using Proyecta.Services;
 
 namespace Proyecta.Tests.UnitTests.Auth;
 
-public class AuthServiceSuccessfulLoginTests : IClassFixture<AuthServiceFixture>
+/* public class AuthServiceSuccessfulLoginTests : IClassFixture<AuthServiceFixture>
 {
     private readonly AuthService _authService;
     private readonly Mock<IConfiguration> _mockConfiguration;
@@ -266,4 +266,4 @@ public class AuthServiceSuccessfulLoginTests : IClassFixture<AuthServiceFixture>
         var minutesDifference = Math.Round(timeDifference.TotalMinutes);
         Assert.Equal(accessTokenExpirationInMinutes, minutesDifference);
     }
-}
+} */

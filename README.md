@@ -17,7 +17,7 @@ docker network create proyecta-network
 ### Database Setup
 Launch a PostgreSQL container as the database:
 ```sh
-docker run -d --name proyecta_db_postgres -p 5433:5432 -e POSTGRES_PASSWORD=mysecretpassword --network proyecta-network postgres
+docker run -d --name proyecta_db_postgres -p 5432:5432 -e POSTGRES_PASSWORD=mysecretpassword --network proyecta-network postgres
 ```
 Note: The port mapping "5433:5432" allows the host machine to communicate with PostgreSQL on its default port (5432) through the host's port 5433.
 
