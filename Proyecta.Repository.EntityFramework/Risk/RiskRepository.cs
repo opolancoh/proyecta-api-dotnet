@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories.Risk;
-using Proyecta.Core.DTOs;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Core.DTOs.Risk;
 using Proyecta.Core.Exceptions;
@@ -63,9 +62,9 @@ public class RiskRepository : IRiskRepository
                 DateTo = x.DateTo,
                 State = x.State,
                 CreatedAt = x.CreatedAt,
-                CreatedBy = new IdNameDto<string> { Id = x.CreatedById ?? "", Name = "" },
+                CreatedBy = new IdNameDto<string> { Id = x.CreatedById, Name = "" },
                 UpdatedAt = x.UpdatedAt,
-                UpdatedBy = new IdNameDto<string> { Id = x.UpdatedById ?? "", Name = "" },
+                UpdatedBy = new IdNameDto<string> { Id = x.UpdatedById, Name = "" },
             })
             .SingleOrDefaultAsync(x => x.Id == id);
 

@@ -8,14 +8,14 @@ using Proyecta.Tests.IntegrationTests.Fixtures;
 
 namespace Proyecta.Tests.IntegrationTests;
 
-public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplicationFactory>
+public abstract class IdNameBaseIntegrationTestsSuccess : IClassFixture<CustomWebApplicationFactory>
 {
     protected abstract string BasePath { get; }
     private readonly CustomWebApplicationFactory _factory;
     private readonly HttpClient _client;
     private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
 
-    protected IdNameBaseIntegrationTests(CustomWebApplicationFactory factory)
+    protected IdNameBaseIntegrationTestsSuccess(CustomWebApplicationFactory factory)
     {
         _factory = factory;
         _client = factory.CreateClient();
@@ -28,7 +28,7 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     public async Task Add_WithValidData_ReturnsNewRecordId()
     {
         // Arrange
-        var newItem = GetValidItem();
+        var newItem = _factory.GetValidIdNameAddOrUpdateDtoItem();
 
         // Act
         var response = await _client.PostAsJsonAsync($"{BasePath}", newItem);
@@ -51,7 +51,7 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     public async Task GetById_WithValidData_ReturnsExistingRecord()
     {
         // Arrange
-        var newItem = GetValidItem();
+        var newItem = _factory.GetValidIdNameAddOrUpdateDtoItem();
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
             await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
@@ -81,13 +81,13 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     public async Task Update_WithValidData_ReturnsCode204()
     {
         // Arrange
-        var newItem = GetValidItem();
+        var newItem = _factory.GetValidIdNameAddOrUpdateDtoItem();
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
             await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
         var newItemId = newItemResponseContent!.Data!.Id;
 
-        var itemToBeUpdated = new IdNameAddOrUpdateDto { Name = GetValidName() };
+        var itemToBeUpdated = new IdNameAddOrUpdateDto { Name = _factory.GetValidEntityName() };
 
         // Act
         var response = await _client.PutAsJsonAsync($"{BasePath}/{newItemId}", itemToBeUpdated);
@@ -107,7 +107,7 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     public async Task Remove_WithValidData_ReturnsCode204()
     {
         // Arrange
-        var newItem = GetValidItem();
+        var newItem = _factory.GetValidIdNameAddOrUpdateDtoItem();
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
             await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
@@ -128,40 +128,14 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     }
 
     [Fact]
-    public async Task AddRange_WithValidData_ReturnsCode204()
+    public async Task GetAll_WithValidData_ReturnsCode200()
     {
         // Arrange
         var newItems = new List<IdNameAddOrUpdateDto>
         {
-            new() { Name = GetValidName() },
-            new() { Name = GetValidName() },
-            new() { Name = GetValidName() },
-        };
-
-        // Act
-        var response = await _client.PostAsJsonAsync($"{BasePath}/add-range", newItems);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<IdNameDetailDto<Guid>>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("204", responseContent.Code);
-    }
-
-    [Fact]
-    public async Task GetAll_WithValidData_ReturnsCode204()
-    {
-        // Arrange
-        var newItems = new List<IdNameAddOrUpdateDto>
-        {
-            new() { Name = GetValidName() },
-            new() { Name = GetValidName() },
-            new() { Name = GetValidName() },
+            new() { Name = _factory.GetValidEntityName() },
+            new() { Name = _factory.GetValidEntityName() },
+            new() { Name = _factory.GetValidEntityName() },
         };
         await _client.PostAsJsonAsync($"{BasePath}/add-range", newItems);
 
@@ -182,23 +156,32 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
 
         // Data
         Assert.NotNull(responseContent.Data);
-        // Assert.Equal(newItems.Count, responseContent.Data.Count());
-        foreach (var item in responseContent.Data!)
+        Assert.True(newItems.All(x => responseContent.Data.Any(y => y.Name == x.Name)));
+    }
+
+    [Fact]
+    public async Task AddRange_WithValidData_ReturnsCode204()
+    {
+        // Arrange
+        var newItems = new List<IdNameAddOrUpdateDto>
         {
-            Assert.NotEqual(Guid.Empty, item.Id);
-            // Assert.Contains(newItems, x => x.Name == item.Name);
-            Assert.True(item.CreatedAt <= DateTime.UtcNow);
-            Assert.True(item.UpdatedAt <= DateTime.UtcNow);
-        }
-    }
+            new() { Name = _factory.GetValidEntityName() },
+            new() { Name = _factory.GetValidEntityName() },
+            new() { Name = _factory.GetValidEntityName() },
+        };
 
-    private static string GetValidName()
-    {
-        return $"Name  (_-.,`'ÁÉÍÓÚáéíóúñÑ) {Guid.NewGuid()} ";
-    }
+        // Act
+        var response = await _client.PostAsJsonAsync($"{BasePath}/add-range", newItems);
 
-    private IdNameAddOrUpdateDto GetValidItem()
-    {
-        return new IdNameAddOrUpdateDto { Name = GetValidName() };
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var responseString = await response.Content.ReadAsStringAsync();
+        var responseContent =
+            JsonSerializer.Deserialize<ApiResponse<IdNameDetailDto<Guid>>>(responseString, JsonSerializerOptions);
+
+        Assert.NotNull(responseContent);
+        Assert.True(responseContent.Success);
+        Assert.Equal("204", responseContent.Code);
     }
 }

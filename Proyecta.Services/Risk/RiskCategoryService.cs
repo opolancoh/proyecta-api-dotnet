@@ -1,9 +1,7 @@
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.DTOs;
 using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.IdName;
-using Proyecta.Core.DTOs.Risk;
 using Proyecta.Core.Entities.Risk;
 
 namespace Proyecta.Services.Risk;
@@ -116,7 +114,7 @@ public sealed class RiskCategoryService : IRiskCategoryService
 
         var entity = new RiskCategory
         {
-            Name = item.Name,
+            Name = item.Name!,
             CreatedAt = now,
             CreatedById = currentUserId,
             UpdatedAt = now,

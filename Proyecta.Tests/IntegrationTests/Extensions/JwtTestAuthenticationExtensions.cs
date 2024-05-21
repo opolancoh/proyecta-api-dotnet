@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Proyecta.Tests.IntegrationTests;
+namespace Proyecta.Tests.IntegrationTests.Extensions;
 
 public static class JwtTestAuthenticationExtensions
 {
