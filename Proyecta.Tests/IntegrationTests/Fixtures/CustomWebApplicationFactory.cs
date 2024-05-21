@@ -15,79 +15,80 @@ namespace Proyecta.Tests.IntegrationTests.Fixtures;
 // CustomWebApplicationFactory cannot be abstract
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisposable
 {
-    private IConfiguration Configuration { get; set; }
+    private readonly string _apiDatabaseName;
     private IServiceScope _scope;
     private ApiDbContext _apiDb;
     private ILogger<CustomWebApplicationFactory> _logger;
+    private IConfiguration _configuration;
+
+    public CustomWebApplicationFactory()
+    {
+        // Use a unique database name for each test run
+        _apiDatabaseName = $"proyecta_db_api_test_{Guid.NewGuid()}";
+    }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureAppConfiguration((context, configBuilder) =>
-        {
-            context.HostingEnvironment.EnvironmentName = "Test";
-
-            // Add JSON files for app settings
-            configBuilder
-                .AddJsonFile("appsettings.json", optional: true)
-                .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: false);
-
-            // Build the configuration and assign to the property
-            Configuration = configBuilder.Build();
-        });
-
-        builder.ConfigureServices(services =>
-        {
-            // Remove existing registrations of DbContext options
-            RemoveExistingDbContextOptions<ApiDbContext>(services);
-
-            // Add ApiDbContext with a specific test database configuration
-            var apiTestConnectionString = CommonHelper.GetEnvironmentVariable("PROYECTA_DB_CONNECTION_API_TEST");
-            services.AddDbContext<ApiDbContext>(options =>
-                options.UseNpgsql(apiTestConnectionString));
-
-            // Build an intermediate service provider
-            var serviceProvider = services.BuildServiceProvider();
-
-            _scope = serviceProvider.CreateScope();
-            var scopedServices = _scope.ServiceProvider;
-            _apiDb = scopedServices.GetRequiredService<ApiDbContext>();
-            _logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory>>();
-
-            try
-            {
-                _apiDb.Database.EnsureDeleted();
-                _apiDb.Database.EnsureCreated();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred setting up the test databases. Error: {ExceptionMessage}",
-                    ex.Message);
-            }
-        });
-
-        builder.ConfigureTestServices(services =>
-        {
-            // Remove the existing authentication
-            var authenticationBuilder = services.AddAuthentication();
-            authenticationBuilder.Services.Configure<AuthenticationOptions>(o =>
-            {
-                o.SchemeMap.Clear();
-                ((IList<AuthenticationSchemeBuilder>)o.Schemes).Clear();
-            });
-            services.ConfigureJwtAuthenticationForTests(Configuration);
-        });
+        builder
+            .ConfigureAppConfiguration(ConfigureAppConfiguration)
+            .ConfigureServices(ConfigureServices)
+            .ConfigureTestServices(ConfigureTestServices);
     }
-    
-    public void RecreateDatabase()
+
+    private void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder configBuilder)
+    {
+        context.HostingEnvironment.EnvironmentName = "Test";
+
+        // Add JSON files for app settings
+        configBuilder.AddJsonFile("appsettings.json", optional: true)
+            .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: false);
+
+        // Build the configuration and assign to the property
+        _configuration = configBuilder.Build();
+    }
+
+    private void ConfigureServices(IServiceCollection services)
+    {
+        // Remove existing registrations of DbContext options
+        RemoveExistingDbContextOptions<ApiDbContext>(services);
+
+        // Add ApiDbContext with a specific test database configuration
+        var apiTestConnectionString =
+            $"{CommonHelper.GetEnvironmentVariable("PROYECTA_DB_CONNECTION_API_TEST")};Database={_apiDatabaseName};";
+        services.AddDbContext<ApiDbContext>(options => options.UseNpgsql(apiTestConnectionString));
+
+        // Build an intermediate service provider
+        var serviceProvider = services.BuildServiceProvider();
+        _scope = serviceProvider.CreateScope();
+        var scopedServices = _scope.ServiceProvider;
+        _apiDb = scopedServices.GetRequiredService<ApiDbContext>();
+        _logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory>>();
+
+        InitializeDatabase().GetAwaiter().GetResult();
+    }
+
+    private void ConfigureTestServices(IServiceCollection services)
+    {
+        // Remove the existing authentication
+        var authenticationBuilder = services.AddAuthentication();
+        authenticationBuilder.Services.Configure<AuthenticationOptions>(o =>
+        {
+            o.SchemeMap.Clear();
+            ((IList<AuthenticationSchemeBuilder>)o.Schemes).Clear();
+        });
+        services.ConfigureJwtAuthenticationForTests(_configuration);
+    }
+
+    private async Task InitializeDatabase()
     {
         try
         {
-            _apiDb.Database.EnsureDeleted();
-            _apiDb.Database.EnsureCreated();
+            await _apiDb.Database.EnsureDeletedAsync();
+            await _apiDb.Database.EnsureCreatedAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred recreating the test database. Error: {ExceptionMessage}",
+            _logger.LogError(ex, "An error occurred setting up the test databases. Error: {ExceptionMessage}",
                 ex.Message);
         }
     }
@@ -99,9 +100,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
 
     private string GenerateAccessToken(string role)
     {
-        var issuer = Configuration.GetSection("JwtSettings:Issuer").Value;
-        var audience = Configuration.GetSection("JwtSettings:Audience").Value;
-        var secret = Configuration.GetSection("JwtSettings:Secret").Value;
+        var issuer = _configuration.GetSection("JwtSettings:Issuer").Value;
+        var audience = _configuration.GetSection("JwtSettings:Audience").Value;
+        var secret = _configuration.GetSection("JwtSettings:Secret").Value;
         var expiration = DateTime.UtcNow.AddMinutes(30);
         // Claims generation
         var userRoles = new List<string> { role };
@@ -132,22 +133,19 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
 
     public new void Dispose()
     {
-        // Clean up the database after all tests have finished
         try
         {
             _apiDb.Database.EnsureDeleted();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred deleting the test database. Error: {ExceptionMessage}",
-                ex.Message);
+            _logger.LogError(ex, "An error occurred deleting the test database. Error: {ExceptionMessage}", ex.Message);
         }
         finally
         {
             _apiDb.Dispose();
+            _scope.Dispose();
         }
-
-        _scope.Dispose();
 
         GC.SuppressFinalize(this);
     }

@@ -6,18 +6,14 @@ using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Tests.IntegrationTests.Fixtures;
 
-namespace Proyecta.Tests.IntegrationTests.Risk;
+namespace Proyecta.Tests.IntegrationTests;
 
 public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplicationFactory>
 {
     protected abstract string BasePath { get; }
     private readonly CustomWebApplicationFactory _factory;
     private readonly HttpClient _client;
-
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
 
     protected IdNameBaseIntegrationTests(CustomWebApplicationFactory factory)
     {
@@ -32,7 +28,7 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     public async Task Add_WithValidData_ReturnsNewRecordId()
     {
         // Arrange
-        var newItem = new IdNameAddOrUpdateDto { Name = GetValidName() };
+        var newItem = GetValidItem();
 
         // Act
         var response = await _client.PostAsJsonAsync($"{BasePath}", newItem);
@@ -55,7 +51,7 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     public async Task GetById_WithValidData_ReturnsExistingRecord()
     {
         // Arrange
-        var newItem = new IdNameAddOrUpdateDto { Name = GetValidName() };
+        var newItem = GetValidItem();
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
             await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
@@ -85,7 +81,7 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     public async Task Update_WithValidData_ReturnsCode204()
     {
         // Arrange
-        var newItem = new IdNameAddOrUpdateDto { Name = GetValidName() };
+        var newItem = GetValidItem();
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
             await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
@@ -111,7 +107,7 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     public async Task Remove_WithValidData_ReturnsCode204()
     {
         // Arrange
-        var newItem = new IdNameAddOrUpdateDto { Name = GetValidName() };
+        var newItem = GetValidItem();
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
             await newItemResponse.Content.ReadFromJsonAsync<ApiResponse<ApiResponseGenericAdd<Guid>>>();
@@ -183,7 +179,7 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
         Assert.NotNull(responseContent);
         Assert.True(responseContent.Success);
         Assert.Equal("200", responseContent.Code);
-        
+
         // Data
         Assert.NotNull(responseContent.Data);
         // Assert.Equal(newItems.Count, responseContent.Data.Count());
@@ -199,5 +195,10 @@ public abstract class IdNameBaseIntegrationTests : IClassFixture<CustomWebApplic
     private static string GetValidName()
     {
         return $"Name  (_-.,`'ÁÉÍÓÚáéíóúñÑ) {Guid.NewGuid()} ";
+    }
+
+    private IdNameAddOrUpdateDto GetValidItem()
+    {
+        return new IdNameAddOrUpdateDto { Name = GetValidName() };
     }
 }
