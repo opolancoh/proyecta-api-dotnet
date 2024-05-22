@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 
 namespace Proyecta.Web.Swagger;
 
+[ExcludeFromCodeCoverage]
 public class ExcludeVersionRoutesDocumentFilter : IDocumentFilter
 {
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)

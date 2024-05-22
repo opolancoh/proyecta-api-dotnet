@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Proyecta.Web.Utils;
 
+[ExcludeFromCodeCoverage]
 public static class GeneralHelper
 {
     public static string MemoryInBestUnit(long size)

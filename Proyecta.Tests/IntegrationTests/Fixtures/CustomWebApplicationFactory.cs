@@ -23,8 +23,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
     private IServiceScope _scope;
     private ILogger<CustomWebApplicationFactory> _logger;
     private IConfiguration _configuration;
-
-    public ApiDbContext ApiDbContext { get; private set; }
+    private ApiDbContext _apiDb;
 
     public CustomWebApplicationFactory()
     {
@@ -70,23 +69,23 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await ApiDbContext.RiskCategory.AddAsync(riskCategory);
+        await _apiDb.RiskCategory.AddAsync(riskCategory);
 
         var riskOwner = new RiskOwner
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await ApiDbContext.RiskOwner.AddAsync(riskOwner);
+        await _apiDb.RiskOwner.AddAsync(riskOwner);
 
         var riskTreatment = new RiskTreatment
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await ApiDbContext.RiskTreatment.AddAsync(riskTreatment);
+        await _apiDb.RiskTreatment.AddAsync(riskTreatment);
 
-        await ApiDbContext.SaveChangesAsync();
+        await _apiDb.SaveChangesAsync();
 
         return (riskCategory.Id, riskOwner.Id, riskTreatment.Id);
     }
@@ -119,21 +118,21 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await ApiDbContext.RiskCategory.AddAsync(riskCategory);
+        await _apiDb.RiskCategory.AddAsync(riskCategory);
 
         var riskOwner = new RiskOwner
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await ApiDbContext.RiskOwner.AddAsync(riskOwner);
+        await _apiDb.RiskOwner.AddAsync(riskOwner);
 
         var riskTreatment = new RiskTreatment
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await ApiDbContext.RiskTreatment.AddAsync(riskTreatment);
+        await _apiDb.RiskTreatment.AddAsync(riskTreatment);
 
         var riskId = Guid.NewGuid();
         var risk = new Core.Entities.Risk.Risk
@@ -155,9 +154,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
             UpdatedAt = now,
             UpdatedById = userId
         };
-        await ApiDbContext.Risks.AddAsync(risk);
+        await _apiDb.Risks.AddAsync(risk);
 
-        await ApiDbContext.SaveChangesAsync();
+        await _apiDb.SaveChangesAsync();
 
         return new RiskDetailDto
         {
@@ -184,7 +183,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
     {
         try
         {
-            ApiDbContext.Database.EnsureDeleted();
+            _apiDb.Database.EnsureDeleted();
         }
         catch (Exception ex)
         {
@@ -192,7 +191,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
         }
         finally
         {
-            ApiDbContext.Dispose();
+            _apiDb.Dispose();
             _scope.Dispose();
         }
 
@@ -225,7 +224,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
         var serviceProvider = services.BuildServiceProvider();
         _scope = serviceProvider.CreateScope();
         var scopedServices = _scope.ServiceProvider;
-        ApiDbContext = scopedServices.GetRequiredService<ApiDbContext>();
+        _apiDb = scopedServices.GetRequiredService<ApiDbContext>();
         _logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory>>();
 
         InitializeDatabase().GetAwaiter().GetResult();
@@ -247,8 +246,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
     {
         try
         {
-            await ApiDbContext.Database.EnsureDeletedAsync();
-            await ApiDbContext.Database.EnsureCreatedAsync();
+            await _apiDb.Database.EnsureDeletedAsync();
+            await _apiDb.Database.EnsureCreatedAsync();
         }
         catch (Exception ex)
         {

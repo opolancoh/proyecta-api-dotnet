@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Proyecta.Repository.EntityFramework;
 using Proyecta.Web.Extensions;
@@ -54,9 +56,21 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Serve static files from wwwroot
+app.UseStaticFiles();
+
+// Use default files (e.g., index.html) from wwwroot/coverage-report
+app.UseFileServer(new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "coverage-report")),
+    RequestPath = "/coverage-report",
+    EnableDefaultFiles = true
+});
+
 app.Run();
 
 // For testing purposes
+[ExcludeFromCodeCoverage]
 public partial class Program
 {
 }

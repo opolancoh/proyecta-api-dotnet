@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace Proyecta.Web.Utils;
 
+[ExcludeFromCodeCoverage]
 public static class DbMigrationHelper
 {
     public static IHost MigrateDatabase<T>(this IHost host) where T : DbContext

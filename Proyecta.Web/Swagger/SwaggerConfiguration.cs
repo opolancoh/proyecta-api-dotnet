@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Proyecta.Web.Swagger;
 
+[ExcludeFromCodeCoverage]
 public static class SwaggerConfiguration
 {
     public static void ConfigureSwaggerUI(WebApplication app)

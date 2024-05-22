@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories;
-using Proyecta.Core.DTOs;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Core.Entities.Auth;
@@ -24,7 +23,7 @@ public class ApplicationUserRepository : IApplicationUserRepository
         throw new NotImplementedException();
     }
 
-    public Task<IdNameAuditableDto<string>?> GetById(string id)
+    public Task<IdNameAuditableDto<string>> GetById(string id)
     {
         throw new NotImplementedException();
     }
@@ -127,7 +126,7 @@ public class ApplicationUserRepository : IApplicationUserRepository
                     UserName = x.Key.UserName,
                     Roles = (x.Count() == 1 && x.FirstOrDefault()?.Role == null)
                         ? new List<string>()
-                        : x.Select(r => r.Role).ToList()!
+                        : x.Select(r => r.Role).ToList()
                 });
 
         return resultWithListOfRoles;
