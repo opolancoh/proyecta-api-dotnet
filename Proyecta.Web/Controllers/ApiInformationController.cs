@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
@@ -8,6 +9,7 @@ using Proyecta.Web.Utils;
 
 namespace Proyecta.Web.Controllers;
 
+[ExcludeFromCodeCoverage]
 [ApiController]
 [Route("info")]
 [ApiExplorerSettings(IgnoreApi = true)]

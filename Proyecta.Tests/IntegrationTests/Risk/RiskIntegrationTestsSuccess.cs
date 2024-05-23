@@ -9,14 +9,14 @@ using Proyecta.Tests.IntegrationTests.Fixtures;
 
 namespace Proyecta.Tests.IntegrationTests.Risk;
 
-public class RiskIntegrationTestsSuccess : IClassFixture<CustomWebApplicationFactory>
+public class RiskIntegrationTestsSuccess : IClassFixture<ApiWebApplicationFactory>
 {
     private const string BasePath = "/api/risks";
-    private readonly CustomWebApplicationFactory _factory;
+    private readonly ApiWebApplicationFactory _factory;
     private readonly HttpClient _client;
     private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
 
-    public RiskIntegrationTestsSuccess(CustomWebApplicationFactory factory)
+    public RiskIntegrationTestsSuccess(ApiWebApplicationFactory factory)
     {
         _factory = factory;
         _client = factory.CreateClient();

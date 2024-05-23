@@ -1,4 +1,5 @@
 using Proyecta.Tests.IntegrationTests.Fixtures;
+using Proyecta.Tests.IntegrationTests.IdName;
 
 namespace Proyecta.Tests.IntegrationTests.Risk;
 
@@ -6,7 +7,7 @@ public class RiskCategoryIntegrationTestsSuccess : IdNameBaseIntegrationTestsSuc
 {
     protected override string BasePath => "/api/risk-categories";
 
-    public RiskCategoryIntegrationTestsSuccess(CustomWebApplicationFactory factory) : base(factory)
+    public RiskCategoryIntegrationTestsSuccess(ApiWebApplicationFactory factory) : base(factory)
     {
     }
 }

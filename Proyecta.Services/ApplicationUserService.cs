@@ -182,7 +182,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return new ApiResponse
         {
             Success = true,
-            Code = ApiResponseCode.Ok,
+            Code = ApiResponseCode.NoContent,
             Message = "User updated successfully.",
         };
     }
@@ -215,7 +215,7 @@ public sealed class ApplicationUserService : IApplicationUserService
             return new ApiResponse
             {
                 Success = true,
-                Code = ApiResponseCode.Ok,
+                Code = ApiResponseCode.NoContent,
                 Message = "User deleted successfully.",
             };
         }
@@ -274,7 +274,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         var response = new ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>
         {
             Success = isSuccess,
-            Code = isSuccess ? ApiResponseCode.Created : ApiResponseCode.Accepted,
+            Code = isSuccess ? ApiResponseCode.NoContent : ApiResponseCode.Accepted,
             Message = isSuccess
                 ? "All users were added successfully."
                 : $"Not all users were added. Added:[{itemsToAdd.Count() - errors.Count}] Not Added:[{errors.Count}]",

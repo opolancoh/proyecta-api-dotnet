@@ -6,16 +6,16 @@ using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Tests.IntegrationTests.Fixtures;
 
-namespace Proyecta.Tests.IntegrationTests;
+namespace Proyecta.Tests.IntegrationTests.IdName;
 
-public abstract class IdNameBaseIntegrationTestsSuccess : IClassFixture<CustomWebApplicationFactory>
+public abstract class IdNameBaseIntegrationTestsSuccess : IClassFixture<ApiWebApplicationFactory>
 {
     protected abstract string BasePath { get; }
-    private readonly CustomWebApplicationFactory _factory;
+    private readonly ApiWebApplicationFactory _factory;
     private readonly HttpClient _client;
     private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
 
-    protected IdNameBaseIntegrationTestsSuccess(CustomWebApplicationFactory factory)
+    protected IdNameBaseIntegrationTestsSuccess(ApiWebApplicationFactory factory)
     {
         _factory = factory;
         _client = factory.CreateClient();

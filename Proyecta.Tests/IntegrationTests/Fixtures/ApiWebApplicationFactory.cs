@@ -17,18 +17,18 @@ using Proyecta.Tests.IntegrationTests.Extensions;
 namespace Proyecta.Tests.IntegrationTests.Fixtures;
 
 // CustomWebApplicationFactory cannot be abstract
-public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisposable
+public class ApiWebApplicationFactory : WebApplicationFactory<Program>, IDisposable
 {
-    private readonly string _apiDatabaseName;
+    private readonly string _dbName;
     private IServiceScope _scope;
-    private ILogger<CustomWebApplicationFactory> _logger;
+    private ILogger<ApiWebApplicationFactory> _logger;
     private IConfiguration _configuration;
-    private ApiDbContext _apiDb;
+    private ApiDbContext _dbContext;
 
-    public CustomWebApplicationFactory()
+    public ApiWebApplicationFactory()
     {
         // Use a unique database name for each test run
-        _apiDatabaseName = $"proyecta_db_api_test_{Guid.NewGuid()}";
+        _dbName = $"proyecta_db_api_test_{Guid.NewGuid()}";
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -69,23 +69,23 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _apiDb.RiskCategory.AddAsync(riskCategory);
+        await _dbContext.RiskCategory.AddAsync(riskCategory);
 
         var riskOwner = new RiskOwner
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _apiDb.RiskOwner.AddAsync(riskOwner);
+        await _dbContext.RiskOwner.AddAsync(riskOwner);
 
         var riskTreatment = new RiskTreatment
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _apiDb.RiskTreatment.AddAsync(riskTreatment);
+        await _dbContext.RiskTreatment.AddAsync(riskTreatment);
 
-        await _apiDb.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return (riskCategory.Id, riskOwner.Id, riskTreatment.Id);
     }
@@ -118,21 +118,21 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _apiDb.RiskCategory.AddAsync(riskCategory);
+        await _dbContext.RiskCategory.AddAsync(riskCategory);
 
         var riskOwner = new RiskOwner
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _apiDb.RiskOwner.AddAsync(riskOwner);
+        await _dbContext.RiskOwner.AddAsync(riskOwner);
 
         var riskTreatment = new RiskTreatment
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _apiDb.RiskTreatment.AddAsync(riskTreatment);
+        await _dbContext.RiskTreatment.AddAsync(riskTreatment);
 
         var riskId = Guid.NewGuid();
         var risk = new Core.Entities.Risk.Risk
@@ -154,9 +154,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
             UpdatedAt = now,
             UpdatedById = userId
         };
-        await _apiDb.Risks.AddAsync(risk);
+        await _dbContext.Risks.AddAsync(risk);
 
-        await _apiDb.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return new RiskDetailDto
         {
@@ -183,7 +183,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
     {
         try
         {
-            _apiDb.Database.EnsureDeleted();
+            _dbContext.Database.EnsureDeleted();
         }
         catch (Exception ex)
         {
@@ -191,7 +191,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
         }
         finally
         {
-            _apiDb.Dispose();
+            _dbContext.Dispose();
             _scope.Dispose();
         }
 
@@ -217,15 +217,15 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
 
         // Add ApiDbContext with a specific test database configuration
         var apiTestConnectionString =
-            $"{CommonHelper.GetEnvironmentVariable("PROYECTA_DB_CONNECTION_API_TEST")};Database={_apiDatabaseName};";
+            $"{CommonHelper.GetEnvironmentVariable("PROYECTA_DB_CONNECTION_API_TEST")};Database={_dbName};";
         services.AddDbContext<ApiDbContext>(options => options.UseNpgsql(apiTestConnectionString));
 
         // Build an intermediate service provider
         var serviceProvider = services.BuildServiceProvider();
         _scope = serviceProvider.CreateScope();
         var scopedServices = _scope.ServiceProvider;
-        _apiDb = scopedServices.GetRequiredService<ApiDbContext>();
-        _logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory>>();
+        _dbContext = scopedServices.GetRequiredService<ApiDbContext>();
+        _logger = scopedServices.GetRequiredService<ILogger<ApiWebApplicationFactory>>();
 
         InitializeDatabase().GetAwaiter().GetResult();
     }
@@ -246,8 +246,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IDisp
     {
         try
         {
-            await _apiDb.Database.EnsureDeletedAsync();
-            await _apiDb.Database.EnsureCreatedAsync();
+            await _dbContext.Database.EnsureDeletedAsync();
+            await _dbContext.Database.EnsureCreatedAsync();
         }
         catch (Exception ex)
         {
