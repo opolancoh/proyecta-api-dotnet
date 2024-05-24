@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Proyecta.Repository.EntityFramework.Extensions;
+namespace Proyecta.Repository.EntityFramework.Configurations;
 
-public static class IdentityRolModelBuilderExtensions
+public class IdentityRolConfiguration : IEntityTypeConfiguration<IdentityRole>
 {
-    public static void ConfigureIdentityRoleEntity(this ModelBuilder modelBuilder)
+    public void Configure(EntityTypeBuilder<IdentityRole> builder)
     {
-        modelBuilder.Entity<IdentityRole>().HasData(GetRoles());
+        builder.HasData(GetRoles());
     }
 
     public static IEnumerable<IdentityRole> GetRoles()

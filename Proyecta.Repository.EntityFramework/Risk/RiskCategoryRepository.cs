@@ -16,7 +16,7 @@ public class RiskCategoryRepository : IRiskCategoryRepository
     {
         _context = context;
         _authContext = authContext;
-        _entitySet = context.RiskCategory;
+        _entitySet = context.RiskCategories;
     }
 
     public async Task<IEnumerable<IdNameListDto<Guid>>> GetAll()

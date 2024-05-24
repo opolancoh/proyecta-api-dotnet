@@ -1,21 +1,22 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Proyecta.Repository.EntityFramework.Extensions;
+namespace Proyecta.Repository.EntityFramework.Configurations;
 
-public static class IdentityUserRoleModelBuilderExtensions
+public class IdentityUserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole<string>>
 {
-    public static void ConfigureIdentityUserRoleEntity(this ModelBuilder modelBuilder)
+    public void Configure(EntityTypeBuilder<IdentityUserRole<string>> builder)
     {
-        modelBuilder.Entity<IdentityUserRole<string>>().HasData(GetUserRoles());
+        builder.HasData(GetUserRoles());
     }
 
     private static IEnumerable<IdentityUserRole<string>> GetUserRoles()
     {
         var userRoles = new List<IdentityUserRole<string>>();
 
-        var roles = IdentityRolModelBuilderExtensions.GetRoles();
-        var users = ApplicationUserModelBuilderExtensions.GetUsers();
+        var roles = IdentityRolConfiguration.GetRoles();
+        var users = ApplicationUserConfiguration.GetUsers();
 
         var systemRole = roles.Single(x => x.NormalizedName == "SYSTEM");
         var systemUser = users.Single(x => x.NormalizedUserName == "SYSTEM");

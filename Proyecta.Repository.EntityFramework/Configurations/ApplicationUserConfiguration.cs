@@ -1,46 +1,42 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Proyecta.Core.Entities;
-using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Utilities;
 
-namespace Proyecta.Repository.EntityFramework.Extensions;
+namespace Proyecta.Repository.EntityFramework.Configurations;
 
-public static class ApplicationUserModelBuilderExtensions
+public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {
-    public static void ConfigureApplicationUserEntity(this ModelBuilder modelBuilder)
+    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-        modelBuilder.Entity<ApplicationUser>(entity =>
-        {
-            entity.Property(c => c.FirstName)
-                .IsRequired()
-                .HasMaxLength(60);
+        builder.Property(c => c.FirstName)
+            .IsRequired()
+            .HasMaxLength(60);
 
-            entity.Property(c => c.LastName)
-                .IsRequired()
-                .HasMaxLength(60);
+        builder.Property(c => c.LastName)
+            .IsRequired()
+            .HasMaxLength(60);
 
-            entity.Property(c => c.DisplayName)
-                .IsRequired()
-                .HasMaxLength(40);
+        builder.Property(c => c.DisplayName)
+            .IsRequired()
+            .HasMaxLength(40);
 
-            // Configure the CreatedBy relationship as one-to-many: one user can create many users
-            entity.HasOne(u => u.CreatedBy) // ApplicationUser has one creator
-                .WithMany() // The creator can have many created users
-                .HasForeignKey(u => u.CreatedById) // Foreign key in ApplicationUser pointing to the creator
-                .OnDelete(DeleteBehavior.NoAction) // Prevent cascade delete
-                .IsRequired(); // Assuming the creator is not required
+        // Configure the CreatedBy relationship as one-to-many: one user can create many users
+        builder.HasOne(u => u.CreatedBy) // ApplicationUser has one creator
+            .WithMany() // The creator can have many created users
+            .HasForeignKey(u => u.CreatedById) // Foreign key in ApplicationUser pointing to the creator
+            .OnDelete(DeleteBehavior.NoAction) // Prevent cascade delete
+            .IsRequired(); // Assuming the creator is not required
 
-            // Configure the UpdatedBy relationship as one-to-many: one user can update many users
-            entity.HasOne(u => u.UpdatedBy) // ApplicationUser has one updater
-                .WithMany() // The updater can have many updated users
-                .HasForeignKey(u => u.UpdatedById) // Foreign key in ApplicationUser pointing to the updater
-                .OnDelete(DeleteBehavior.NoAction) // Prevent cascade delete
-                .IsRequired();
-        });
+        // Configure the UpdatedBy relationship as one-to-many: one user can update many users
+        builder.HasOne(u => u.UpdatedBy) // ApplicationUser has one updater
+            .WithMany() // The updater can have many updated users
+            .HasForeignKey(u => u.UpdatedById) // Foreign key in ApplicationUser pointing to the updater
+            .OnDelete(DeleteBehavior.NoAction) // Prevent cascade delete
+            .IsRequired();
 
-        var users = GetUsers();
-        modelBuilder.Entity<ApplicationUser>().HasData(users);
+        builder.HasData(GetUsers());
     }
 
     public static IEnumerable<ApplicationUser> GetUsers()
@@ -87,11 +83,11 @@ public static class ApplicationUserModelBuilderExtensions
 
         var systemUser = users.Single(x => x.UserName == "system");
         systemUser.PasswordHash = passwordHasher.HashPassword(systemUser,
-            CommonHelper.GetEnvironmentVariable($"PROYECTA_API_USER_SYSTEM_PASSWORD")!);
+            CommonHelper.GetEnvironmentVariable($"PROYECTA_API_USER_SYSTEM_PASSWORD"));
 
         var adminUser = users.Single(x => x.UserName == "admin");
         adminUser.PasswordHash = passwordHasher.HashPassword(adminUser,
-            CommonHelper.GetEnvironmentVariable($"PROYECTA_API_USER_ADMIN_PASSWORD")!);
+            CommonHelper.GetEnvironmentVariable($"PROYECTA_API_USER_ADMIN_PASSWORD"));
 
         return users;
     }

@@ -69,21 +69,21 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>, IDisposa
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _dbContext.RiskCategory.AddAsync(riskCategory);
+        await _dbContext.RiskCategories.AddAsync(riskCategory);
 
         var riskOwner = new RiskOwner
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _dbContext.RiskOwner.AddAsync(riskOwner);
+        await _dbContext.RiskOwners.AddAsync(riskOwner);
 
         var riskTreatment = new RiskTreatment
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _dbContext.RiskTreatment.AddAsync(riskTreatment);
+        await _dbContext.RiskTreatments.AddAsync(riskTreatment);
 
         await _dbContext.SaveChangesAsync();
 
@@ -118,21 +118,21 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>, IDisposa
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _dbContext.RiskCategory.AddAsync(riskCategory);
+        await _dbContext.RiskCategories.AddAsync(riskCategory);
 
         var riskOwner = new RiskOwner
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _dbContext.RiskOwner.AddAsync(riskOwner);
+        await _dbContext.RiskOwners.AddAsync(riskOwner);
 
         var riskTreatment = new RiskTreatment
         {
             Id = Guid.NewGuid(), Name = GetValidEntityName(), CreatedAt = now, CreatedById = userId, UpdatedAt = now,
             UpdatedById = userId
         };
-        await _dbContext.RiskTreatment.AddAsync(riskTreatment);
+        await _dbContext.RiskTreatments.AddAsync(riskTreatment);
 
         var riskId = Guid.NewGuid();
         var risk = new Core.Entities.Risk.Risk

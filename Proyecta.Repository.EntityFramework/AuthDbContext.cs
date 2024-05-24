@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.Auth;
-using Proyecta.Repository.EntityFramework.Extensions;
+using Proyecta.Repository.EntityFramework.Configurations;
 
 namespace Proyecta.Repository.EntityFramework;
 
 public class AuthDbContext : IdentityDbContext<ApplicationUser>
 {
-    public DbSet<RefreshToken> RefreshToken { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
     {
@@ -19,10 +19,10 @@ public class AuthDbContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(modelBuilder);
 
         // Identity
-        modelBuilder.ConfigureIdentityRoleEntity();
-        modelBuilder.ConfigureApplicationUserEntity();
-        modelBuilder.ConfigureIdentityUserRoleEntity();
+        modelBuilder.ApplyConfiguration(new IdentityRolConfiguration());
+        modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
+        modelBuilder.ApplyConfiguration(new IdentityUserRoleConfiguration());
         //
-        modelBuilder.ConfigureRefreshTokenEntity();
+        modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
     }
 }
