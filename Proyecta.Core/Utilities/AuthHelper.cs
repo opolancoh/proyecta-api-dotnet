@@ -60,12 +60,6 @@ public static class AuthHelper
         return claims;
     }
 
-    public static JwtSecurityToken ReadJwtToken(string token)
-    {
-        var jwtHandler = new JwtSecurityTokenHandler();
-        return jwtHandler.ReadJwtToken(token);
-    }
-
     public static JwtSecurityToken? ValidateJwtToken(string token, string issuer, string audience, string secret,
         bool validateLifetime = true)
     {

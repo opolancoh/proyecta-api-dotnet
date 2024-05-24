@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories.Risk;
-using Proyecta.Core.DTOs;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Core.Entities.Risk;
 using Proyecta.Core.Exceptions;
@@ -136,7 +135,7 @@ public class RiskCategoryRepository : IRiskCategoryRepository
         }
     }
 
-    public async Task<bool> ItemExists(Guid id)
+    private async Task<bool> ItemExists(Guid id)
     {
         return await _entitySet.AnyAsync(e => e.Id == id);
     }

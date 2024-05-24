@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.DTOs.Auth;
+using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.Auth;
 
 namespace Proyecta.Repository.EntityFramework;
@@ -20,13 +21,13 @@ public class AuthRepository : IAuthRepository
 
     public async Task<ApplicationUser?> GetUserForLogin(LoginDto loginDto)
     {
-        var user = await _userManager.FindByNameAsync(loginDto.Username!);
+        var user = await _userManager.FindByNameAsync(loginDto.Username);
         if (user == null)
         {
             return null;
         }
 
-        var result = await _userManager.CheckPasswordAsync(user, loginDto.Password!);
+        var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
         return result ? user : null;
     }
 
@@ -39,29 +40,19 @@ public class AuthRepository : IAuthRepository
     public async Task<bool> AddRefreshToken(RefreshToken refreshToken)
     {
         _context.RefreshToken.Add(refreshToken);
-        try
-        {
-            var result = await _context.SaveChangesAsync();
-            return result > 0;
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
+
+        var result = await _context.SaveChangesAsync();
+
+        return result > 0;
     }
 
     public async Task<bool> RemoveRefreshToken(string userId, string token)
     {
         var refreshToken = new RefreshToken { UserId = userId, Token = token };
         _context.RefreshToken.Remove(refreshToken);
-        try
-        {
-            var result = await _context.SaveChangesAsync();
-            return result > 0;
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
+
+        var result = await _context.SaveChangesAsync();
+
+        return result > 0;
     }
 }

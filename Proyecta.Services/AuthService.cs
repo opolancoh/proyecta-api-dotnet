@@ -5,6 +5,7 @@ using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.Auth;
+using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Utilities;
 
@@ -47,7 +48,7 @@ public class AuthService : IAuthService
             Password = registerDto.Password
         };
 
-        var userCreationResult = await _appUserService.Create(newUser, null!);
+        var userCreationResult = await _appUserService.Add(newUser, null!);
         if (userCreationResult.Success)
         {
             return await Login(new LoginDto { Username = newUser.UserName, Password = newUser.Password });
@@ -101,7 +102,7 @@ public class AuthService : IAuthService
 
         // Refresh Token
         var refreshToken = AuthHelper.GenerateRefreshToken();
-        var addRefreshTokenResult = await _authRepository.AddRefreshToken(new RefreshToken
+        await _authRepository.AddRefreshToken(new RefreshToken
         {
             UserId = user.Id,
             Token = refreshToken,
@@ -109,16 +110,6 @@ public class AuthService : IAuthService
                 DateTime.UtcNow.AddMinutes(
                     Convert.ToDouble(_configuration.GetSection("JwtSettings:RefreshTokenExpirationInMinutes").Value))
         });
-        if (!addRefreshTokenResult)
-        {
-            _logger.LogError("Unable to store the refresh token");
-            return new ApiResponse<TokenDto>
-            {
-                Success = false,
-                Code = ApiResponseCode.Unauthorized,
-                Message = AuthenticationFailedMessage
-            };
-        }
 
         return new ApiResponse<TokenDto>
         {
@@ -149,18 +140,7 @@ public class AuthService : IAuthService
         }
 
         // Remove the refresh token from the database
-        var removeRefreshTokenResult =
-            await _authRepository.RemoveRefreshToken(accessToken.Subject, tokenDto.RefreshToken);
-        if (!removeRefreshTokenResult)
-        {
-            _logger.LogError("Unable to remove the refresh token");
-            return new ApiResponse
-            {
-                Success = false,
-                Code = ApiResponseCode.BadRequest,
-                Message = "Failed to logout."
-            };
-        }
+        await _authRepository.RemoveRefreshToken(accessToken.Subject, tokenDto.RefreshToken);
 
         return new ApiResponse
         {

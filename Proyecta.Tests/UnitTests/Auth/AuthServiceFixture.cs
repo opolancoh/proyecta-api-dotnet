@@ -5,6 +5,7 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
+using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Services;
 

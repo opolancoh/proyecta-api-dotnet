@@ -6,6 +6,7 @@ using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.DTOs.Auth;
+using Proyecta.Core.Entities;
 
 namespace Proyecta.Services;
 
@@ -60,7 +61,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApiResponse<ApiResponseGenericAdd<string>>> Create(ApplicationUserAddOrUpdateDto item,
+    public async Task<ApiResponse<ApiResponseGenericAdd<string>>> Add(ApplicationUserAddOrUpdateDto item,
         string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
@@ -255,7 +256,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         var itemsToAdd = items.ToList();
         foreach (var item in itemsToAdd)
         {
-            var result = await Create(item, currentUserId);
+            var result = await Add(item, currentUserId);
             if (result.Success)
             {
                 data.Add(result.Data!);

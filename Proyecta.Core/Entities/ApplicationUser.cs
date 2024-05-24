@@ -1,8 +1,6 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
-using Proyecta.Core.Contracts;
 
-namespace Proyecta.Core.Entities.Auth;
+namespace Proyecta.Core.Entities;
 
 public class ApplicationUser : IdentityUser
 {

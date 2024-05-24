@@ -12,6 +12,7 @@ using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Utilities;
 using Proyecta.Services;

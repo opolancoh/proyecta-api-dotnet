@@ -1,4 +1,5 @@
 using Proyecta.Core.DTOs.Auth;
+using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.Auth;
 
 namespace Proyecta.Core.Contracts.Repositories;

@@ -15,7 +15,7 @@ using Proyecta.Tests.IntegrationTests.Extensions;
 namespace Proyecta.Tests.IntegrationTests.Fixtures;
 
 // CustomWebApplicationFactory cannot be abstract
-public class AuthWebApplicationFactory : WebApplicationFactory<Program>, IDisposable
+public class ApplicationUserWebApplicationFactory : WebApplicationFactory<Program>, IDisposable
 {
     private readonly string _dbName;
     private IServiceScope _scope;
@@ -24,7 +24,7 @@ public class AuthWebApplicationFactory : WebApplicationFactory<Program>, IDispos
     private AuthDbContext _dbContext;
     public string AdministratorAccessToken;
 
-    public AuthWebApplicationFactory()
+    public ApplicationUserWebApplicationFactory()
     {
         // Use a unique database name for each test run
         _dbName = $"proyecta_db_auth_test_{Guid.NewGuid()}";

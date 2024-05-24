@@ -44,7 +44,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Create(ApplicationUserAddOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        var result = await _service.Create(item, userId);
+        var result = await _service.Add(item, userId);
 
         return new OkObjectResult(result);
     }

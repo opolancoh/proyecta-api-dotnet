@@ -141,7 +141,7 @@ public class RiskRepository : IRiskRepository
         }
     }
 
-    public async Task<bool> ItemExists(Guid id)
+    private async Task<bool> ItemExists(Guid id)
     {
         return await _entitySet.AnyAsync(e => e.Id == id);
     }

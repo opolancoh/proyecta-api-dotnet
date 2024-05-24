@@ -7,21 +7,46 @@ using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Tests.IntegrationTests.Fixtures;
 
-namespace Proyecta.Tests.IntegrationTests.Auth;
+namespace Proyecta.Tests.IntegrationTests.ApplicationUser;
 
-public class ApplicationUserIntegrationTestsSuccess : IClassFixture<AuthWebApplicationFactory>
+public class ApplicationUserIntegrationTestsSuccess : IClassFixture<ApplicationUserWebApplicationFactory>
 {
     private const string BasePath = "/api/users";
-    private readonly AuthWebApplicationFactory _factory;
+    private readonly ApplicationUserWebApplicationFactory _factory;
     private readonly HttpClient _client;
     private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
 
-    public ApplicationUserIntegrationTestsSuccess(AuthWebApplicationFactory factory)
+    public ApplicationUserIntegrationTestsSuccess(ApplicationUserWebApplicationFactory factory)
     {
         _factory = factory;
         _client = factory.CreateClient();
-        
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", factory.AdministratorAccessToken);
+
+        _client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", factory.AdministratorAccessToken);
+    }
+
+    [Fact]
+    public async Task Add_WithValidDataAndRoles_ReturnsNewRecordId()
+    {
+        // Arrange
+        var newItem = _factory.GetValidApplicationUserAddOrUpdateDto(new List<string> { "Administrator" });
+
+        // Act
+        var response = await _client.PostAsJsonAsync($"{BasePath}", newItem);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var responseString = await response.Content.ReadAsStringAsync();
+        var responseContent =
+            JsonSerializer.Deserialize<ApiResponse<ApiResponseGenericAdd<string>>>(responseString,
+                JsonSerializerOptions);
+
+        Assert.NotNull(responseContent);
+        Assert.True(responseContent.Success);
+        Assert.Equal("201", responseContent.Code);
+        // Data
+        Assert.NotEqual(string.Empty, responseContent.Data!.Id);
     }
 
     [Fact]
@@ -75,17 +100,49 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<AuthWebAppli
         Assert.Equal(user.UserName, responseContent.Data!.UserName);
         Assert.Equal(user.CreatedAt, responseContent.Data!.CreatedAt);
         Assert.Equal(user.CreatedById, responseContent.Data!.CreatedBy!.Id);
+        Assert.Equal(user.DisplayName, responseContent.Data!.CreatedBy!.Name);
         Assert.Equal(user.UpdatedAt, responseContent.Data!.UpdatedAt);
         Assert.Equal(user.UpdatedById, responseContent.Data!.UpdatedBy!.Id);
+        Assert.Equal(user.DisplayName, responseContent.Data!.UpdatedBy!.Name);
     }
 
     [Fact]
-    public async Task Update_WithValidData_ReturnsCode204()
+    public async Task Update_WithValidDataAndRoles_ReturnsCode204()
     {
         // Arrange
         var (user, _) = await _factory.CreateUserAsync();
 
-        var itemToBeUpdated = new ApplicationUserAddOrUpdateDto { FirstName = "New FirstName", LastName = "New LastName", DisplayName = "New DisplayName", UserName = "NewUserName", Password = "NewPassword"};
+        var itemToBeUpdated = new ApplicationUserAddOrUpdateDto
+        {
+            FirstName = "New FirstName", LastName = "New LastName", DisplayName = "New DisplayName",
+            UserName = Guid.NewGuid().ToString(), Password = "NewPassword", Roles = new List<string> { "Administrator" }
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"{BasePath}/{user.Id}", itemToBeUpdated);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var responseString = await response.Content.ReadAsStringAsync();
+        var responseContent = JsonSerializer.Deserialize<ApiResponse>(responseString, JsonSerializerOptions);
+
+        Assert.NotNull(responseContent);
+        Assert.True(responseContent.Success);
+        Assert.Equal("204", responseContent.Code);
+    }
+
+    [Fact]
+    public async Task Update_WithValidDataAndNoRoles_ReturnsCode204()
+    {
+        // Arrange
+        var (user, _) = await _factory.CreateUserAsync();
+
+        var itemToBeUpdated = new ApplicationUserAddOrUpdateDto
+        {
+            FirstName = "New FirstName", LastName = "New LastName", DisplayName = "New DisplayName",
+            UserName = Guid.NewGuid().ToString(), Password = "NewPassword"
+        };
 
         // Act
         var response = await _client.PutAsJsonAsync($"{BasePath}/{user.Id}", itemToBeUpdated);
@@ -128,7 +185,7 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<AuthWebAppli
         var (user1, _) = await _factory.CreateUserAsync();
         var (user2, _) = await _factory.CreateUserAsync();
         var (user3, _) = await _factory.CreateUserAsync();
-        
+
         var newItems = new List<IdNameDto<string>>
         {
             new() { Id = user1.Id, Name = user1.UserName },
@@ -163,7 +220,7 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<AuthWebAppli
         var newItem1 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
         var newItem2 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
         var newItem3 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
-        
+
         var newItems = new List<ApplicationUserAddOrUpdateDto>
         {
             newItem1,
@@ -179,7 +236,8 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<AuthWebAppli
 
         var responseString = await response.Content.ReadAsStringAsync();
         var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>>(responseString, JsonSerializerOptions);
+            JsonSerializer.Deserialize<ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>>(responseString,
+                JsonSerializerOptions);
 
         Assert.NotNull(responseContent);
         Assert.True(responseContent.Success);
