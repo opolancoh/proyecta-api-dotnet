@@ -112,7 +112,7 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<ApplicationU
         // Arrange
         var (user, _) = await _factory.CreateUserAsync();
 
-        var itemToBeUpdated = new ApplicationUserAddOrUpdateDto
+        var itemToBeUpdated = new ApplicationUserAddRequest
         {
             FirstName = "New FirstName", LastName = "New LastName", DisplayName = "New DisplayName",
             UserName = Guid.NewGuid().ToString(), Password = "NewPassword", Roles = new List<string> { "Administrator" }
@@ -138,7 +138,7 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<ApplicationU
         // Arrange
         var (user, _) = await _factory.CreateUserAsync();
 
-        var itemToBeUpdated = new ApplicationUserAddOrUpdateDto
+        var itemToBeUpdated = new ApplicationUserAddRequest
         {
             FirstName = "New FirstName", LastName = "New LastName", DisplayName = "New DisplayName",
             UserName = Guid.NewGuid().ToString(), Password = "NewPassword"
@@ -221,7 +221,7 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<ApplicationU
         var newItem2 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
         var newItem3 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
 
-        var newItems = new List<ApplicationUserAddOrUpdateDto>
+        var newItems = new List<ApplicationUserAddRequest>
         {
             newItem1,
             newItem2,

@@ -39,7 +39,7 @@ public class AuthService : IAuthService
 
     public async Task<ApiResponse<TokenDto>> Register(RegisterDto registerDto)
     {
-        var newUser = new ApplicationUserAddOrUpdateDto
+        var newUser = new ApplicationUserAddRequest
         {
             FirstName = registerDto.FirstName,
             LastName = registerDto.LastName,

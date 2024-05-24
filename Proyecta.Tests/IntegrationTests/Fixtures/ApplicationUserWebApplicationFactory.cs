@@ -43,9 +43,9 @@ public class ApplicationUserWebApplicationFactory : WebApplicationFactory<Progra
         client.DefaultRequestHeaders.Add("Accept", "application/json");
     }
 
-    public ApplicationUserAddOrUpdateDto GetValidApplicationUserAddOrUpdateDto(List<string>? roles)
+    public ApplicationUserAddRequest GetValidApplicationUserAddOrUpdateDto(List<string>? roles)
     {
-        return new ApplicationUserAddOrUpdateDto
+        return new ApplicationUserAddRequest
         {
             FirstName = Guid.NewGuid().ToString(),
             LastName = Guid.NewGuid().ToString(),

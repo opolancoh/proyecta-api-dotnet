@@ -79,7 +79,7 @@ public class ApplicationUserIntegrationTestsFailure : IClassFixture<AuthWebAppli
         // Arrange
         var userId = Guid.NewGuid();
 
-        var itemToBeUpdated = new ApplicationUserAddOrUpdateDto
+        var itemToBeUpdated = new ApplicationUserAddRequest
         {
             FirstName = "New FirstName", LastName = "New LastName", DisplayName = "New DisplayName",
             UserName = "NewUserName", Password = "NewPassword"
@@ -133,7 +133,7 @@ public class ApplicationUserIntegrationTestsFailure : IClassFixture<AuthWebAppli
         var newItem2 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
         var newItem3 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
 
-        var newItems = new List<ApplicationUserAddOrUpdateDto>
+        var newItems = new List<ApplicationUserAddRequest>
         {
             newItem1,
             newItem2,

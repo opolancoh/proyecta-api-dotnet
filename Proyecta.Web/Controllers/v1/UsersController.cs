@@ -41,7 +41,7 @@ public class UsersController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiResponseGenericAdd<string>>))]
-    public async Task<IActionResult> Create(ApplicationUserAddOrUpdateDto item)
+    public async Task<IActionResult> Create(ApplicationUserAddRequest item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Add(item, userId);
@@ -51,7 +51,7 @@ public class UsersController : ControllerBase
 
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
-    public async Task<IActionResult> Update(string id, ApplicationUserAddOrUpdateDto item)
+    public async Task<IActionResult> Update(string id, ApplicationUserUpdateRequest item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Update(id, item, userId);
@@ -72,7 +72,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     [Route("add-range")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>))]
-    public async Task<IActionResult> AddRange(IEnumerable<ApplicationUserAddOrUpdateDto> items)
+    public async Task<IActionResult> AddRange(IEnumerable<ApplicationUserAddRequest> items)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.AddRange(items, userId);

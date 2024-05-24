@@ -7,10 +7,10 @@ public interface IApplicationUserService
 {
     Task<ApiResponse<IEnumerable<ApplicationUserListDto>>> GetAll();
     Task<ApiResponse<ApplicationUserDetailDto>> GetById(string id);
-    Task<ApiResponse<ApiResponseGenericAdd<string>>> Add(ApplicationUserAddOrUpdateDto item, string currentUserId);
-    Task<ApiResponse> Update(string id, ApplicationUserAddOrUpdateDto item, string currentUserId);
+    Task<ApiResponse<ApiResponseGenericAdd<string>>> Add(ApplicationUserAddRequest item, string currentUserId);
+    Task<ApiResponse> Update(string id, ApplicationUserUpdateRequest item, string currentUserId);
     Task<ApiResponse> Remove(string id, string currentUserId);
 
     Task<ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>> AddRange(
-        IEnumerable<ApplicationUserAddOrUpdateDto> items, string currentUserId);
+        IEnumerable<ApplicationUserAddRequest> items, string currentUserId);
 }

@@ -61,7 +61,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApiResponse<ApiResponseGenericAdd<string>>> Add(ApplicationUserAddOrUpdateDto item,
+    public async Task<ApiResponse<ApiResponseGenericAdd<string>>> Add(ApplicationUserAddRequest item,
         string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
@@ -114,7 +114,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<ApiResponse> Update(string id, ApplicationUserAddOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse> Update(string id, ApplicationUserUpdateRequest item, string currentUserId)
     {
         // Look for current user
         var currentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
@@ -247,7 +247,7 @@ public sealed class ApplicationUserService : IApplicationUserService
     }
 
     public async Task<ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>> AddRange(
-        IEnumerable<ApplicationUserAddOrUpdateDto> items,
+        IEnumerable<ApplicationUserAddRequest> items,
         string currentUserId)
     {
         var data = new List<ApiResponseGenericAdd<string>>();
@@ -287,7 +287,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         return response;
     }
 
-    private ApplicationUser MapDtoToEntity(ApplicationUserAddOrUpdateDto item, string? currentUserId)
+    private ApplicationUser MapDtoToEntity(ApplicationUserAddRequest item, string? currentUserId)
     {
         var now = DateTime.UtcNow;
 
