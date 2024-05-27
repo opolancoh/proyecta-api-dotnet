@@ -4,6 +4,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Proyecta.Repository.EntityFramework;
 using Proyecta.Web.Extensions;
+using Proyecta.Web.Middlewares;
 using Proyecta.Web.Swagger;
 using Proyecta.Web.Utils;
 
@@ -30,7 +31,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-app.ConfigureExceptionHandler(app.Logger);
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.MapHealthChecks("/health");
 
