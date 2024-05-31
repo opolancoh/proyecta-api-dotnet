@@ -221,13 +221,16 @@ var assemblies = [
   {
     "name": "Proyecta.Core",
     "classes": [
-      { "name": "Proyecta.Core.DTOs.ApiResponse.ApiResponse", "rp": "Proyecta.Core_ApiResponse.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 21, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Core.DTOs.ApiResponse.ApiResponse<T>", "rp": "Proyecta.Core_ApiResponse_1.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 21, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Core.DTOs.ApiResponse.ApiBody", "rp": "Proyecta.Core_ApiBody.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 35, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Core.DTOs.ApiResponse.ApiBody<T>", "rp": "Proyecta.Core_ApiBody_1.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 35, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Core.DTOs.ApiResponse.ApiResponse", "rp": "Proyecta.Core_ApiResponse.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 35, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Core.DTOs.ApiResponse.ApiResponse<T>", "rp": "Proyecta.Core_ApiResponse_1.html", "cl": 0, "ucl": 3, "cal": 3, "tl": 35, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Core.DTOs.ApiResponse.ApiResponseGenericAdd<T>", "rp": "Proyecta.Core_ApiResponseGenericAdd_1.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 6, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Core.DTOs.Auth.ApplicationUserAddOrUpdateDto", "rp": "Proyecta.Core_ApplicationUserAddOrUpdateDto.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 11, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Core.DTOs.Auth.ApplicationUserAddRequest", "rp": "Proyecta.Core_ApplicationUserAddRequest.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 11, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Core.DTOs.Auth.ApplicationUserBaseDto", "rp": "Proyecta.Core_ApplicationUserBaseDto.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 10, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Core.DTOs.Auth.ApplicationUserDetailDto", "rp": "Proyecta.Core_ApplicationUserDetailDto.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 12, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Core.DTOs.Auth.ApplicationUserListDto", "rp": "Proyecta.Core_ApplicationUserListDto.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 6, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Core.DTOs.Auth.ApplicationUserUpdateRequest", "rp": "Proyecta.Core_ApplicationUserUpdateRequest.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 10, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Core.DTOs.Auth.JwtAccessTokenClaimsInputDto", "rp": "Proyecta.Core_JwtAccessTokenClaimsInputDto.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 10, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Core.DTOs.Auth.LoginDto", "rp": "Proyecta.Core_LoginDto.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 7, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Core.DTOs.Auth.RefreshTokenResponse", "rp": "Proyecta.Core_RefreshTokenResponse.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 6, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
@@ -259,24 +262,25 @@ var assemblies = [
       { "name": "Proyecta.Repository.EntityFramework.ApplicationUserRepository", "rp": "Proyecta.Repository.EntityFramework_ApplicationUserRepository.html", "cl": 81, "ucl": 0, "cal": 81, "tl": 103, "cb": 7, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Repository.EntityFramework.AuthDbContext", "rp": "Proyecta.Repository.EntityFramework_AuthDbContext.html", "cl": 11, "ucl": 0, "cal": 11, "tl": 28, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Repository.EntityFramework.AuthRepository", "rp": "Proyecta.Repository.EntityFramework_AuthRepository.html", "cl": 29, "ucl": 0, "cal": 29, "tl": 58, "cb": 3, "tb": 4, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Repository.EntityFramework.Extensions.ApplicationUserModelBuilderExtensions", "rp": "Proyecta.Repository.EntityFramework_ApplicationUserModelBuilderExtensions.html", "cl": 78, "ucl": 0, "cal": 78, "tl": 98, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Repository.EntityFramework.Extensions.IdentityRolModelBuilderExtensions", "rp": "Proyecta.Repository.EntityFramework_IdentityRolModelBuilderExtensions.html", "cl": 38, "ucl": 0, "cal": 38, "tl": 49, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Repository.EntityFramework.Extensions.IdentityUserRoleModelBuilderExtensions", "rp": "Proyecta.Repository.EntityFramework_IdentityUserRoleModelBuilderExtensions.html", "cl": 23, "ucl": 0, "cal": 23, "tl": 38, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Repository.EntityFramework.Extensions.RefreshTokenModelBuilderExtensions", "rp": "Proyecta.Repository.EntityFramework_RefreshTokenModelBuilderExtensions.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Repository.EntityFramework.Configurations.ApplicationUserConfiguration", "rp": "Proyecta.Repository.EntityFramework_ApplicationUserConfiguration.html", "cl": 68, "ucl": 0, "cal": 68, "tl": 94, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Repository.EntityFramework.Configurations.IdentityRolConfiguration", "rp": "Proyecta.Repository.EntityFramework_IdentityRolConfiguration.html", "cl": 38, "ucl": 0, "cal": 38, "tl": 50, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Repository.EntityFramework.Configurations.IdentityUserRoleConfiguration", "rp": "Proyecta.Repository.EntityFramework_IdentityUserRoleConfiguration.html", "cl": 23, "ucl": 0, "cal": 23, "tl": 39, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Repository.EntityFramework.Configurations.RefreshTokenConfiguration", "rp": "Proyecta.Repository.EntityFramework_RefreshTokenConfiguration.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 13, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Repository.EntityFramework.Risk.RiskCategoryRepository", "rp": "Proyecta.Repository.EntityFramework_RiskCategoryRepository.html", "cl": 83, "ucl": 17, "cal": 100, "tl": 148, "cb": 3, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Repository.EntityFramework.Risk.RiskOwnerRepository", "rp": "Proyecta.Repository.EntityFramework_RiskOwnerRepository.html", "cl": 83, "ucl": 17, "cal": 100, "tl": 149, "cb": 3, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Repository.EntityFramework.Risk.RiskRepository", "rp": "Proyecta.Repository.EntityFramework_RiskRepository.html", "cl": 89, "ucl": 17, "cal": 106, "tl": 154, "cb": 3, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Repository.EntityFramework.Risk.RiskRepository", "rp": "Proyecta.Repository.EntityFramework_RiskRepository.html", "cl": 87, "ucl": 17, "cal": 104, "tl": 154, "cb": 3, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Repository.EntityFramework.Risk.RiskTreatmentRepository", "rp": "Proyecta.Repository.EntityFramework_RiskTreatmentRepository.html", "cl": 83, "ucl": 17, "cal": 100, "tl": 149, "cb": 3, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
     ]},
   {
     "name": "Proyecta.Services",
     "classes": [
-      { "name": "Proyecta.Services.ApplicationUserService", "rp": "Proyecta.Services_ApplicationUserService.html", "cl": 192, "ucl": 44, "cal": 236, "tl": 319, "cb": 31, "tb": 42, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Services.AuthService", "rp": "Proyecta.Services_AuthService.html", "cl": 138, "ucl": 0, "cal": 138, "tl": 196, "cb": 14, "tb": 16, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Services.Risk.RiskCategoryService", "rp": "Proyecta.Services_RiskCategoryService.html", "cl": 83, "ucl": 0, "cal": 83, "tl": 126, "cb": 2, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Services.Risk.RiskOwnerService", "rp": "Proyecta.Services_RiskOwnerService.html", "cl": 83, "ucl": 0, "cal": 83, "tl": 125, "cb": 2, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Services.Risk.RiskService", "rp": "Proyecta.Services_RiskService.html", "cl": 93, "ucl": 0, "cal": 93, "tl": 133, "cb": 2, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Services.Risk.RiskTreatmentService", "rp": "Proyecta.Services_RiskTreatmentService.html", "cl": 83, "ucl": 0, "cal": 83, "tl": 127, "cb": 2, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Services.ApplicationUserService", "rp": "Proyecta.Services_ApplicationUserService.html", "cl": 203, "ucl": 26, "cal": 229, "tl": 302, "cb": 28, "tb": 30, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Services.AuthService", "rp": "Proyecta.Services_AuthService.html", "cl": 153, "ucl": 0, "cal": 153, "tl": 213, "cb": 14, "tb": 16, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Services.Helpers.ErrorResponseHelper", "rp": "Proyecta.Services_ErrorResponseHelper.html", "cl": 11, "ucl": 3, "cal": 14, "tl": 25, "cb": 3, "tb": 4, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Services.Risk.RiskCategoryService", "rp": "Proyecta.Services_RiskCategoryService.html", "cl": 130, "ucl": 9, "cal": 139, "tl": 187, "cb": 9, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Services.Risk.RiskOwnerService", "rp": "Proyecta.Services_RiskOwnerService.html", "cl": 130, "ucl": 9, "cal": 139, "tl": 187, "cb": 9, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Services.Risk.RiskService", "rp": "Proyecta.Services_RiskService.html", "cl": 140, "ucl": 9, "cal": 149, "tl": 198, "cb": 9, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Services.Risk.RiskTreatmentService", "rp": "Proyecta.Services_RiskTreatmentService.html", "cl": 130, "ucl": 9, "cal": 139, "tl": 187, "cb": 9, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
     ]},
   {
     "name": "Proyecta.Web",
@@ -287,9 +291,8 @@ var assemblies = [
       { "name": "Proyecta.Web.Controllers.v1.RisksController", "rp": "Proyecta.Web_RisksController.html", "cl": 32, "ucl": 0, "cal": 32, "tl": 83, "cb": 4, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Web.Controllers.v1.RiskTreatmentsController", "rp": "Proyecta.Web_RiskTreatmentsController.html", "cl": 32, "ucl": 0, "cal": 32, "tl": 83, "cb": 4, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Web.Controllers.v1.UsersController", "rp": "Proyecta.Web_UsersController.html", "cl": 32, "ucl": 0, "cal": 32, "tl": 82, "cb": 4, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Web.Extensions.ApplicationBuilderExtensions", "rp": "Proyecta.Web_ApplicationBuilderExtensions.html", "cl": 8, "ucl": 15, "cal": 23, "tl": 33, "cb": 2, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Web.Extensions.ServiceExtensions", "rp": "Proyecta.Web_ServiceExtensions.html", "cl": 135, "ucl": 0, "cal": 135, "tl": 190, "cb": 6, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Proyecta.Web.Models.ErrorDetails", "rp": "Proyecta.Web_ErrorDetails.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 17, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Web.Extensions.ServiceExtensions", "rp": "Proyecta.Web_ServiceExtensions.html", "cl": 133, "ucl": 0, "cal": 133, "tl": 188, "cb": 6, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Proyecta.Web.Middlewares.GlobalExceptionHandlerMiddleware", "rp": "Proyecta.Web_GlobalExceptionHandlerMiddleware.html", "cl": 28, "ucl": 6, "cal": 34, "tl": 52, "cb": 1, "tb": 4, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Web.Validators.IdNameAddOrUpdateValidator", "rp": "Proyecta.Web_IdNameAddOrUpdateValidator.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 15, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Web.Validators.RegisterValidator", "rp": "Proyecta.Web_RegisterValidator.html", "cl": 14, "ucl": 0, "cal": 14, "tl": 26, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "Proyecta.Web.Validators.RiskAddOrUpdateValidator", "rp": "Proyecta.Web_RiskAddOrUpdateValidator.html", "cl": 30, "ucl": 0, "cal": 30, "tl": 52, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
@@ -301,17 +304,9 @@ var metrics = [{ "name": "Crap Score", "abbreviation": "crp", "explanationUrl": 
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
-      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
-      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
 ];
 
 var riskHotspots = [
-  {
-    "assembly": "Proyecta.Services", "class": "Proyecta.Services.ApplicationUserService", "reportPath": "Proyecta.Services_ApplicationUserService.html", "methodName": "Update()", "methodShortName": "Update()", "fileIndex": 0, "line": 118,
-    "metrics": [
-      { "value": 15.27, "exceeded": true },
-      { "value": 10, "exceeded": false },
-    ]},
 ];
 
 var branchCoverageAvailable = true;
