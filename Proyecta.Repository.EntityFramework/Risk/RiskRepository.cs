@@ -89,7 +89,7 @@ public class RiskRepository : IRiskRepository
         return item;
     }
 
-    public async Task<int> Create(Core.Entities.Risk.Risk item)
+    public async Task<int> Add(Core.Entities.Risk.Risk item)
     {
         _entitySet.Add(item);
         return await _context.SaveChangesAsync();

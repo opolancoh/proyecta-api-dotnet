@@ -6,6 +6,7 @@ using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.Entities;
+using Proyecta.Services.Helpers;
 
 namespace Proyecta.Services;
 
@@ -75,21 +76,9 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         if (!result.Succeeded)
         {
-            var errors = new Dictionary<string, List<string>>();
-            foreach (var error in result.Errors)
-            {
-                _logger.LogError("User not created. Code: {Code}, Description: {Description}", error.Code,
-                    error.Description);
+            _logger.LogError("Resource was not created");
 
-                if (errors.ContainsKey(error.Code))
-                {
-                    errors[error.Code].Add(error.Description);
-                }
-                else
-                {
-                    errors.Add(error.Code, new List<string> { error.Description });
-                }
-            }
+            var errors = ErrorResponseHelper.GetIdentityErrors(result.Errors);
 
             return new ApiResponse
             {
@@ -147,21 +136,9 @@ public sealed class ApplicationUserService : IApplicationUserService
         var result = await _userManager.UpdateAsync(currentUser);
         if (!result.Succeeded)
         {
-            var errors = new Dictionary<string, List<string>>();
-            foreach (var error in result.Errors)
-            {
-                _logger.LogError("User not created. Code: {Code}, Description: {Description}", error.Code,
-                    error.Description);
+            _logger.LogError("Resource with ID '{ID}' was not updated", id);
 
-                if (errors.ContainsKey(error.Code))
-                {
-                    errors[error.Code].Add(error.Description);
-                }
-                else
-                {
-                    errors.Add(error.Code, new List<string> { error.Description });
-                }
-            }
+            var errors = ErrorResponseHelper.GetIdentityErrors(result.Errors);
 
             return new ApiResponse
             {
@@ -225,22 +202,9 @@ public sealed class ApplicationUserService : IApplicationUserService
         var result = await _userManager.DeleteAsync(currentUser);
         if (!result.Succeeded)
         {
-            var errors = new Dictionary<string, List<string>>();
-            foreach (var error in result.Errors)
-            {
-                _logger.LogError(
-                    "User not deleted. Code: {Code}, Description: {Description}", error.Code,
-                    error.Description);
+            _logger.LogError("Resource with ID '{ID}' was not deleted", id);
 
-                if (errors.ContainsKey(error.Code))
-                {
-                    errors[error.Code].Add(error.Description);
-                }
-                else
-                {
-                    errors.Add(error.Code, new List<string> { error.Description });
-                }
-            }
+            var errors = ErrorResponseHelper.GetIdentityErrors(result.Errors);
 
             return new ApiResponse
             {

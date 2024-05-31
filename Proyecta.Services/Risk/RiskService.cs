@@ -61,7 +61,7 @@ public sealed class RiskService : IRiskService
     {
         var newItem = MapDtoToEntity(item, currentUserId);
 
-        var result = await _repository.Create(newItem);
+        var result = await _repository.Add(newItem);
 
         if (result == 0)
         {
