@@ -21,10 +21,10 @@ public class AuthIntegrationTestsFailure : IClassFixture<AuthWebApplicationFacto
     }
 
     [Fact]
-    public async Task AuthRegister_WhenUsernameExists_ReturnsTokens()
+    public async Task AuthRegister_WhenUsernameExists_ReturnsBadRequest()
     {
         // Arrange
-        var (user, password) = await _factory.CreateUserAsync();
+        var (user, _) = await _factory.CreateUserAsync();
 
         var newItem = new RegisterDto
         {
@@ -39,17 +39,14 @@ public class AuthIntegrationTestsFailure : IClassFixture<AuthWebApplicationFacto
         var response = await _client.PostAsJsonAsync($"{BasePath}/register", newItem);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<TokenDto>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("400", responseContent.Code);
-        Assert.Null(responseContent.Data);
-        Assert.NotNull(responseContent.Errors);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.NotNull(responseContentObject.Errors);
     }
 
     [Fact]
@@ -63,17 +60,14 @@ public class AuthIntegrationTestsFailure : IClassFixture<AuthWebApplicationFacto
         var response = await _client.PostAsJsonAsync($"{BasePath}/login", newItem);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<TokenDto>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("401", responseContent.Code);
-        Assert.Null(responseContent.Data);
-        Assert.NotNull(responseContent.Errors);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.NotNull(responseContentObject.Errors);
     }
 
     [Fact]
@@ -86,16 +80,14 @@ public class AuthIntegrationTestsFailure : IClassFixture<AuthWebApplicationFacto
         var response = await _client.PostAsJsonAsync($"{BasePath}/logout", request);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("400", responseContent.Code);
-        Assert.Null(responseContent.Errors);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
     }
 
     [Fact]
@@ -108,16 +100,14 @@ public class AuthIntegrationTestsFailure : IClassFixture<AuthWebApplicationFacto
         var response = await _client.PostAsJsonAsync($"{BasePath}/refresh-token", request);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("401", responseContent.Code);
-        Assert.Null(responseContent.Errors);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
     }
 
     [Fact]
@@ -129,7 +119,7 @@ public class AuthIntegrationTestsFailure : IClassFixture<AuthWebApplicationFacto
         var loginResponse = await _client.PostAsJsonAsync($"{BasePath}/login", newUser);
         var loginResponseString = await loginResponse.Content.ReadAsStringAsync();
         var loginResponseContent =
-            JsonSerializer.Deserialize<ApiResponse<TokenDto>>(loginResponseString, JsonSerializerOptions);
+            JsonSerializer.Deserialize<ApiBody<TokenDto>>(loginResponseString, JsonSerializerOptions);
         var request = new TokenDto
             { AccessToken = loginResponseContent!.Data!.AccessToken, RefreshToken = "RefreshToken" };
 
@@ -137,14 +127,13 @@ public class AuthIntegrationTestsFailure : IClassFixture<AuthWebApplicationFacto
         var response = await _client.PostAsJsonAsync($"{BasePath}/refresh-token", request);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<RefreshTokenResponse>>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<RefreshTokenResponse>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("401", responseContent.Code);
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
     }
 }

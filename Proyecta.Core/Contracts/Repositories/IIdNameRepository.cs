@@ -7,5 +7,5 @@ public interface IIdNameRepository<in TKey, in TEntity, TList, TDetail>
     Task<int> Create(TEntity item);
     Task<int> Update(TEntity item);
     Task<int> Remove(TKey id);
-    Task AddRange(IEnumerable<TEntity> items);
+    Task<int> AddRange(IEnumerable<TEntity> items);
 }

@@ -4,18 +4,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Proyecta.Tests.IntegrationTests.Extensions;
+namespace Proyecta.Tests.Extensions;
 
 public static class JwtTestAuthenticationExtensions
 {
     public static void ConfigureJwtAuthenticationForTests(this IServiceCollection services, IConfiguration configuration)
     {
-        
+
         // Add custom JWT authentication for testing
         var secretKey = configuration["JwtSettings:Secret"];
         var issuer = configuration["JwtSettings:Issuer"];
         var audience = configuration["JwtSettings:Audience"];
-        
+
         services
             .AddAuthentication(x =>
             {

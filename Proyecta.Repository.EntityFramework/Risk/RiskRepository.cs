@@ -89,13 +89,13 @@ public class RiskRepository : IRiskRepository
         return item;
     }
 
-    public async Task Create(Core.Entities.Risk.Risk item)
+    public async Task<int> Create(Core.Entities.Risk.Risk item)
     {
         _entitySet.Add(item);
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
     }
 
-    public async Task Update(Core.Entities.Risk.Risk item)
+    public async Task<int> Update(Core.Entities.Risk.Risk item)
     {
         _context.Entry(item).State = EntityState.Modified;
         _context.Entry(item).Property(x => x.CreatedAt).IsModified = false;
@@ -103,7 +103,7 @@ public class RiskRepository : IRiskRepository
 
         try
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -118,7 +118,7 @@ public class RiskRepository : IRiskRepository
         }
     }
 
-    public async Task Remove(Guid id)
+    public async Task<int> Remove(Guid id)
     {
         var item = new Core.Entities.Risk.Risk { Id = id };
 
@@ -126,7 +126,7 @@ public class RiskRepository : IRiskRepository
 
         try
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -146,9 +146,9 @@ public class RiskRepository : IRiskRepository
         return await _entitySet.AnyAsync(e => e.Id == id);
     }
 
-    public async Task AddRange(IEnumerable<Core.Entities.Risk.Risk> items)
+    public async Task<int> AddRange(IEnumerable<Core.Entities.Risk.Risk> items)
     {
         await _entitySet.AddRangeAsync(items);
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
     }
 }

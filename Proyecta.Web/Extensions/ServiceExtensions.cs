@@ -140,15 +140,13 @@ public static class ServiceExtensions
                         }
                     }
 
-                    var errorResponse = new ApiResponse
+                    var errorResponse = new
                     {
-                        Success = false,
-                        Code = ApiResponseCode.BadRequest,
                         Message = "One or more validation errors occurred.",
                         Errors = errors
                     };
 
-                    return new OkObjectResult(errorResponse);
+                    return new BadRequestObjectResult(errorResponse);
                 };
             });
     }

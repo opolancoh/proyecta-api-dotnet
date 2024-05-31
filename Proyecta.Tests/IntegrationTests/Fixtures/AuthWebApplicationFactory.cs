@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.Utilities;
 using Proyecta.Repository.EntityFramework;
-using Proyecta.Tests.IntegrationTests.Extensions;
+using Proyecta.Tests.Extensions;
 
 namespace Proyecta.Tests.IntegrationTests.Fixtures;
 

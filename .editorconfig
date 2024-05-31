@@ -1,0 +1,64 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Global settings (apply to all files)
+[*]
+# Unix-style newlines with a newline ending every file
+end_of_line = lf
+insert_final_newline = true
+# 4 space indentation
+indent_style = space
+indent_size = 4
+# Trim trailing whitespace
+trim_trailing_whitespace = true
+# Set max line length to 180 characters
+max_line_length = 180
+
+# Matches multiple files with brace expansion notation
+# Set default charset
+charset = utf-8
+
+# C# files
+[*.cs]
+# Use 4 spaces for indentation
+indent_style = space
+indent_size = 4
+# C# file specific settings
+dotnet_sort_system_directives_first = true
+csharp_new_line_before_open_brace = all
+csharp_new_line_between_query_expression_clauses = true
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_indent_block_contents = true
+csharp_prefer_simple_default_expression = true
+
+# JSON files
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+
+# XML files
+[*.{xml,csproj,props,targets}]
+indent_style = space
+indent_size = 2
+
+# NuGet configuration file
+[*.{config,nuspec}]
+indent_style = space
+indent_size = 2
+
+# ASP.NET Razor files
+[*.{cshtml,razor}]
+indent_style = space
+indent_size = 2
+
+# Visual Studio settings
+[*.{sln,csproj,vbproj}]
+indent_style = space
+indent_size = 2

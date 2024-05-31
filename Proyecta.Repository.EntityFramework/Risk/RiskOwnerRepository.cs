@@ -141,9 +141,9 @@ public class RiskOwnerRepository : IRiskOwnerRepository
         return await _entitySet.AnyAsync(e => e.Id == id);
     }
 
-    public async Task AddRange(IEnumerable<RiskOwner> items)
+    public async Task<int> AddRange(IEnumerable<RiskOwner> items)
     {
         await _entitySet.AddRangeAsync(items);
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
     }
 }

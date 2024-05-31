@@ -27,7 +27,7 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _service.Register(registerDto);
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
 
     [HttpPost]
@@ -37,7 +37,7 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _service.Login(loginDto);
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
     
     [HttpPost("logout")]
@@ -46,7 +46,7 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _service.Logout(tokenDto);
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
 
     [HttpPost("refresh-token")]
@@ -55,6 +55,6 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _service.RefreshToken(tokenDto);
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
 }

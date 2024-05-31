@@ -37,7 +37,7 @@ public class AuthService : IAuthService
         _appUserService = appUserService;
     }
 
-    public async Task<ApiResponse<TokenDto>> Register(RegisterDto registerDto)
+    public async Task<IApiResponse> Register(RegisterDto registerDto)
     {
         var newUser = new ApplicationUserAddRequest
         {
@@ -49,34 +49,39 @@ public class AuthService : IAuthService
         };
 
         var userCreationResult = await _appUserService.Add(newUser, null!);
-        if (userCreationResult.Success)
+        if (userCreationResult.Status!=ApiResponseStatus.Created)
         {
-            return await Login(new LoginDto { Username = newUser.UserName, Password = newUser.Password });
+            return new ApiResponse
+            {
+                Status = userCreationResult.Status,
+                Body = new ApiBody
+                {
+                    Message = "An error occurred while creating the account.",
+                    Errors = userCreationResult.Body.Errors
+                }
+            };
         }
-
-        return new ApiResponse<TokenDto>
-        {
-            Success = false,
-            Code = userCreationResult.Code,
-            Message = "There was a problem creating the account.",
-            Errors = userCreationResult.Errors
-        };
+        
+        
+        
+        return await Login(new LoginDto { Username = newUser.UserName, Password = newUser.Password });
     }
 
-    public async Task<ApiResponse<TokenDto>> Login(LoginDto loginDto)
+    public async Task<IApiResponse> Login(LoginDto loginDto)
     {
         var user = await _authRepository.GetUserForLogin(loginDto);
         if (user == null)
         {
-            _logger.LogWarning(AuthenticationFailedMessage);
-            return new ApiResponse<TokenDto>
+            return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.Unauthorized,
-                Message = AuthenticationFailedMessage,
-                Errors = new Dictionary<string, List<string>>
+                Status = ApiResponseStatus.Unauthorized,
+                Body = new ApiBody
                 {
-                    { "_", new List<string>() { "Wrong user name or password." } }
+                    Message = AuthenticationFailedMessage,
+                    Errors = new Dictionary<string, List<string>>
+                    {
+                        { "_", new List<string>() { "Wrong user name or password." } }
+                    }
                 }
             };
         }
@@ -110,16 +115,18 @@ public class AuthService : IAuthService
                 DateTime.UtcNow.AddMinutes(
                     Convert.ToDouble(_configuration.GetSection("JwtSettings:RefreshTokenExpirationInMinutes").Value))
         });
-
-        return new ApiResponse<TokenDto>
+        
+        return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.Ok,
-            Data = new TokenDto { AccessToken = accessToken, RefreshToken = refreshToken }
+            Status = ApiResponseStatus.Ok,
+            Body = new ApiBody<TokenDto>
+            {
+                Data = new TokenDto { AccessToken = accessToken, RefreshToken = refreshToken }
+            }
         };
     }
 
-    public async Task<ApiResponse> Logout(TokenDto tokenDto)
+    public async Task<IApiResponse> Logout(TokenDto tokenDto)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
 
@@ -133,24 +140,28 @@ public class AuthService : IAuthService
         {
             return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.BadRequest,
-                Message = "Failed to logout."
+                Status = ApiResponseStatus.BadRequest,
+                Body = new ApiBody
+                {
+                    Message = "Failed to logout."
+                }
             };
         }
 
         // Remove the refresh token from the database
         await _authRepository.RemoveRefreshToken(accessToken.Subject, tokenDto.RefreshToken);
-
+        
         return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.NoContent,
-            Message = "Logged out successfully."
+            Status = ApiResponseStatus.Ok,
+            Body = new ApiBody
+            {
+                Message = "Successfully logged out."
+            }
         };
     }
 
-    public async Task<ApiResponse<RefreshTokenResponse>> RefreshToken(TokenDto tokenDto)
+    public async Task<IApiResponse> RefreshToken(TokenDto tokenDto)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
 
@@ -161,11 +172,13 @@ public class AuthService : IAuthService
         var accessToken = AuthHelper.ValidateJwtToken(tokenDto.AccessToken, issuer, audience, secret, false);
         if (accessToken == null)
         {
-            return new ApiResponse<RefreshTokenResponse>
+            return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.Unauthorized,
-                Message = "Invalid access token."
+                Status = ApiResponseStatus.Unauthorized,
+                Body = new ApiBody
+                {
+                    Message = "Invalid access token."
+                }
             };
         }
 
@@ -173,11 +186,13 @@ public class AuthService : IAuthService
         var refreshTokenFromDb = await _authRepository.GetRefreshToken(accessToken.Subject, tokenDto.RefreshToken);
         if (refreshTokenFromDb == null || refreshTokenFromDb.ExpiryDate < DateTime.UtcNow)
         {
-            return new ApiResponse<RefreshTokenResponse>
+            return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.Unauthorized,
-                Message = "Refresh Token is not valid."
+                Status = ApiResponseStatus.Unauthorized,
+                Body = new ApiBody
+                {
+                    Message = "Invalid refresh token."
+                }
             };
         }
 
@@ -185,12 +200,14 @@ public class AuthService : IAuthService
         var expirationInMinutes = Convert.ToDouble(jwtSettings["AccessTokenExpirationInMinutes"]);
         var expiration = DateTime.UtcNow.AddMinutes(expirationInMinutes);
         var newAccessToken = AuthHelper.UpdateTokenExpiration(accessToken, expiration, secret);
-
-        return new ApiResponse<RefreshTokenResponse>
+        
+        return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.Ok,
-            Data = new RefreshTokenResponse { AccessToken = newAccessToken }
+            Status = ApiResponseStatus.Ok,
+            Body = new ApiBody<RefreshTokenResponse>
+            {
+                Data = new RefreshTokenResponse { AccessToken = newAccessToken }
+            }
         };
     }
 }

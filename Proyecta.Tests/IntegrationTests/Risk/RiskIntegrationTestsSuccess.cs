@@ -37,17 +37,15 @@ public class RiskIntegrationTestsSuccess : IClassFixture<ApiWebApplicationFactor
         var response = await _client.PostAsJsonAsync($"{BasePath}", newItem);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<ApiResponseGenericAdd<Guid>>>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<ApiResponseGenericAdd<Guid>>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("201", responseContent.Code);
-        // Data
-        Assert.NotEqual(Guid.Empty, responseContent.Data!.Id);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.True(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
+        Assert.NotEqual(Guid.Empty, responseContentObject.Data!.Id);
     }
 
     [Fact]
@@ -60,39 +58,38 @@ public class RiskIntegrationTestsSuccess : IClassFixture<ApiWebApplicationFactor
         var response = await _client.GetAsync($"{BasePath}/{newItem.Id}");
 
         // Assert
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<RiskDetailDto>>(responseContentString, JsonSerializerOptions);
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<RiskDetailDto>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("200", responseContent.Code);
-        // Data
-        Assert.Equal(newItem.Id, responseContent.Data!.Id);
-        Assert.Equal(newItem.Code, responseContent.Data.Code);
-        Assert.Equal(newItem.Name, responseContent.Data.Name);
-        Assert.Equal(newItem.Category.Id, responseContent.Data.Category.Id);
-        Assert.Equal(newItem.Category.Name, responseContent.Data.Category.Name);
-        Assert.Equal(newItem.Type, responseContent.Data.Type);
-        Assert.Equal(newItem.Owner.Id, responseContent.Data.Owner.Id);
-        Assert.Equal(newItem.Owner.Name, responseContent.Data.Owner.Name);
-        Assert.Equal(newItem.Phase, responseContent.Data.Phase);
-        Assert.Equal(newItem.Manageability, responseContent.Data.Manageability);
-        Assert.Equal(newItem.Treatment.Id, responseContent.Data.Treatment.Id);
-        Assert.Equal(newItem.Treatment.Name, responseContent.Data.Treatment.Name);
-        Assert.Equal(newItem.DateFrom, responseContent.Data.DateFrom);
-        Assert.Equal(newItem.DateTo, responseContent.Data.DateTo);
-        Assert.Equal(newItem.State, responseContent.Data.State);
-        Assert.Equal(newItem.CreatedAt, responseContent.Data.CreatedAt);
-        Assert.Equal(newItem.CreatedBy.Id, responseContent.Data.CreatedBy.Id);
-        Assert.Equal(newItem.UpdatedAt, responseContent.Data.UpdatedAt);
-        Assert.Equal(newItem.UpdatedBy.Id, responseContent.Data.UpdatedBy.Id);
+        Assert.NotNull(responseContentObject);
+        Assert.True(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
+        Assert.NotNull(responseContentObject.Data);
+        Assert.Equal(newItem.Id, responseContentObject.Data!.Id);
+        Assert.Equal(newItem.Code, responseContentObject.Data.Code);
+        Assert.Equal(newItem.Name, responseContentObject.Data.Name);
+        Assert.Equal(newItem.Category.Id, responseContentObject.Data.Category.Id);
+        Assert.Equal(newItem.Category.Name, responseContentObject.Data.Category.Name);
+        Assert.Equal(newItem.Type, responseContentObject.Data.Type);
+        Assert.Equal(newItem.Owner.Id, responseContentObject.Data.Owner.Id);
+        Assert.Equal(newItem.Owner.Name, responseContentObject.Data.Owner.Name);
+        Assert.Equal(newItem.Phase, responseContentObject.Data.Phase);
+        Assert.Equal(newItem.Manageability, responseContentObject.Data.Manageability);
+        Assert.Equal(newItem.Treatment.Id, responseContentObject.Data.Treatment.Id);
+        Assert.Equal(newItem.Treatment.Name, responseContentObject.Data.Treatment.Name);
+        Assert.Equal(newItem.DateFrom, responseContentObject.Data.DateFrom);
+        Assert.Equal(newItem.DateTo, responseContentObject.Data.DateTo);
+        Assert.Equal(newItem.State, responseContentObject.Data.State);
+        Assert.Equal(newItem.CreatedAt, responseContentObject.Data.CreatedAt);
+        Assert.Equal(newItem.CreatedBy.Id, responseContentObject.Data.CreatedBy.Id);
+        Assert.Equal(newItem.UpdatedAt, responseContentObject.Data.UpdatedAt);
+        Assert.Equal(newItem.UpdatedBy.Id, responseContentObject.Data.UpdatedBy.Id);
     }
 
     [Fact]
-    public async Task Update_WithValidData_ReturnsCode204()
+    public async Task Update_WithValidData_ReturnsStatusNoContent()
     {
         // Arrange
         var newItem = await _factory.AddRiskRecord();
@@ -104,18 +101,17 @@ public class RiskIntegrationTestsSuccess : IClassFixture<ApiWebApplicationFactor
         var response = await _client.PutAsJsonAsync($"{BasePath}/{newItem.Id}", itemToBeUpdated);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =  JsonSerializer.Deserialize<ApiBody>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent = JsonSerializer.Deserialize<ApiResponse>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("204", responseContent.Code);
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
     }
 
     [Fact]
-    public async Task Remove_WithValidData_ReturnsCode204()
+    public async Task Remove_WithValidData_ReturnsStatusNoContent()
     {
         // Arrange
         var newItem = await _factory.AddRiskRecord();
@@ -124,18 +120,17 @@ public class RiskIntegrationTestsSuccess : IClassFixture<ApiWebApplicationFactor
         var response = await _client.DeleteAsync($"{BasePath}/{newItem.Id}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =  JsonSerializer.Deserialize<ApiBody>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent = JsonSerializer.Deserialize<ApiResponse>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("204", responseContent.Code);
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
     }
-    
+
     [Fact]
-    public async Task GetAll_WithValidData_ReturnsCode200()
+    public async Task GetAll_WithValidData_ReturnsStatusOk()
     {
         // Arrange
         var newItem1 = await _factory.AddRiskRecord();
@@ -153,24 +148,21 @@ public class RiskIntegrationTestsSuccess : IClassFixture<ApiWebApplicationFactor
         var response = await _client.GetAsync($"{BasePath}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<IEnumerable<RiskListDto>>>(responseString,
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<IEnumerable<RiskListDto>>>(responseContentString,
                 JsonSerializerOptions);
 
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("200", responseContent.Code);
-
-        // Data
-        Assert.NotNull(responseContent.Data);
-        Assert.True(newItems.All(x => responseContent.Data.Any(y => y.Id == x.Id && y.Name == x.Name)));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.True(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
+        Assert.NotNull(responseContentObject.Data);
+        Assert.True(newItems.All(x => responseContentObject.Data.Any(y => y.Id == x.Id && y.Name == x.Name)));
     }
 
     [Fact]
-    public async Task AddRange_WithValidData_ReturnsCode204()
+    public async Task AddRange_WithValidData_ReturnsStatusNoContent()
     {
         // Arrange
         var newItem1 = await _factory.AddRiskRecord();
@@ -188,14 +180,13 @@ public class RiskIntegrationTestsSuccess : IClassFixture<ApiWebApplicationFactor
         var response = await _client.PostAsJsonAsync($"{BasePath}/add-range", newItems);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<IdNameDetailDto<Guid>>>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<IdNameDetailDto<Guid>>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("204", responseContent.Code);
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
     }
 }

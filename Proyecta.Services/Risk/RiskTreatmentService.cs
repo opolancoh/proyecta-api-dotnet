@@ -1,6 +1,5 @@
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.DTOs;
 using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Core.Entities.Risk;
@@ -16,96 +15,157 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
         _repository = repository;
     }
 
-    public async Task<ApiResponse<IEnumerable<IdNameListDto<Guid>>>> GetAll()
+    public async Task<IApiResponse> GetAll()
     {
         var items = await _repository.GetAll();
 
-        return new ApiResponse<IEnumerable<IdNameListDto<Guid>>>
+        return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.Ok,
-            Data = items
+            Status = ApiResponseStatus.Ok,
+            Body = new ApiBody<IEnumerable<IdNameListDto<Guid>>>()
+            {
+                Data = items
+            }
         };
     }
 
-    public async Task<ApiResponse<IdNameDetailDto<Guid>>> GetById(Guid id)
+    public async Task<IApiResponse> GetById(Guid id)
     {
-        var item = await _repository.GetById(id);
+        var result = await _repository.GetById(id);
 
-        if (item == null)
+        if (result == null)
         {
-            return new ApiResponse<IdNameDetailDto<Guid>>
+            return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.NotFound,
-                Message = $"The item with id '{id}' was not found or you don't have permission to access it."
+                Status = ApiResponseStatus.NotFound,
+                Body = new ApiBody
+                {
+                    Message =
+                        $"The requested resource with ID '{id}' was not found, or you don't have permission to access it."
+                }
             };
         }
 
-        return new ApiResponse<IdNameDetailDto<Guid>>
+        return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.Ok,
-            Data = item
+            Status = ApiResponseStatus.Ok,
+            Body = new ApiBody<IdNameDetailDto<Guid>>
+            {
+                Data = result
+            }
         };
     }
 
-    public async Task<ApiResponse<ApiResponseGenericAdd<Guid>>> Create(IdNameAddOrUpdateDto item,
-        string currentUserId)
+    public async Task<IApiResponse> Add(IdNameAddOrUpdateDto item, string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
 
-        await _repository.Create(newItem);
+        var result = await _repository.Create(newItem);
 
-        return new ApiResponse<ApiResponseGenericAdd<Guid>>
+        if (result == 0)
         {
-            Success = true,
-            Code = ApiResponseCode.Created,
-            Message = "Risk Category created successfully.",
-            Data = new ApiResponseGenericAdd<Guid> { Id = newItem.Id }
+            return new ApiResponse
+            {
+                Status = ApiResponseStatus.Conflict,
+                Body = new ApiBody<IdNameDetailDto<Guid>>
+                {
+                    Message = "The resource could not be created, or you do not have permission to create it."
+                }
+            };
+        }
+
+        return new ApiResponse
+        {
+            Status = ApiResponseStatus.Created,
+            Body = new ApiBody<ApiResponseGenericAdd<Guid>>
+            {
+                Data = new ApiResponseGenericAdd<Guid> { Id = newItem.Id }
+            }
         };
     }
 
-    public async Task<ApiResponse> Update(Guid id, IdNameAddOrUpdateDto item, string currentUserId)
+    public async Task<IApiResponse> Update(Guid id, IdNameAddOrUpdateDto item, string currentUserId)
     {
         var itemToUpdate = MapDtoToEntity(item, currentUserId);
         itemToUpdate.Id = id;
 
-        await _repository.Update(itemToUpdate);
+        var result = await _repository.Update(itemToUpdate);
+
+        if (result == 0)
+        {
+            return new ApiResponse
+            {
+                Status = ApiResponseStatus.Conflict,
+                Body = new ApiBody<IdNameDetailDto<Guid>>
+                {
+                    Message =
+                        $"The resource with ID '{id}' could not be updated, or you don't have permission to update it."
+                }
+            };
+        }
 
         return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.NoContent,
-            Message = "Item updated successfully.",
+            Status = ApiResponseStatus.NoContent,
+            Body = new ApiBody
+            {
+                Message = "The resource was updated successfully."
+            }
         };
     }
 
-    public async Task<ApiResponse> Remove(Guid id, string currentUserId)
+    public async Task<IApiResponse> Remove(Guid id, string currentUserId)
     {
-        await _repository.Remove(id);
+        var result = await _repository.Remove(id);
+
+        if (result == 0)
+        {
+            return new ApiResponse
+            {
+                Status = ApiResponseStatus.Conflict,
+                Body = new ApiBody
+                {
+                    Message =
+                        $"The requested resource with ID '{id}' was not found, or you don't have permission to access it."
+                }
+            };
+        }
 
         return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.NoContent,
-            Message = "Item deleted successfully.",
+            Status = ApiResponseStatus.NoContent,
+            Body = new ApiBody
+            {
+                Message = "The resource was deleted successfully."
+            }
         };
     }
 
-    public async Task<ApiResponse<IEnumerable<ApiResponseGenericAdd<Guid>>>> AddRange(
-        IEnumerable<IdNameAddOrUpdateDto> items,
-        string currentUserId)
+    public async Task<IApiResponse> AddRange(IEnumerable<IdNameAddOrUpdateDto> items, string currentUserId)
     {
         var newItems = items.Select(item => MapDtoToEntity(item, currentUserId)).ToList();
 
-        await _repository.AddRange(newItems);
+        var result = await _repository.AddRange(newItems);
 
-        return new ApiResponse<IEnumerable<ApiResponseGenericAdd<Guid>>>
+        if (result != newItems.Count)
         {
-            Success = true,
-            Code = ApiResponseCode.NoContent,
-            Message = "Items added successfully.",
+            return new ApiResponse
+            {
+                Status = ApiResponseStatus.MultiStatus,
+                Body = new ApiBody
+                {
+                    Message = "Some resources could not be processed successfully."
+                }
+            };
+        }
+
+        return new ApiResponse
+        {
+            Status = ApiResponseStatus.NoContent,
+            Body = new ApiBody
+            {
+                Message = "All resources have been successfully added."
+            }
         };
     }
 
@@ -115,7 +175,7 @@ public sealed class RiskTreatmentService : IRiskTreatmentService
 
         var entity = new RiskTreatment
         {
-            Name = item.Name,
+            Name = item.Name!,
             CreatedAt = now,
             CreatedById = currentUserId,
             UpdatedAt = now,

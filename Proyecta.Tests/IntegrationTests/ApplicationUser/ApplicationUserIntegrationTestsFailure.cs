@@ -36,18 +36,16 @@ public class ApplicationUserIntegrationTestsFailure : IClassFixture<AuthWebAppli
         var response = await _client.PostAsJsonAsync($"{BasePath}", newItem);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<ApiResponseGenericAdd<string>>>(responseString,
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<ApiResponseGenericAdd<string>>>(responseContentString,
                 JsonSerializerOptions);
 
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("400", responseContent.Code);
-        Assert.Null(responseContent.Data);
-        Assert.NotNull(responseContent.Errors);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Data);
+        Assert.NotNull(responseContentObject.Errors);
     }
 
     [Fact]
@@ -60,19 +58,18 @@ public class ApplicationUserIntegrationTestsFailure : IClassFixture<AuthWebAppli
         var response = await _client.GetAsync($"{BasePath}/{itemId}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<ApplicationUserDetailDto>>(responseString, JsonSerializerOptions);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<ApplicationUserDetailDto>>(responseContentString, JsonSerializerOptions);
 
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("404", responseContent.Code);
-        Assert.Null(responseContent.Data);
-        Assert.Null(responseContent.Errors);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Data);
+        Assert.Null(responseContentObject.Errors);
     }
-    
+
     [Fact]
     public async Task Update_WhenRecordNotExists_ReturnsStatusNotFound()
     {
@@ -89,17 +86,16 @@ public class ApplicationUserIntegrationTestsFailure : IClassFixture<AuthWebAppli
         var response = await _client.PutAsJsonAsync($"{BasePath}/{userId}", itemToBeUpdated);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent = JsonSerializer.Deserialize<ApiResponse>(responseString, JsonSerializerOptions);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject = JsonSerializer.Deserialize<ApiBody>(responseContentString, JsonSerializerOptions);
 
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("404", responseContent.Code);
-        Assert.Null(responseContent.Errors);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
     }
-    
+
     [Fact]
     public async Task Remove_WhenRecordNotExists_ReturnsStatusNotFound()
     {
@@ -110,26 +106,25 @@ public class ApplicationUserIntegrationTestsFailure : IClassFixture<AuthWebAppli
         var response = await _client.DeleteAsync($"{BasePath}/{userId}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent = JsonSerializer.Deserialize<ApiResponse>(responseString, JsonSerializerOptions);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject = JsonSerializer.Deserialize<ApiBody>(responseContentString, JsonSerializerOptions);
 
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("404", responseContent.Code);
-        Assert.Null(responseContent.Errors);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
     }
-    
+
     [Fact]
-    public async Task AddRange_WhenNotAllItemsAreAdded_ReturnsStatusAccepted()
+    public async Task AddRange_WhenNotAllItemsAreAdded_ReturnsStatusMultiStatus()
     {
         // Arrange
         var (user, _) = await _factory.CreateUserAsync();
-        
+
         var newItem1 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
         newItem1.UserName = user.UserName;
-        
+
         var newItem2 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
         var newItem3 = _factory.GetValidApplicationUserAddOrUpdateDto(null);
 
@@ -144,17 +139,16 @@ public class ApplicationUserIntegrationTestsFailure : IClassFixture<AuthWebAppli
         var response = await _client.PostAsJsonAsync($"{BasePath}/add-range", newItems);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.MultiStatus, response.StatusCode);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>>(responseString,
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<IEnumerable<ApiResponseGenericAdd<string>>>>(responseContentString,
                 JsonSerializerOptions);
 
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("202", responseContent.Code);
-        Assert.NotNull(responseContent.Data);
-        Assert.NotNull(responseContent.Errors);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.NotNull(responseContentObject.Data);
+        Assert.NotNull(responseContentObject.Errors);
     }
 }

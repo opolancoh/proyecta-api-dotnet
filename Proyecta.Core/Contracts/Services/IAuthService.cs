@@ -5,8 +5,8 @@ namespace Proyecta.Core.Contracts.Services;
 
 public interface IAuthService
 {
-    Task<ApiResponse<TokenDto>> Register(RegisterDto registerDto);
-    Task<ApiResponse<TokenDto>> Login(LoginDto loginDto);
-    Task<ApiResponse> Logout(TokenDto tokenDto);
-    Task<ApiResponse<RefreshTokenResponse>> RefreshToken(TokenDto tokenDto);
+    Task<IApiResponse> Register(RegisterDto registerDto);
+    Task<IApiResponse> Login(LoginDto loginDto);
+    Task<IApiResponse> Logout(TokenDto tokenDto);
+    Task<IApiResponse> RefreshToken(TokenDto tokenDto);
 }

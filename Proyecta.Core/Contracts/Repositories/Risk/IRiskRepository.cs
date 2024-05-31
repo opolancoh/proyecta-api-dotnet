@@ -6,8 +6,8 @@ public interface IRiskRepository
 {
     Task<IEnumerable<RiskListDto>> GetAll();
     Task<RiskDetailDto?> GetById(Guid id);
-    Task Create(Proyecta.Core.Entities.Risk.Risk item);
-    Task Update(Proyecta.Core.Entities.Risk.Risk item);
-    Task Remove(Guid id);
-    public Task AddRange(IEnumerable<Proyecta.Core.Entities.Risk.Risk> items);
+    Task<int> Create(Proyecta.Core.Entities.Risk.Risk item);
+    Task<int> Update(Proyecta.Core.Entities.Risk.Risk item);
+    Task<int> Remove(Guid id);
+    public Task<int> AddRange(IEnumerable<Proyecta.Core.Entities.Risk.Risk> items);
 }

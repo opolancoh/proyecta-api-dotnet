@@ -5,12 +5,10 @@ namespace Proyecta.Core.Contracts.Services;
 
 public interface IApplicationUserService
 {
-    Task<ApiResponse<IEnumerable<ApplicationUserListDto>>> GetAll();
-    Task<ApiResponse<ApplicationUserDetailDto>> GetById(string id);
-    Task<ApiResponse<ApiResponseGenericAdd<string>>> Add(ApplicationUserAddRequest item, string currentUserId);
-    Task<ApiResponse> Update(string id, ApplicationUserUpdateRequest item, string currentUserId);
-    Task<ApiResponse> Remove(string id, string currentUserId);
-
-    Task<ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>> AddRange(
-        IEnumerable<ApplicationUserAddRequest> items, string currentUserId);
+    Task<IApiResponse> GetAll();
+    Task<IApiResponse> GetById(string id);
+    Task<IApiResponse> Add(ApplicationUserAddRequest item, string currentUserId);
+    Task<IApiResponse> Update(string id, ApplicationUserUpdateRequest item, string currentUserId);
+    Task<IApiResponse> Remove(string id, string currentUserId);
+    Task<IApiResponse> AddRange(IEnumerable<ApplicationUserAddRequest> items, string currentUserId);
 }

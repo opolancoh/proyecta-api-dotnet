@@ -140,9 +140,9 @@ public class RiskCategoryRepository : IRiskCategoryRepository
         return await _entitySet.AnyAsync(e => e.Id == id);
     }
 
-    public async Task AddRange(IEnumerable<RiskCategory> items)
+    public async Task<int> AddRange(IEnumerable<RiskCategory> items)
     {
         await _entitySet.AddRangeAsync(items);
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
     }
 }

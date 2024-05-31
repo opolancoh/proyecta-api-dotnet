@@ -23,7 +23,7 @@ public class RiskIntegrationTestsFailure : IClassFixture<ApiWebApplicationFactor
         var adminToken = factory.GenerateAccessTokenForAdministrator();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
     }
-    
+
     [Fact]
     public async Task Add_WhenNameIsEmpty_ReturnsStatusBadRequest()
     {
@@ -37,17 +37,15 @@ public class RiskIntegrationTestsFailure : IClassFixture<ApiWebApplicationFactor
         var response = await _client.PostAsJsonAsync($"{BasePath}", newItem);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<ApiResponseGenericAdd<Guid>>>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<ApiResponseGenericAdd<Guid>>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("400", responseContent.Code);
-        Assert.Null(responseContent.Data);
-        Assert.NotNull(responseContent.Errors);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Data);
+        Assert.NotNull(responseContentObject.Errors);
     }
 
     [Fact]
@@ -60,16 +58,14 @@ public class RiskIntegrationTestsFailure : IClassFixture<ApiWebApplicationFactor
         var response = await _client.GetAsync($"{BasePath}/{itemId}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<RiskDetailDto>>(responseContentString, JsonSerializerOptions);
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<RiskDetailDto>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.False(responseContent.Success);
-        Assert.Equal("404", responseContent.Code);
-        Assert.Null(responseContent.Data);
-        Assert.Null(responseContent.Errors);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Data);
+        Assert.Null(responseContentObject.Errors);
     }
 }

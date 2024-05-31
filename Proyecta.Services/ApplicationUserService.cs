@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs.ApiResponse;
-using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.Entities;
 
@@ -27,42 +26,48 @@ public sealed class ApplicationUserService : IApplicationUserService
         _userManager = userManager;
     }
 
-    public async Task<ApiResponse<IEnumerable<ApplicationUserListDto>>> GetAll()
+    public async Task<IApiResponse> GetAll()
     {
-        var users = await _repository.GetAllWithRoles();
+        var result = await _repository.GetAllWithRoles();
 
-        return new ApiResponse<IEnumerable<ApplicationUserListDto>>
+        return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.Ok,
-            Data = users
+            Status = ApiResponseStatus.Ok,
+            Body = new ApiBody<IEnumerable<ApplicationUserListDto>>()
+            {
+                Data = result
+            }
         };
     }
 
-    public async Task<ApiResponse<ApplicationUserDetailDto>> GetById(string id)
+    public async Task<IApiResponse> GetById(string id)
     {
         var user = await _repository.GetByIdWithRoles(id);
 
         if (user == null)
         {
-            return new ApiResponse<ApplicationUserDetailDto>
+            return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.NotFound,
-                Message = $"The entity with id '{id}' doesn't exist in the database."
+                Status = ApiResponseStatus.NotFound,
+                Body = new ApiBody
+                {
+                    Message =
+                        $"The requested resource with ID '{id}' was not found, or you don't have permission to access it."
+                }
             };
         }
 
-        return new ApiResponse<ApplicationUserDetailDto>
+        return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.Ok,
-            Data = user
+            Status = ApiResponseStatus.Ok,
+            Body = new ApiBody<ApplicationUserDetailDto>
+            {
+                Data = user
+            }
         };
     }
 
-    public async Task<ApiResponse<ApiResponseGenericAdd<string>>> Add(ApplicationUserAddRequest item,
-        string currentUserId)
+    public async Task<IApiResponse> Add(ApplicationUserAddRequest item, string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
 
@@ -86,53 +91,56 @@ public sealed class ApplicationUserService : IApplicationUserService
                 }
             }
 
-            return new ApiResponse<ApiResponseGenericAdd<string>>
+            return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.BadRequest,
-                Message = "An error has occurred while creating the User.",
-                Errors = errors
+                Status = ApiResponseStatus.BadRequest,
+                Body = new ApiBody
+                {
+                    Message = "The resource could not be created, or you do not have permission to create it.",
+                    Errors = errors
+                }
             };
         }
-
-        _logger.LogInformation("User created a new account with password.");
 
         if (item.Roles != null)
         {
             await _userManager.AddToRolesAsync(newItem, item.Roles);
-            _logger.LogInformation("Roles added successfully.");
         }
 
         var userId = await _userManager.GetUserIdAsync(newItem);
 
-        return new ApiResponse<ApiResponseGenericAdd<string>>
+        return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.Created,
-            Message = "User created successfully.",
-            Data = new ApiResponseGenericAdd<string> { Id = userId }
+            Status = ApiResponseStatus.Created,
+            Body = new ApiBody<ApiResponseGenericAdd<string>>
+            {
+                Message = "User created successfully.",
+                Data = new ApiResponseGenericAdd<string> { Id = userId }
+            }
         };
     }
 
-    public async Task<ApiResponse> Update(string id, ApplicationUserUpdateRequest item, string currentUserId)
+    public async Task<IApiResponse> Update(string id, ApplicationUserUpdateRequest item, string currentUserId)
     {
-        // Look for current user
         var currentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
         if (currentUser == null)
         {
             return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.NotFound,
-                Message = $"User Id '{id}' was not found.",
+                Status = ApiResponseStatus.NotFound,
+                Body = new ApiBody
+                {
+                    Message =
+                        $"The requested resource with ID '{id}' was not found, or you don't have permission to access it."
+                }
             };
         }
 
         // Update user data
         currentUser.UpdatedAt = DateTime.UtcNow;
         currentUser.UpdatedById = currentUserId;
-        currentUser.FirstName = item.FirstName!;
-        currentUser.LastName = item.LastName!;
+        currentUser.FirstName = item.FirstName;
+        currentUser.LastName = item.LastName;
         currentUser.DisplayName = item.DisplayName!;
         currentUser.UserName = item.UserName;
 
@@ -157,13 +165,15 @@ public sealed class ApplicationUserService : IApplicationUserService
 
             return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.InternalServerError,
-                Message = "An error has occurred while updating the Application User.",
-                Errors = errors
+                Status = ApiResponseStatus.Conflict,
+                Body = new ApiBody
+                {
+                    Message =
+                        $"The resource with ID '{id}' could not be updated, or you don't have permission to update it.",
+                    Errors = errors
+                }
             };
         }
-
 
         if (item.Roles != null)
         {
@@ -175,20 +185,19 @@ public sealed class ApplicationUserService : IApplicationUserService
             // Update user roles
             await _userManager.AddToRolesAsync(currentUser, rolesToAdd);
             await _userManager.RemoveFromRolesAsync(currentUser, rolesToRemove);
-            _logger.LogInformation("Roles updated successfully.");
         }
-
-        _logger.LogInformation("User updated successfully.");
 
         return new ApiResponse
         {
-            Success = true,
-            Code = ApiResponseCode.NoContent,
-            Message = "User updated successfully.",
+            Status = ApiResponseStatus.NoContent,
+            Body = new ApiBody
+            {
+                Message = "The resource was updated successfully."
+            }
         };
     }
 
-    public async Task<ApiResponse> Remove(string id, string currentUserId)
+    public async Task<IApiResponse> Remove(string id, string currentUserId)
     {
         var currentUser = await _userManager
             .Users
@@ -204,51 +213,58 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             return new ApiResponse
             {
-                Success = false,
-                Code = ApiResponseCode.NotFound,
-                Message = $"User Id '{id}' was not found.",
+                Status = ApiResponseStatus.NotFound,
+                Body = new ApiBody
+                {
+                    Message =
+                        $"The requested resource with ID '{id}' was not found, or you don't have permission to access it."
+                }
             };
         }
 
         var result = await _userManager.DeleteAsync(currentUser);
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
+            var errors = new Dictionary<string, List<string>>();
+            foreach (var error in result.Errors)
+            {
+                _logger.LogError(
+                    "User not deleted. Code: {Code}, Description: {Description}", error.Code,
+                    error.Description);
+
+                if (errors.ContainsKey(error.Code))
+                {
+                    errors[error.Code].Add(error.Description);
+                }
+                else
+                {
+                    errors.Add(error.Code, new List<string> { error.Description });
+                }
+            }
+
             return new ApiResponse
             {
-                Success = true,
-                Code = ApiResponseCode.NoContent,
-                Message = "User deleted successfully.",
+                Status = ApiResponseStatus.Conflict,
+                Body = new ApiBody
+                {
+                    Message =
+                        $"The resource with ID '{id}' could not be deleted, or you don't have permission to update it.",
+                    Errors = errors
+                }
             };
-        }
-
-        var errors = new Dictionary<string, List<string>>();
-        foreach (var error in result.Errors)
-        {
-            _logger.LogError("User not created. Code: {Code}, Description: {Description}", error.Code,
-                error.Description);
-
-            if (errors.ContainsKey(error.Code))
-            {
-                errors[error.Code].Add(error.Description);
-            }
-            else
-            {
-                errors.Add(error.Code, new List<string> { error.Description });
-            }
         }
 
         return new ApiResponse
         {
-            Success = false,
-            Code = ApiResponseCode.InternalServerError,
-            Message = $"An error has occurred while deleting the User with Id '{id}'.",
-            Errors = errors
+            Status = ApiResponseStatus.NoContent,
+            Body = new ApiBody
+            {
+                Message = "The resource was deleted successfully."
+            }
         };
     }
 
-    public async Task<ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>> AddRange(
-        IEnumerable<ApplicationUserAddRequest> items,
-        string currentUserId)
+    public async Task<IApiResponse> AddRange(IEnumerable<ApplicationUserAddRequest> items, string currentUserId)
     {
         var data = new List<ApiResponseGenericAdd<string>>();
         var errors = new Dictionary<string, List<string>>();
@@ -257,13 +273,14 @@ public sealed class ApplicationUserService : IApplicationUserService
         foreach (var item in itemsToAdd)
         {
             var result = await Add(item, currentUserId);
-            if (result.Success)
+            if (result.Status == ApiResponseStatus.Created)
             {
-                data.Add(result.Data!);
+                var userCreationResult = result.Body as ApiBody<ApiResponseGenericAdd<string>>;
+                data.Add(userCreationResult!.Data!);
             }
             else
             {
-                foreach (var error in result.Errors!)
+                foreach (var error in result.Body.Errors!)
                 {
                     errors.Add($"{error.Key}_{++errorsCount}", error.Value);
                 }
@@ -272,17 +289,19 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         var isSuccess = errors.Count == 0;
 
-        var response = new ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>
+        var response = new ApiResponse
         {
-            Success = isSuccess,
-            Code = isSuccess ? ApiResponseCode.NoContent : ApiResponseCode.Accepted,
-            Message = isSuccess
-                ? "All users were added successfully."
-                : $"Not all users were added. Added:[{itemsToAdd.Count() - errors.Count}] Not Added:[{errors.Count}]",
-            Data = data
+            Status = isSuccess ? ApiResponseStatus.NoContent : ApiResponseStatus.MultiStatus,
+            Body = new ApiBody<IEnumerable<ApiResponseGenericAdd<string>>>
+            {
+                Message = isSuccess
+                    ? "All users were added successfully."
+                    : $"Not all users were added. Added:[{itemsToAdd.Count() - errors.Count}] Not Added:[{errors.Count}]",
+                Data = data
+            }
         };
 
-        if (!isSuccess) response.Errors = errors;
+        if (!isSuccess) response.Body.Errors = errors;
 
         return response;
     }
@@ -293,8 +312,8 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         var entity = new ApplicationUser
         {
-            FirstName = item.FirstName!,
-            LastName = item.LastName!,
+            FirstName = item.FirstName,
+            LastName = item.LastName,
             DisplayName = item.DisplayName!,
             UserName = item.UserName,
             CreatedAt = now,

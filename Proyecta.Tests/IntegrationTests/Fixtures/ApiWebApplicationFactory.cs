@@ -12,7 +12,7 @@ using Proyecta.Core.DTOs.Risk;
 using Proyecta.Core.Entities.Risk;
 using Proyecta.Core.Utilities;
 using Proyecta.Repository.EntityFramework;
-using Proyecta.Tests.IntegrationTests.Extensions;
+using Proyecta.Tests.Extensions;
 
 namespace Proyecta.Tests.IntegrationTests.Fixtures;
 

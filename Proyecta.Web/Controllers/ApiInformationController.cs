@@ -4,7 +4,6 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authorization;
-using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Web.Utils;
 
 namespace Proyecta.Web.Controllers;
@@ -20,29 +19,19 @@ public class ApiInformationController : ControllerBase
     {
         var result = await GetServerInfoAsync();
 
-        return StatusCode(StatusCodes.Status200OK, new ApiResponse<object>
-        {
-            Success = true,
-            Code = ApiResponseCode.Ok,
-            Data = result
-        });
+        return StatusCode(StatusCodes.Status200OK, result);
     }
 
     [HttpGet("system")]
     [Authorize(Roles = "System")]
-    public async Task<IActionResult> GetSystemInfo()
+    public Task<IActionResult> GetSystemInfo()
     {
         var result = (from DictionaryEntry entry in Environment.GetEnvironmentVariables()
             let key = entry.Key.ToString()
             let value = entry.Value.ToString()
             select new KeyValuePair<string, string>(key, value)).ToList();
 
-        return StatusCode(StatusCodes.Status200OK, new ApiResponse<object>
-        {
-            Success = true,
-            Code = ApiResponseCode.Ok,
-            Data = result
-        });
+        return Task.FromResult<IActionResult>(StatusCode(StatusCodes.Status200OK, result));
     }
 
     private async Task<List<KeyValuePair<string, string>>> GetServerInfoAsync()

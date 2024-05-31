@@ -27,7 +27,7 @@ public class RisksController : ControllerBase
     {
         var result = await _service.GetAll();
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
 
     [HttpGet("{id}")]
@@ -36,7 +36,7 @@ public class RisksController : ControllerBase
     {
         var result = await _service.GetById(id);
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
 
     [HttpPost]
@@ -46,7 +46,7 @@ public class RisksController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Create(item, userId);
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
 
     [HttpPut("{id}")]
@@ -56,7 +56,7 @@ public class RisksController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Update(id, item, userId);
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
 
     [HttpDelete("{id}")]
@@ -66,7 +66,7 @@ public class RisksController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.Remove(id, userId);
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
 
     [HttpPost]
@@ -78,6 +78,6 @@ public class RisksController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         var result = await _service.AddRange(items, userId);
 
-        return new OkObjectResult(result);
+        return StatusCode(result.Status, result.Body);
     }
 }

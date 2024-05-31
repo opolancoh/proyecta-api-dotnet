@@ -37,18 +37,16 @@ public class AuthIntegrationTestsSuccess : IClassFixture<AuthWebApplicationFacto
         var response = await _client.PostAsJsonAsync($"{BasePath}/register", newItem);
 
         // Assert
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<TokenDto>>(responseContentString, JsonSerializerOptions);
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<TokenDto>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("200", responseContent.Code);
-        // Data
-        Assert.False(string.IsNullOrEmpty(responseContent.Data!.AccessToken));
-        Assert.False(string.IsNullOrEmpty(responseContent.Data!.RefreshToken));
+        Assert.NotNull(responseContentObject);
+        Assert.True(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Data!.AccessToken));
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Data!.RefreshToken));
     }
 
     [Fact]
@@ -62,18 +60,16 @@ public class AuthIntegrationTestsSuccess : IClassFixture<AuthWebApplicationFacto
         var response = await _client.PostAsJsonAsync($"{BasePath}/login", newItem);
 
         // Assert
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<TokenDto>>(responseContentString, JsonSerializerOptions);
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<TokenDto>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("200", responseContent.Code);
-        // Data
-        Assert.False(string.IsNullOrEmpty(responseContent.Data!.AccessToken));
-        Assert.False(string.IsNullOrEmpty(responseContent.Data!.RefreshToken));
+        Assert.NotNull(responseContentObject);
+        Assert.True(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Data!.AccessToken));
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Data!.RefreshToken));
     }
 
     [Fact]
@@ -85,21 +81,20 @@ public class AuthIntegrationTestsSuccess : IClassFixture<AuthWebApplicationFacto
         var loginResponse = await _client.PostAsJsonAsync($"{BasePath}/login", newUser);
         var loginResponseString = await loginResponse.Content.ReadAsStringAsync();
         var loginResponseContent =
-            JsonSerializer.Deserialize<ApiResponse<TokenDto>>(loginResponseString, JsonSerializerOptions);
+            JsonSerializer.Deserialize<ApiBody<TokenDto>>(loginResponseString, JsonSerializerOptions);
 
         // Act
         var response = await _client.PostAsJsonAsync($"{BasePath}/logout", loginResponseContent!.Data);
 
         // Assert
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody>(responseContentString, JsonSerializerOptions);
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("204", responseContent.Code);
+        Assert.NotNull(responseContentObject);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
     }
 
     [Fact]
@@ -111,22 +106,20 @@ public class AuthIntegrationTestsSuccess : IClassFixture<AuthWebApplicationFacto
         var loginResponse = await _client.PostAsJsonAsync($"{BasePath}/login", newUser);
         var loginResponseString = await loginResponse.Content.ReadAsStringAsync();
         var loginResponseContent =
-            JsonSerializer.Deserialize<ApiResponse<TokenDto>>(loginResponseString, JsonSerializerOptions);
+            JsonSerializer.Deserialize<ApiBody<TokenDto>>(loginResponseString, JsonSerializerOptions);
 
         // Act
         var response = await _client.PostAsJsonAsync($"{BasePath}/refresh-token", loginResponseContent!.Data);
 
         // Assert
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var responseContentObject =
+            JsonSerializer.Deserialize<ApiBody<RefreshTokenResponse>>(responseContentString, JsonSerializerOptions);
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var responseContent =
-            JsonSerializer.Deserialize<ApiResponse<RefreshTokenResponse>>(responseString, JsonSerializerOptions);
-
-        Assert.NotNull(responseContent);
-        Assert.True(responseContent.Success);
-        Assert.Equal("200", responseContent.Code);
-        // Data
-        Assert.False(string.IsNullOrEmpty(responseContent.Data!.AccessToken));
+        Assert.NotNull(responseContentObject);
+        Assert.True(string.IsNullOrEmpty(responseContentObject.Message));
+        Assert.Null(responseContentObject.Errors);
+        Assert.False(string.IsNullOrEmpty(responseContentObject.Data!.AccessToken));
     }
 }
