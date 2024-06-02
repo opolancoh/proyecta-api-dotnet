@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
 using Proyecta.Core.DTOs;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Core.DTOs.Auth;
 
 namespace Proyecta.Web.Controllers.v1.Auth;
@@ -22,7 +22,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiResponseGenericAdd<string>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<ApiGenericAddResponse<string>>))]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
         var result = await _service.Register(registerDto);
@@ -32,14 +32,14 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("login")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<TokenDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<TokenDto>))]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
         var result = await _service.Login(loginDto);
 
         return StatusCode(result.Status, result.Body);
     }
-    
+
     [HttpPost("logout")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
     public async Task<IActionResult> Logout(TokenDto tokenDto)
@@ -50,7 +50,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("refresh-token")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<RefreshTokenResponse>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<RefreshTokenResponse>))]
     public async Task<IActionResult> RefreshToken(TokenDto tokenDto)
     {
         var result = await _service.RefreshToken(tokenDto);

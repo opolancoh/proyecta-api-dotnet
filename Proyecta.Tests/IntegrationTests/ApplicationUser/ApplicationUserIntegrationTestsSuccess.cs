@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Tests.IntegrationTests.Fixtures;
@@ -37,7 +37,7 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<ApplicationU
         // Assert
         var responseContentString = await response.Content.ReadAsStringAsync();
         var responseContentObject =
-            JsonSerializer.Deserialize<ApiBody<ApiResponseGenericAdd<string>>>(responseContentString,
+            JsonSerializer.Deserialize<ApiBody<ApiGenericAddResponse<string>>>(responseContentString,
                 JsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -60,7 +60,7 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<ApplicationU
         // Assert
         var responseContentString = await response.Content.ReadAsStringAsync();
         var responseContentObject =
-            JsonSerializer.Deserialize<ApiBody<ApiResponseGenericAdd<string>>>(responseContentString,
+            JsonSerializer.Deserialize<ApiBody<ApiGenericAddResponse<string>>>(responseContentString,
                 JsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -228,7 +228,7 @@ public class ApplicationUserIntegrationTestsSuccess : IClassFixture<ApplicationU
         // Assert
         var responseContentString = await response.Content.ReadAsStringAsync();
         var responseContentObject =
-            JsonSerializer.Deserialize<ApiBody<IEnumerable<ApiResponseGenericAdd<string>>>>(responseContentString,
+            JsonSerializer.Deserialize<ApiBody<IEnumerable<ApiGenericAddResponse<string>>>>(responseContentString,
                 JsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);

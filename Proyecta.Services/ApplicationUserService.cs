@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.Entities;
 using Proyecta.Services.Helpers;
@@ -27,13 +27,13 @@ public sealed class ApplicationUserService : IApplicationUserService
         _userManager = userManager;
     }
 
-    public async Task<IApiResponse> GetAll()
+    public async Task<ApiResponse> GetAll()
     {
         var result = await _repository.GetAllWithRoles();
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.Ok,
+            Status = ApiStatusResponse.Ok,
             Body = new ApiBody<IEnumerable<ApplicationUserListDto>>()
             {
                 Data = result
@@ -41,7 +41,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<IApiResponse> GetById(string id)
+    public async Task<ApiResponse> GetById(string id)
     {
         var user = await _repository.GetByIdWithRoles(id);
 
@@ -49,7 +49,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.NotFound,
+                Status = ApiStatusResponse.NotFound,
                 Body = new ApiBody
                 {
                     Message =
@@ -60,7 +60,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.Ok,
+            Status = ApiStatusResponse.Ok,
             Body = new ApiBody<ApplicationUserDetailDto>
             {
                 Data = user
@@ -68,7 +68,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<IApiResponse> Add(ApplicationUserAddRequest item, string currentUserId)
+    public async Task<ApiResponse> Add(ApplicationUserAddRequest item, string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
 
@@ -82,7 +82,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
             return new ApiResponse
             {
-                Status = ApiResponseStatus.BadRequest,
+                Status = ApiStatusResponse.BadRequest,
                 Body = new ApiBody
                 {
                     Message = "The resource could not be created, or you do not have permission to create it.",
@@ -100,23 +100,23 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.Created,
-            Body = new ApiBody<ApiResponseGenericAdd<string>>
+            Status = ApiStatusResponse.Created,
+            Body = new ApiBody<ApiGenericAddResponse<string>>
             {
                 Message = "User created successfully.",
-                Data = new ApiResponseGenericAdd<string> { Id = userId }
+                Data = new ApiGenericAddResponse<string> { Id = userId }
             }
         };
     }
 
-    public async Task<IApiResponse> Update(string id, ApplicationUserUpdateRequest item, string currentUserId)
+    public async Task<ApiResponse> Update(string id, ApplicationUserUpdateRequest item, string currentUserId)
     {
         var currentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
         if (currentUser == null)
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.NotFound,
+                Status = ApiStatusResponse.NotFound,
                 Body = new ApiBody
                 {
                     Message =
@@ -142,7 +142,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
             return new ApiResponse
             {
-                Status = ApiResponseStatus.Conflict,
+                Status = ApiStatusResponse.Conflict,
                 Body = new ApiBody
                 {
                     Message =
@@ -166,7 +166,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.NoContent,
+            Status = ApiStatusResponse.NoContent,
             Body = new ApiBody
             {
                 Message = "The resource was updated successfully."
@@ -174,7 +174,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<IApiResponse> Remove(string id, string currentUserId)
+    public async Task<ApiResponse> Remove(string id, string currentUserId)
     {
         var currentUser = await _userManager
             .Users
@@ -190,7 +190,7 @@ public sealed class ApplicationUserService : IApplicationUserService
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.NotFound,
+                Status = ApiStatusResponse.NotFound,
                 Body = new ApiBody
                 {
                     Message =
@@ -208,7 +208,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
             return new ApiResponse
             {
-                Status = ApiResponseStatus.Conflict,
+                Status = ApiStatusResponse.Conflict,
                 Body = new ApiBody
                 {
                     Message =
@@ -220,7 +220,7 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.NoContent,
+            Status = ApiStatusResponse.NoContent,
             Body = new ApiBody
             {
                 Message = "The resource was deleted successfully."
@@ -228,18 +228,18 @@ public sealed class ApplicationUserService : IApplicationUserService
         };
     }
 
-    public async Task<IApiResponse> AddRange(IEnumerable<ApplicationUserAddRequest> items, string currentUserId)
+    public async Task<ApiResponse> AddRange(IEnumerable<ApplicationUserAddRequest> items, string currentUserId)
     {
-        var data = new List<ApiResponseGenericAdd<string>>();
+        var data = new List<ApiGenericAddResponse<string>>();
         var errors = new Dictionary<string, List<string>>();
         var errorsCount = 0;
         var itemsToAdd = items.ToList();
         foreach (var item in itemsToAdd)
         {
             var result = await Add(item, currentUserId);
-            if (result.Status == ApiResponseStatus.Created)
+            if (result.Status == ApiStatusResponse.Created)
             {
-                var userCreationResult = result.Body as ApiBody<ApiResponseGenericAdd<string>>;
+                var userCreationResult = result.Body as ApiBody<ApiGenericAddResponse<string>>;
                 data.Add(userCreationResult!.Data!);
             }
             else
@@ -255,8 +255,8 @@ public sealed class ApplicationUserService : IApplicationUserService
 
         var response = new ApiResponse
         {
-            Status = isSuccess ? ApiResponseStatus.NoContent : ApiResponseStatus.MultiStatus,
-            Body = new ApiBody<IEnumerable<ApiResponseGenericAdd<string>>>
+            Status = isSuccess ? ApiStatusResponse.NoContent : ApiStatusResponse.MultiStatus,
+            Body = new ApiBody<IEnumerable<ApiGenericAddResponse<string>>>
             {
                 Message = isSuccess
                     ? "All users were added successfully."

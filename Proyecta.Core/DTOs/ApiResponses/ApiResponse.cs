@@ -1,22 +1,12 @@
 using System.Text.Json.Serialization;
 
-namespace Proyecta.Core.DTOs.ApiResponse;
+namespace Proyecta.Core.DTOs.ApiResponses;
 
-public record ApiResponse : IApiResponse
+public record ApiResponse
 {
     public required int Status { get; init; }
 
     public required ApiBody Body { get; init; }
-}
-
-public record ApiResponse<T> : IApiResponse
-{
-    public required int Status { get; init; }
-
-    public required ApiBody<T> Body { get; init; }
-
-    // Explicitly implement the Body property of IApiResponse
-    ApiBody IApiResponse.Body => Body;
 }
 
 public record ApiBody

@@ -13,7 +13,7 @@ namespace Proyecta.Tests.UnitTests.Auth;
 
 public class AuthServiceFixture
 {
-    public AuthService AuthService { get; private set; }
+    public AuthenticationService AuthenticationService { get; private set; }
     public Mock<IConfiguration> MockConfiguration { get; private set; }
     public Mock<IAuthRepository> MockAuthRepository { get; private set; }
     public Mock<UserManager<ApplicationUser>> MockUserManager { get; private set; }
@@ -21,7 +21,7 @@ public class AuthServiceFixture
     public AuthServiceFixture()
     {
         MockConfiguration = new Mock<IConfiguration>();
-        var mockLogger = new Mock<ILogger<AuthService>>();
+        var mockLogger = new Mock<ILogger<AuthenticationService>>();
         MockUserManager = new Mock<UserManager<ApplicationUser>>(
             Mock.Of<IUserStore<ApplicationUser>>(), null!, null!, null!, null!, null!, null!, null!, null!);
         MockAuthRepository = new Mock<IAuthRepository>();
@@ -34,7 +34,7 @@ public class AuthServiceFixture
         MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:AccessTokenExpirationInMinutes"))).Returns(new ConfigurationSectionMock("30"));
         MockConfiguration.Setup(a => a.GetSection(It.Is<string>(s => s == "JwtSettings:RefreshTokenExpirationInMinutes"))).Returns(new ConfigurationSectionMock("10080"));
 
-        AuthService = new AuthService(
+        AuthenticationService = new AuthenticationService(
             MockConfiguration.Object,
             mockLogger.Object,
             MockUserManager.Object,

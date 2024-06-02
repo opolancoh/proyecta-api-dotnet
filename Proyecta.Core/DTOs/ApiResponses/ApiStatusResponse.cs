@@ -1,6 +1,6 @@
-namespace Proyecta.Core.DTOs.ApiResponse;
+namespace Proyecta.Core.DTOs.ApiResponses;
 
-public static class ApiResponseStatus
+public static class ApiStatusResponse
 {
     public const int Ok = 200;
     public const int Created = 201;

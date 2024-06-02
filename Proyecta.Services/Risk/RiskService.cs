@@ -1,6 +1,6 @@
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Core.DTOs.Risk;
 using Proyecta.Core.Entities.Risk;
@@ -16,13 +16,13 @@ public sealed class RiskService : IRiskService
         _repository = repository;
     }
 
-    public async Task<IApiResponse> GetAll()
+    public async Task<ApiResponse> GetAll()
     {
         var items = await _repository.GetAll();
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.Ok,
+            Status = ApiStatusResponse.Ok,
             Body = new ApiBody<IEnumerable<RiskListDto>>()
             {
                 Data = items
@@ -30,7 +30,7 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<IApiResponse> GetById(Guid id)
+    public async Task<ApiResponse> GetById(Guid id)
     {
         var item = await _repository.GetById(id);
 
@@ -38,7 +38,7 @@ public sealed class RiskService : IRiskService
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.NotFound,
+                Status = ApiStatusResponse.NotFound,
                 Body = new ApiBody
                 {
                     Message =
@@ -49,7 +49,7 @@ public sealed class RiskService : IRiskService
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.Ok,
+            Status = ApiStatusResponse.Ok,
             Body = new ApiBody<RiskDetailDto>
             {
                 Data = item
@@ -57,7 +57,7 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<IApiResponse> Create(RiskAddOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse> Create(RiskAddOrUpdateDto item, string currentUserId)
     {
         var newItem = MapDtoToEntity(item, currentUserId);
 
@@ -67,7 +67,7 @@ public sealed class RiskService : IRiskService
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.Conflict,
+                Status = ApiStatusResponse.Conflict,
                 Body = new ApiBody<IdNameDetailDto<Guid>>
                 {
                     Message = "The resource could not be created, or you do not have permission to create it."
@@ -77,15 +77,15 @@ public sealed class RiskService : IRiskService
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.Created,
-            Body = new ApiBody<ApiResponseGenericAdd<Guid>>
+            Status = ApiStatusResponse.Created,
+            Body = new ApiBody<ApiGenericAddResponse<Guid>>
             {
-                Data = new ApiResponseGenericAdd<Guid> { Id = newItem.Id }
+                Data = new ApiGenericAddResponse<Guid> { Id = newItem.Id }
             }
         };
     }
 
-    public async Task<IApiResponse> Update(Guid id, RiskAddOrUpdateDto item, string currentUserId)
+    public async Task<ApiResponse> Update(Guid id, RiskAddOrUpdateDto item, string currentUserId)
     {
         var itemToUpdate = MapDtoToEntity(item, currentUserId);
         itemToUpdate.Id = id;
@@ -96,7 +96,7 @@ public sealed class RiskService : IRiskService
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.Conflict,
+                Status = ApiStatusResponse.Conflict,
                 Body = new ApiBody<IdNameDetailDto<Guid>>
                 {
                     Message =
@@ -107,7 +107,7 @@ public sealed class RiskService : IRiskService
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.NoContent,
+            Status = ApiStatusResponse.NoContent,
             Body = new ApiBody
             {
                 Message = "The resource was updated successfully."
@@ -115,7 +115,7 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<IApiResponse> Remove(Guid id, string currentUserId)
+    public async Task<ApiResponse> Remove(Guid id, string currentUserId)
     {
         var result = await _repository.Remove(id);
 
@@ -123,7 +123,7 @@ public sealed class RiskService : IRiskService
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.Conflict,
+                Status = ApiStatusResponse.Conflict,
                 Body = new ApiBody
                 {
                     Message =
@@ -134,7 +134,7 @@ public sealed class RiskService : IRiskService
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.NoContent,
+            Status = ApiStatusResponse.NoContent,
             Body = new ApiBody
             {
                 Message = "The resource was deleted successfully."
@@ -142,7 +142,7 @@ public sealed class RiskService : IRiskService
         };
     }
 
-    public async Task<IApiResponse> AddRange(IEnumerable<RiskAddOrUpdateDto> items, string currentUserId)
+    public async Task<ApiResponse> AddRange(IEnumerable<RiskAddOrUpdateDto> items, string currentUserId)
     {
         var newItems = items.Select(item => MapDtoToEntity(item, currentUserId)).ToList();
 
@@ -152,7 +152,7 @@ public sealed class RiskService : IRiskService
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.MultiStatus,
+                Status = ApiStatusResponse.MultiStatus,
                 Body = new ApiBody
                 {
                     Message = "Some resources could not be processed successfully."
@@ -162,7 +162,7 @@ public sealed class RiskService : IRiskService
 
         return new ApiResponse
         {
-            Status = ApiResponseStatus.NoContent,
+            Status = ApiStatusResponse.NoContent,
             Body = new ApiBody
             {
                 Message = "All resources have been successfully added."

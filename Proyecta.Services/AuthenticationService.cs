@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Core.DTOs.Auth;
 using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.Auth;
@@ -11,10 +11,10 @@ using Proyecta.Core.Utilities;
 
 namespace Proyecta.Services;
 
-public class AuthService : IAuthService
+public class AuthenticationService : IAuthService
 {
     private readonly IConfiguration _configuration;
-    private readonly ILogger<AuthService> _logger;
+    private readonly ILogger<AuthenticationService> _logger;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IAuthRepository _authRepository;
     private readonly IApplicationUserService _appUserService;
@@ -22,9 +22,9 @@ public class AuthService : IAuthService
     private string AuthenticationFailedMessage =>
         $"{nameof(Login)}: Authentication failed.";
 
-    public AuthService(
+    public AuthenticationService(
         IConfiguration configuration,
-        ILogger<AuthService> logger,
+        ILogger<AuthenticationService> logger,
         UserManager<ApplicationUser> userManager,
         IAuthRepository authRepository,
         IApplicationUserService appUserService
@@ -37,7 +37,7 @@ public class AuthService : IAuthService
         _appUserService = appUserService;
     }
 
-    public async Task<IApiResponse> Register(RegisterDto registerDto)
+    public async Task<ApiResponse> Register(RegisterDto registerDto)
     {
         var newUser = new ApplicationUserAddRequest
         {
@@ -49,7 +49,7 @@ public class AuthService : IAuthService
         };
 
         var userCreationResult = await _appUserService.Add(newUser, null!);
-        if (userCreationResult.Status!=ApiResponseStatus.Created)
+        if (userCreationResult.Status != ApiStatusResponse.Created)
         {
             return new ApiResponse
             {
@@ -61,20 +61,19 @@ public class AuthService : IAuthService
                 }
             };
         }
-        
-        
-        
+
+
         return await Login(new LoginDto { Username = newUser.UserName, Password = newUser.Password });
     }
 
-    public async Task<IApiResponse> Login(LoginDto loginDto)
+    public async Task<ApiResponse> Login(LoginDto loginDto)
     {
         var user = await _authRepository.GetUserForLogin(loginDto);
         if (user == null)
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.Unauthorized,
+                Status = ApiStatusResponse.Unauthorized,
                 Body = new ApiBody
                 {
                     Message = AuthenticationFailedMessage,
@@ -99,11 +98,11 @@ public class AuthService : IAuthService
         {
             UserId = user.Id,
             UserName = user.UserName ?? "",
-            UserDisplayName = user.DisplayName ?? "",
+            UserDisplayName = user.DisplayName,
             UserRoles = userRoles.ToList()
         };
         var claims = AuthHelper.GetClaims(claimsInput);
-        var accessToken = AuthHelper.GenerateAccessToken(issuer, audience, secret, claims, expiration);
+        var accessToken = AuthHelper.GenerateAccessToken(issuer!, audience!, secret!, claims, expiration);
 
         // Refresh Token
         var refreshToken = AuthHelper.GenerateRefreshToken();
@@ -115,10 +114,10 @@ public class AuthService : IAuthService
                 DateTime.UtcNow.AddMinutes(
                     Convert.ToDouble(_configuration.GetSection("JwtSettings:RefreshTokenExpirationInMinutes").Value))
         });
-        
+
         return new ApiResponse
         {
-            Status = ApiResponseStatus.Ok,
+            Status = ApiStatusResponse.Ok,
             Body = new ApiBody<TokenDto>
             {
                 Data = new TokenDto { AccessToken = accessToken, RefreshToken = refreshToken }
@@ -126,7 +125,7 @@ public class AuthService : IAuthService
         };
     }
 
-    public async Task<IApiResponse> Logout(TokenDto tokenDto)
+    public async Task<ApiResponse> Logout(TokenDto tokenDto)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
 
@@ -135,12 +134,12 @@ public class AuthService : IAuthService
         var audience = jwtSettings["Audience"];
         var secret = jwtSettings["Secret"];
         // Access token validation
-        var accessToken = AuthHelper.ValidateJwtToken(tokenDto.AccessToken, issuer, audience, secret, false);
+        var accessToken = AuthHelper.ValidateJwtToken(tokenDto.AccessToken, issuer!, audience!, secret!, false);
         if (accessToken == null)
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.BadRequest,
+                Status = ApiStatusResponse.BadRequest,
                 Body = new ApiBody
                 {
                     Message = "Failed to logout."
@@ -150,10 +149,10 @@ public class AuthService : IAuthService
 
         // Remove the refresh token from the database
         await _authRepository.RemoveRefreshToken(accessToken.Subject, tokenDto.RefreshToken);
-        
+
         return new ApiResponse
         {
-            Status = ApiResponseStatus.Ok,
+            Status = ApiStatusResponse.Ok,
             Body = new ApiBody
             {
                 Message = "Successfully logged out."
@@ -161,7 +160,7 @@ public class AuthService : IAuthService
         };
     }
 
-    public async Task<IApiResponse> RefreshToken(TokenDto tokenDto)
+    public async Task<ApiResponse> RefreshToken(TokenDto tokenDto)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
 
@@ -169,12 +168,12 @@ public class AuthService : IAuthService
         var issuer = jwtSettings["Issuer"];
         var audience = jwtSettings["Audience"];
         var secret = jwtSettings["Secret"];
-        var accessToken = AuthHelper.ValidateJwtToken(tokenDto.AccessToken, issuer, audience, secret, false);
+        var accessToken = AuthHelper.ValidateJwtToken(tokenDto.AccessToken, issuer!, audience!, secret!, false);
         if (accessToken == null)
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.Unauthorized,
+                Status = ApiStatusResponse.Unauthorized,
                 Body = new ApiBody
                 {
                     Message = "Invalid access token."
@@ -188,7 +187,7 @@ public class AuthService : IAuthService
         {
             return new ApiResponse
             {
-                Status = ApiResponseStatus.Unauthorized,
+                Status = ApiStatusResponse.Unauthorized,
                 Body = new ApiBody
                 {
                     Message = "Invalid refresh token."
@@ -199,11 +198,11 @@ public class AuthService : IAuthService
         // New access token generation
         var expirationInMinutes = Convert.ToDouble(jwtSettings["AccessTokenExpirationInMinutes"]);
         var expiration = DateTime.UtcNow.AddMinutes(expirationInMinutes);
-        var newAccessToken = AuthHelper.UpdateTokenExpiration(accessToken, expiration, secret);
-        
+        var newAccessToken = AuthHelper.UpdateTokenExpiration(accessToken, expiration, secret!);
+
         return new ApiResponse
         {
-            Status = ApiResponseStatus.Ok,
+            Status = ApiStatusResponse.Ok,
             Body = new ApiBody<RefreshTokenResponse>
             {
                 Data = new RefreshTokenResponse { AccessToken = newAccessToken }

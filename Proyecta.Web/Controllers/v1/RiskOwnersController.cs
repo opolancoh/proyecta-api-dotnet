@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Core.DTOs.IdName;
 
 namespace Proyecta.Web.Controllers.v1;
@@ -22,7 +22,7 @@ public class RiskOwnersController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<IdNameListDto<Guid>>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<IEnumerable<IdNameListDto<Guid>>>))]
     public async Task<IActionResult> Get()
     {
         var result = await _service.GetAll();
@@ -31,7 +31,7 @@ public class RiskOwnersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IdNameDetailDto<Guid>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<IdNameDetailDto<Guid>>))]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _service.GetById(id);
@@ -40,7 +40,7 @@ public class RiskOwnersController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiResponseGenericAdd<Guid>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<ApiGenericAddResponse<Guid>>))]
     public async Task<IActionResult> Create(IdNameAddOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -50,7 +50,7 @@ public class RiskOwnersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody))]
     public async Task<IActionResult> Update(Guid id, IdNameAddOrUpdateDto item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -60,7 +60,7 @@ public class RiskOwnersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody))]
     public async Task<IActionResult> Remove(Guid id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -71,8 +71,7 @@ public class RiskOwnersController : ControllerBase
 
     [HttpPost]
     [Route("add-range")]
-    [ProducesResponseType(StatusCodes.Status200OK,
-        Type = typeof(ApiResponse<IEnumerable<ApiResponseGenericAdd<Guid>>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<IEnumerable<ApiGenericAddResponse<Guid>>>))]
     public async Task<IActionResult> AddRange(IEnumerable<IdNameAddOrUpdateDto> items)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;

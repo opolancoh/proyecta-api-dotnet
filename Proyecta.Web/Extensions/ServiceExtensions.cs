@@ -11,7 +11,6 @@ using Microsoft.IdentityModel.Tokens;
 using Proyecta.Core.Contracts.Repositories;
 using Proyecta.Core.Contracts.Repositories.Risk;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.DTOs.ApiResponse;
 using Proyecta.Core.Entities;
 using Proyecta.Core.Entities.Auth;
 using Proyecta.Core.Utilities;
@@ -55,7 +54,7 @@ public static class ServiceExtensions
         services.AddScoped<IApplicationUserService, ApplicationUserService>();
         // Auth
         services.AddScoped<IAuthRepository, AuthRepository>();
-        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IAuthService, AuthenticationService>();
     }
 
     public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)

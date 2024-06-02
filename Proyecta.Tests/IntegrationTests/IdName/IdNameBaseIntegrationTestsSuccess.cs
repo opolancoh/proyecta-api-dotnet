@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Tests.IntegrationTests.Fixtures;
 
@@ -36,7 +36,7 @@ public abstract class IdNameBaseIntegrationTestsSuccess : IClassFixture<ApiWebAp
         // Assert
         var responseContentString = await response.Content.ReadAsStringAsync();
         var responseContentObject =
-            JsonSerializer.Deserialize<ApiBody<ApiResponseGenericAdd<Guid>>>(responseContentString, JsonSerializerOptions);
+            JsonSerializer.Deserialize<ApiBody<ApiGenericAddResponse<Guid>>>(responseContentString, JsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.NotNull(responseContentObject);
@@ -52,7 +52,7 @@ public abstract class IdNameBaseIntegrationTestsSuccess : IClassFixture<ApiWebAp
         var newItem = _factory.GetValidIdNameAddOrUpdateDtoItem();
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
-            await newItemResponse.Content.ReadFromJsonAsync<ApiBody<ApiResponseGenericAdd<Guid>>>();
+            await newItemResponse.Content.ReadFromJsonAsync<ApiBody<ApiGenericAddResponse<Guid>>>();
         var newItemId = newItemResponseContent!.Data!.Id;
 
         // Act
@@ -80,7 +80,7 @@ public abstract class IdNameBaseIntegrationTestsSuccess : IClassFixture<ApiWebAp
         var newItem = _factory.GetValidIdNameAddOrUpdateDtoItem();
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
-            await newItemResponse.Content.ReadFromJsonAsync<ApiBody<ApiResponseGenericAdd<Guid>>>();
+            await newItemResponse.Content.ReadFromJsonAsync<ApiBody<ApiGenericAddResponse<Guid>>>();
         var newItemId = newItemResponseContent!.Data!.Id;
 
         var itemToBeUpdated = new IdNameAddOrUpdateDto { Name = _factory.GetValidEntityName() };
@@ -107,7 +107,7 @@ public abstract class IdNameBaseIntegrationTestsSuccess : IClassFixture<ApiWebAp
         var newItem = _factory.GetValidIdNameAddOrUpdateDtoItem();
         var newItemResponse = await _client.PostAsJsonAsync($"{BasePath}", newItem);
         var newItemResponseContent =
-            await newItemResponse.Content.ReadFromJsonAsync<ApiBody<ApiResponseGenericAdd<Guid>>>();
+            await newItemResponse.Content.ReadFromJsonAsync<ApiBody<ApiGenericAddResponse<Guid>>>();
         var newItemId = newItemResponseContent!.Data!.Id;
 
         // Act

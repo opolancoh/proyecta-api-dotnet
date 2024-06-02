@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Core.DTOs.Risk;
 using Proyecta.Tests.IntegrationTests.Fixtures;
@@ -39,7 +39,7 @@ public class RiskIntegrationTestsSuccess : IClassFixture<ApiWebApplicationFactor
         // Assert
         var responseContentString = await response.Content.ReadAsStringAsync();
         var responseContentObject =
-            JsonSerializer.Deserialize<ApiBody<ApiResponseGenericAdd<Guid>>>(responseContentString, JsonSerializerOptions);
+            JsonSerializer.Deserialize<ApiBody<ApiGenericAddResponse<Guid>>>(responseContentString, JsonSerializerOptions);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.NotNull(responseContentObject);

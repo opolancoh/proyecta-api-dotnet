@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Proyecta.Core.Contracts.Services;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Core.DTOs.Auth;
 
 namespace Proyecta.Web.Controllers.v1;
@@ -20,9 +20,9 @@ public class UsersController : ControllerBase
     {
         _service = service;
     }
-    
+
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApplicationUserListDto>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<IEnumerable<ApplicationUserListDto>>))]
     public async Task<IActionResult> Get()
     {
         var result = await _service.GetAll();
@@ -31,7 +31,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApplicationUserDetailDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<ApplicationUserDetailDto>))]
     public async Task<IActionResult> GetById(string id)
     {
         var result = await _service.GetById(id);
@@ -40,7 +40,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ApiResponseGenericAdd<string>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<ApiGenericAddResponse<string>>))]
     public async Task<IActionResult> Create(ApplicationUserAddRequest item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -50,7 +50,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody))]
     public async Task<IActionResult> Update(string id, ApplicationUserUpdateRequest item)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -60,7 +60,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody))]
     public async Task<IActionResult> Remove(string id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
@@ -71,7 +71,7 @@ public class UsersController : ControllerBase
 
     [HttpPost]
     [Route("add-range")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<ApiResponseGenericAdd<string>>>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiBody<IEnumerable<ApiGenericAddResponse<string>>>))]
     public async Task<IActionResult> AddRange(IEnumerable<ApplicationUserAddRequest> items)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;

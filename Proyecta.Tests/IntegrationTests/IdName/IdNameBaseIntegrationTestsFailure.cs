@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using Proyecta.Core.DTOs.ApiResponse;
+using Proyecta.Core.DTOs.ApiResponses;
 using Proyecta.Tests.IntegrationTests.Fixtures;
 
 namespace Proyecta.Tests.IntegrationTests.IdName;
