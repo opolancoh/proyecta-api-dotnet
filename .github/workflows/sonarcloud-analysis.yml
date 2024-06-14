@@ -36,6 +36,6 @@ jobs:
                 env:
                     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
                 run: |
-                    dotnet sonarscanner begin /k:"opolancoh_proyecta-api-dotnet" /o:"opolancoh" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+                    dotnet sonarscanner begin /k:"opolancoh_proyecta-api-dotnet" /o:"opolancoh" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
                     dotnet build
                     dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
