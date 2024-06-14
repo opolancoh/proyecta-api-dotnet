@@ -26,7 +26,8 @@ jobs:
                 run: dotnet tool install --global dotnet-sonarscanner
 
             -   name: Add .NET tools to PATH
-                run: echo "::add-path::$(dirname $(dirname $(which dotnet)))/tools"
+                run: |
+                    echo "$(dirname $(dirname $(which dotnet)))/tools" >> $GITHUB_PATH
 
             -   name: Build the solution
                 run: dotnet build --no-restore
