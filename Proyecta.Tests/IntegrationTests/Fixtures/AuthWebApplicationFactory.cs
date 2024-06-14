@@ -226,7 +226,7 @@ public class AuthWebApplicationFactory : WebApplicationFactory<Program>, IDispos
         };
         var claims = AuthHelper.GetClaims(claimsInput);
 
-        return AuthHelper.GenerateAccessToken(issuer, audience, secret, claims, expiration);
+        return AuthHelper.GenerateAccessToken(issuer!, audience!, secret!, claims, expiration);
     }
 
     private static void RemoveExistingDbContextOptions<TContext>(IServiceCollection services) where TContext : DbContext

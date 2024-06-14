@@ -13,13 +13,13 @@ public class ConfigurationSectionMock : IConfigurationSection
         _value = value;
     }
 
-    public string this[string key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public string? this[string key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public string Key => throw new NotImplementedException();
 
     public string Path => throw new NotImplementedException();
 
-    public string Value { get => _value; set => throw new NotImplementedException(); }
+    public string? Value { get => _value; set => throw new NotImplementedException(); }
 
     public IEnumerable<IConfigurationSection> GetChildren()
     {

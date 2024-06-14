@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecta.Core.Contracts.Repositories.Risk;
-using Proyecta.Core.DTOs;
 using Proyecta.Core.DTOs.IdName;
 using Proyecta.Core.Entities.Risk;
 using Proyecta.Core.Exceptions;
@@ -34,7 +33,7 @@ public class RiskTreatmentRepository : IRiskTreatmentRepository
             .ToListAsync();
     }
 
-    public async Task<IdNameDetailDto<Guid>> GetById(Guid id)
+    public async Task<IdNameDetailDto<Guid>?> GetById(Guid id)
     {
         var entity = await _entitySet
             .AsNoTracking()
@@ -73,13 +72,13 @@ public class RiskTreatmentRepository : IRiskTreatmentRepository
             CreatedBy = new IdNameDto<string?>
             {
                 Id = entity.CreatedById,
-                Name = createdBy
+                Name = createdBy!
             },
             UpdatedAt = entity.UpdatedAt,
             UpdatedBy = new IdNameDto<string?>
             {
                 Id = entity.UpdatedById,
-                Name = updatedBy
+                Name = updatedBy!
             }
         };
     }
