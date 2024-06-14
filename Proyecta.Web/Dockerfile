@@ -18,7 +18,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 
 # Update package index, install necessary packages, and clean up
-RUN apt-get update && apt-get install -y iputils-ping && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends iputils-ping && rm -rf /var/lib/apt/lists/*
 
 # Copy the built application from the build stage
 COPY --from=build /app/out .
