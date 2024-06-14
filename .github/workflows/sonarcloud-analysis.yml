@@ -22,6 +22,12 @@ jobs:
             -   name: Install dependencies
                 run: dotnet restore
 
+            -   name: Install SonarScanner for .NET
+                run: dotnet tool install --global dotnet-sonarscanner
+
+            -   name: Add .NET tools to PATH
+                run: echo "::add-path::$(dirname $(dirname $(which dotnet)))/tools"
+
             -   name: Build the solution
                 run: dotnet build --no-restore
 
