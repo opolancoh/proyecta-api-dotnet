@@ -26,8 +26,7 @@ jobs:
                 run: dotnet tool install --global dotnet-sonarscanner
 
             -   name: Add .NET tools to PATH
-                run: |
-                    echo "$(dirname $(dirname $(which dotnet)))/tools" >> $GITHUB_PATH
+                run: echo "$(dirname $(dirname $(which dotnet)))/tools" >> $GITHUB_PATH
 
             -   name: Build the solution
                 run: dotnet build --no-restore
@@ -36,6 +35,6 @@ jobs:
                 env:
                     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
                 run: |
-                    dotnet sonarscanner begin /k:"opolancoh_proyecta-api-dotnet" /o:"opolancoh" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+                    dotnet sonarscanner begin /k:"opolancoh_proyecta-api-dotnet" /o:"opolancoh" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.projectVersion="1.0" /d:sonar.projectName="Proyecta API" /d:sonar.sourceEncoding="UTF-8" /d:sonar.sources="Proyecta.Api,Proyecta.Core,Proyecta.Services,Proyecta.Repository.EntityFramework" /d:sonar.exclusions="**/wwwroot/**,**/Proyecta.Repository.EntityFramework/Migrations/**,**/bin/**,**/obj/**,**/*.dll,**/*.exe,**/*.pdb" /d:sonar.tests="**/Proyecta.Tests" /d:sonar.dotnet.visualstudio.solution.file="Proyecta.sln" /d:sonar.cs.vscoveragexml.reportsPaths="**/coverage.xml" /d:sonar.cs.msbuild.testProjectPattern="*.Tests" /d:sonar.msbuild.testProjectPattern="*.Tests" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
                     dotnet build
                     dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
