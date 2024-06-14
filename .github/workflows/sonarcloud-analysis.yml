@@ -1,0 +1,34 @@
+name: SonarCloud Analysis
+
+on:
+    push:
+        branches: [ "master" ]
+    pull_request:
+        branches: [ "master" ]
+
+jobs:
+    sonarcloud:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v3
+
+            -   name: Set up .NET Core
+                uses: actions/setup-dotnet@v3
+                with:
+                    dotnet-version: 7.0.x
+
+            -   name: Install dependencies
+                run: dotnet restore
+
+            -   name: Build the solution
+                run: dotnet build --no-restore
+
+            -   name: Run SonarCloud Analysis
+                env:
+                    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                run: |
+                    dotnet sonarscanner begin /k:"opolancoh_proyecta-api-dotnet" /o:"opolancoh" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+                    dotnet build
+                    dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
